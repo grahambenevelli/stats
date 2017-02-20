@@ -1,11 +1,15 @@
 package com.grahamsfault.nfl;
 
-import com.grahamsfault.nfl.resources.HelloWorldResource;
-import com.yammer.dropwizard.Service;
-import com.yammer.dropwizard.config.Bootstrap;
-import com.yammer.dropwizard.config.Environment;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.grahamsfault.nfl.dao.FilePlayerDAO;
+import com.grahamsfault.nfl.dao.PlayerDAO;
+import com.grahamsfault.nfl.manager.PlayerManager;
+import com.grahamsfault.nfl.resources.SearchResource;
+import io.dropwizard.Application;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
 
-public class NflStatsService extends Service<StatsConfiguration> {
+public class NflStatsService extends Application<StatsConfiguration> {
 
     public static void main(String[] args) throws Exception {
         new NflStatsService().run(args);
@@ -13,12 +17,16 @@ public class NflStatsService extends Service<StatsConfiguration> {
 
     @Override
     public void initialize(Bootstrap<StatsConfiguration> bootstrap) {
-        bootstrap.setName("nfl-stats");
+        // TODO add something here?
     }
 
     @Override
     public void run(StatsConfiguration configuration,
                     Environment environment) throws ClassNotFoundException {
-        environment.addResource(new HelloWorldResource());
+        ObjectMapper mapper = new ObjectMapper();
+        PlayerDAO playerDAO = new FilePlayerDAO(mapper);
+        PlayerManager playerManager = new PlayerManager(playerDAO);
+
+        environment.jersey().register(new SearchResource(playerManager));
     }
 }

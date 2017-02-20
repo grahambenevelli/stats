@@ -1,6 +1,6 @@
 package com.grahamsfault.nfl;
 
-import com.yammer.dropwizard.config.Configuration;
+import io.dropwizard.Configuration;
 import org.hibernate.validator.constraints.NotEmpty;
 
 public class StatsConfiguration extends Configuration {

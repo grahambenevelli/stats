@@ -1,8 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
-sourceCompatibility = JavaVersion.VERSION_1_7
-targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 defaultTasks 'clean', 'test'
 
@@ -14,17 +14,13 @@ repositories {
 }
 
 project.ext {
-    dropwizardVersion = '0.6.2'
+    dropwizardVersion = '1.0.6'
 }
 
 dependencies {
-    compile (
-        'com.yammer.dropwizard:dropwizard-core:' + dropwizardVersion,
-        'com.yammer.dropwizard:dropwizard-hibernate:' + dropwizardVersion,
-        'com.yammer.dropwizard:dropwizard-migrations:' + dropwizardVersion,
-        'com.yammer.dropwizard:dropwizard-auth:' + dropwizardVersion,
-        'com.h2database:h2:1.3.168'
-    )
+    compile 'io.dropwizard:dropwizard-core:' + dropwizardVersion
+    compile group: 'com.google.guava', name: 'guava', version: '21.0'
+
     testCompile group: 'org.testng', name: 'testng', version: '6.3.1'
 }
 
