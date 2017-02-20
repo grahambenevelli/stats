@@ -11,14 +11,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class FilePlayerDAO extends BaseDAO implements PlayerDAO {
+/**
+ * Until we have a working database to back this, we are using a json file as the source of players
+ */
+public class FilePlayerDAO implements PlayerDAO {
 
+	/**
+	 * The json file holding all the players
+	 */
 	private static final String DEFAULT_FILENAME = "assets/db/players.json";
 
 	private final ObjectMapper mapper;
@@ -29,7 +33,7 @@ public class FilePlayerDAO extends BaseDAO implements PlayerDAO {
 	}
 
 	@Override
-	public Set<Player> searchForPlayer(final String firstName, final String lastName) {
+	public Set<Player> searchForPlayer(final Optional<String> firstName, final Optional<String> lastName) {
 		List<Player> allPlayers = allPlayers();
 		Stream<Player> playerStream = allPlayers
 				.stream()
@@ -38,13 +42,16 @@ public class FilePlayerDAO extends BaseDAO implements PlayerDAO {
 		return playerStream.collect(Collectors.<Player>toSet());
 	}
 
-	private Predicate<Player> getPlayerPredicate(String firstName, String lastName) {
+	/**
+	 * Returns a predicate statement that matches a player to first and last name if included
+	 */
+	private Predicate<Player> getPlayerPredicate(Optional<String> firstName, Optional<String> lastName) {
 		return player -> {
-			if (firstName != null && !player.getFirstName().equals(firstName)) {
+			if (firstName.isPresent() && !player.getFirstName().equalsIgnoreCase(firstName.get())) {
 				return false;
 			}
 
-			if (lastName != null && !player.getLastName().equals(lastName)) {
+			if (lastName.isPresent() && !player.getLastName().equalsIgnoreCase(lastName.get())) {
 				return false;
 			}
 
@@ -52,6 +59,9 @@ public class FilePlayerDAO extends BaseDAO implements PlayerDAO {
 		};
 	}
 
+	/**
+	 * Get a list of all the players
+	 */
 	protected List<Player> allPlayers() {
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource(DEFAULT_FILENAME).getFile());

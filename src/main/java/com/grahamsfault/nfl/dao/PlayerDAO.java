@@ -9,8 +9,8 @@ import java.util.Set;
 public interface PlayerDAO {
 
 	Set<Player> searchForPlayer(
-			final String firstName,
-			final String lastName
+			final Optional<String> firstName,
+			final Optional<String> lastName
 	);
 
 }

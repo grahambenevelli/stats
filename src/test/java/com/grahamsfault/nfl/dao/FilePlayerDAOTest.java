@@ -5,6 +5,7 @@ import com.grahamsfault.nfl.model.Player;
 import com.grahamsfault.nfl.model.Position;
 import com.grahamsfault.nfl.model.Team;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.net.MalformedURLException;
@@ -37,7 +38,7 @@ public class FilePlayerDAOTest {
 				"Flozell Adams",
 				"00-0000045",
 				"F.Adams",
-				2499355,
+				2499355L,
 				new URL("http://www.nfl.com/player/flozelladams/2499355/profile"),
 				79,
 				338,
@@ -54,32 +55,89 @@ public class FilePlayerDAOTest {
 		assertEquals(first.get(), expected);
 	}
 
-	@Test
-	public void testSearchPlayer() throws MalformedURLException {
-		Set<Player> players = playerDAO.searchForPlayer("Andre", "Johnson");
+	@DataProvider
+	public static Object[][] searchPlayerDataProvider() throws Exception {
+		return new Object[][]{
+				{
+						"Andre",
+						"Johnson",
+						Optional.of(new Player(
+								"7/11/1981",
+								"Miami (Fla.)",
+								"Andre",
+								"Johnson",
+								"Andre Johnson",
+								"00-0022044",
+								"A.Johnson",
+								2505551L,
+								new URL("http://www.nfl.com/player/andrejohnson/2505551/profile"),
+								75,
+								229,
+								14,
+								81,
+								"ACT",
+								Team.TENNESSEE,
+								Position.WR
+						))
+				},
+				{
+						"Braxton",
+						"Miller",
+						Optional.of(new Player(
+								"11/30/1992",
+								"Ohio State",
+								"Braxton",
+								"Miller",
+								"Braxton Miller",
+								"00-0033069",
+								null,
+								2555348L,
+								new URL("http://www.nfl.com/player/braxtonmiller/2555348/profile"),
+								73,
+								201,
+								0,
+								13,
+								"ACT",
+								Team.HOUSTON,
+								Position.WR
+						))
+				},
+				{
+						null,
+						"Miller",
+						Optional.of(new Player(
+								"1/29/1988",
+								"Colorado State",
+								"Guy",
+								"Miller",
+								"Guy Miller",
+								"00-0028781",
+								"G.Miller",
+								2531176L,
+								new URL("http://www.nfl.com/player/guymiller/2531176/profile"),
+								75,
+								302,
+								1,
+								null,
+								null,
+								null,
+								null
+						))
+				},
+		};
+	}
 
-		Player expected = new Player(
-				"7/11/1981",
-				"Miami (Fla.)",
-				"Andre",
-				"Johnson",
-				"Andre Johnson",
-				"00-0022044",
-				"A.Johnson",
-				2505551,
-				new URL("http://www.nfl.com/player/andrejohnson/2505551/profile"),
-				75,
-				229,
-				14,
-				81,
-				"ACT",
-				Team.TENNESSEE,
-				Position.WR
-		);
+	@Test(dataProvider = "searchPlayerDataProvider")
+	public void testSearchPlayer(String firstName, String lastName, Optional<Player> expected) throws Exception {
+		Set<Player> players = playerDAO.searchForPlayer(Optional.ofNullable(firstName), Optional.ofNullable(lastName));
 
 		Optional<Player> first = players.stream().findFirst();
 
-		assertTrue(first.isPresent());
-		assertEquals(first.get(), expected);
+		if (expected.isPresent()) {
+			assertTrue(first.isPresent());
+			assertEquals(first.get(), expected.get());
+		} else {
+			assertTrue(!first.isPresent());
+		}
 	}
 }

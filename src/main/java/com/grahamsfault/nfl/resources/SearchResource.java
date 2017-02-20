@@ -9,6 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import java.util.Optional;
 import java.util.Set;
 
 @Path("/player/search/")
@@ -24,6 +25,9 @@ public class SearchResource {
     @GET
     @Timed(name = "search")
     public Set<Player> search(@QueryParam("first_name") String firstName, @QueryParam("last_name") String lastName) {
-        return playerManager.searchForPlayer(firstName, lastName);
+        return playerManager.searchForPlayer(
+                Optional.ofNullable(firstName),
+                Optional.ofNullable(lastName)
+        );
     }
 }

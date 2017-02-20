@@ -3,9 +3,10 @@ package com.grahamsfault.nfl.manager;
 import com.grahamsfault.nfl.dao.PlayerDAO;
 import com.grahamsfault.nfl.model.Player;
 
+import java.util.Optional;
 import java.util.Set;
 
-public class PlayerManager extends BaseManager {
+public class PlayerManager {
 
 	private final PlayerDAO playerDAO;
 
@@ -13,9 +14,12 @@ public class PlayerManager extends BaseManager {
 		this.playerDAO = playerDAO;
 	}
 
+	/**
+	 * Search for a given player by first name or last name or both
+	 */
 	public Set<Player> searchForPlayer(
-			final String firstName,
-			final String lastName
+			final Optional<String> firstName,
+			final Optional<String> lastName
 	) {
 		return playerDAO.searchForPlayer(firstName, lastName);
 	}

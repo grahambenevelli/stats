@@ -20,11 +20,11 @@ public class Player {
 	private final String fullName;
 	private final String gsisId;
 	private final String gsisName;
-	private final long profileId;
+	private final Long profileId;
 	private final URL profileUrl;
-	private final int height;
-	private final int weight;
-	private final int yearsPro;
+	private final Integer height;
+	private final Integer weight;
+	private final Integer yearsPro;
 	private final Integer number;
 	private final String status;
 	private final Team team;
@@ -39,11 +39,11 @@ public class Player {
 			@JsonProperty("full_name") String fullName,
 			@JsonProperty("gsis_id") String gsisId,
 			@JsonProperty("gsis_name") String gsisName,
-			@JsonProperty("profile_id") long profileId,
+			@JsonProperty("profile_id") Long profileId,
 			@JsonProperty("profile_url") URL profileUrl,
-			@JsonProperty("height") int height,
-			@JsonProperty("weight") int weight,
-			@JsonProperty("years_pro") int yearsPro,
+			@JsonProperty("height") Integer height,
+			@JsonProperty("weight") Integer weight,
+			@JsonProperty("years_pro") Integer yearsPro,
 			@JsonProperty("number") Integer number,
 			@JsonProperty("status") String status,
 			@JsonProperty("team") Team team,
@@ -94,7 +94,7 @@ public class Player {
 		return gsisName;
 	}
 
-	public long getProfileId() {
+	public Long getProfileId() {
 		return profileId;
 	}
 
@@ -102,15 +102,15 @@ public class Player {
 		return profileUrl;
 	}
 
-	public int getHeight() {
+	public Integer getHeight() {
 		return height;
 	}
 
-	public int getWeight() {
+	public Integer getWeight() {
 		return weight;
 	}
 
-	public int getYearsPro() {
+	public Integer getYearsPro() {
 		return yearsPro;
 	}
 
@@ -135,27 +135,27 @@ public class Player {
 		if (this == o) return true;
 		if (!(o instanceof Player)) return false;
 		Player player = (Player) o;
-		return getProfileId() == player.getProfileId() &&
-				getHeight() == player.getHeight() &&
-				getWeight() == player.getWeight() &&
-				getYearsPro() == player.getYearsPro() &&
-				Objects.equals(getBirthdate(), player.getBirthdate()) &&
+		return Objects.equals(getBirthdate(), player.getBirthdate()) &&
 				Objects.equals(getCollege(), player.getCollege()) &&
 				Objects.equals(getFirstName(), player.getFirstName()) &&
 				Objects.equals(getLastName(), player.getLastName()) &&
 				Objects.equals(getFullName(), player.getFullName()) &&
 				Objects.equals(getGsisId(), player.getGsisId()) &&
 				Objects.equals(getGsisName(), player.getGsisName()) &&
+				Objects.equals(getProfileId(), player.getProfileId()) &&
 				Objects.equals(getProfileUrl(), player.getProfileUrl()) &&
+				Objects.equals(getHeight(), player.getHeight()) &&
+				Objects.equals(getWeight(), player.getWeight()) &&
+				Objects.equals(getYearsPro(), player.getYearsPro()) &&
 				Objects.equals(getNumber(), player.getNumber()) &&
 				Objects.equals(getStatus(), player.getStatus()) &&
-				Objects.equals(getTeam(), player.getTeam()) &&
-				Objects.equals(getPosition(), player.getPosition());
+				getTeam() == player.getTeam() &&
+				getPosition() == player.getPosition();
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getBirthdate(), getCollege(), getFirstName(), getLastName(), getFullName(), getGsisId(), getGsisName(), getProfileId(), getProfileUrl(), getHeight(), getWeight(), getYearsPro(), getNumber(), getStatus(), getTeam(), position);
+		return Objects.hash(getBirthdate(), getCollege(), getFirstName(), getLastName(), getFullName(), getGsisId(), getGsisName(), getProfileId(), getProfileUrl(), getHeight(), getWeight(), getYearsPro(), getNumber(), getStatus(), getTeam(), getPosition());
 	}
 
 	@Override
