@@ -1,10 +1,14 @@
 package com.grahamsfault.nfl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.grahamsfault.nfl.dao.FileGameDAO;
 import com.grahamsfault.nfl.dao.FilePlayerDAO;
+import com.grahamsfault.nfl.dao.GameDAO;
 import com.grahamsfault.nfl.dao.PlayerDAO;
+import com.grahamsfault.nfl.manager.GameManager;
 import com.grahamsfault.nfl.manager.PlayerManager;
-import com.grahamsfault.nfl.resources.SearchResource;
+import com.grahamsfault.nfl.resources.game.GameSearchResource;
+import com.grahamsfault.nfl.resources.player.PlayerSearchResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -25,8 +29,12 @@ public class NflStatsService extends Application<StatsConfiguration> {
                     Environment environment) throws ClassNotFoundException {
         ObjectMapper mapper = new ObjectMapper();
         PlayerDAO playerDAO = new FilePlayerDAO(mapper);
-        PlayerManager playerManager = new PlayerManager(playerDAO);
+        GameDAO gameDAO = new FileGameDAO(mapper);
 
-        environment.jersey().register(new SearchResource(playerManager));
+        PlayerManager playerManager = new PlayerManager(playerDAO);
+        GameManager gameManager = new GameManager(gameDAO);
+
+        environment.jersey().register(new PlayerSearchResource(playerManager));
+        environment.jersey().register(new GameSearchResource(gameManager));
     }
 }

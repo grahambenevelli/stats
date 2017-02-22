@@ -1,4 +1,4 @@
-package com.grahamsfault.nfl.model;
+package com.grahamsfault.nfl.model.player;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 

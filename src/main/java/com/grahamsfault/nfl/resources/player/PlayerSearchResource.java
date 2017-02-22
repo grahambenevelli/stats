@@ -1,4 +1,4 @@
-package com.grahamsfault.nfl.resources;
+package com.grahamsfault.nfl.resources.player;
 
 import com.codahale.metrics.annotation.Timed;
 import com.grahamsfault.nfl.manager.PlayerManager;
@@ -14,11 +14,11 @@ import java.util.Set;
 
 @Path("/player/search/")
 @Produces(MediaType.APPLICATION_JSON)
-public class SearchResource {
+public class PlayerSearchResource {
 
     private final PlayerManager playerManager;
 
-    public SearchResource(PlayerManager playerManager) {
+    public PlayerSearchResource(PlayerManager playerManager) {
         this.playerManager = playerManager;
     }
 
