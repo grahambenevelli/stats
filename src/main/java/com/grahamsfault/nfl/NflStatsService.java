@@ -8,6 +8,7 @@ import com.grahamsfault.nfl.dao.PlayerDAO;
 import com.grahamsfault.nfl.manager.GameManager;
 import com.grahamsfault.nfl.manager.PlayerManager;
 import com.grahamsfault.nfl.resources.game.GameSearchResource;
+import com.grahamsfault.nfl.resources.game.GameStatsResource;
 import com.grahamsfault.nfl.resources.player.PlayerSearchResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
@@ -36,5 +37,6 @@ public class NflStatsService extends Application<StatsConfiguration> {
 
         environment.jersey().register(new PlayerSearchResource(playerManager));
         environment.jersey().register(new GameSearchResource(gameManager));
+        environment.jersey().register(new GameStatsResource(gameManager));
     }
 }

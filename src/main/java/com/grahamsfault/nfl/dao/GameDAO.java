@@ -2,6 +2,7 @@ package com.grahamsfault.nfl.dao;
 
 import com.grahamsfault.nfl.model.Game;
 import com.grahamsfault.nfl.model.Team;
+import com.grahamsfault.nfl.model.game.GameStatsWrapper;
 import com.grahamsfault.nfl.model.game.GameType;
 
 import java.util.List;
@@ -28,4 +29,5 @@ public interface GameDAO {
 			Optional<Team> away
 	);
 
+	GameStatsWrapper gameStats(String eid);
 }

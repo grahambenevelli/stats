@@ -5,10 +5,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
 import com.grahamsfault.nfl.model.Game;
 import com.grahamsfault.nfl.model.Team;
+import com.grahamsfault.nfl.model.game.GameStatsWrapper;
 import com.grahamsfault.nfl.model.game.GameType;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,9 +25,11 @@ public class FileGameDAO implements GameDAO {
 	private static final String DEFAULT_FILENAME = "assets/db/schedule.json";
 
 	private final ObjectMapper mapper;
+	private final Client client;
 
 	public FileGameDAO(ObjectMapper mapper) {
 		this.mapper = mapper;
+		client = ClientBuilder.newClient();
 	}
 
 	@Override
@@ -40,6 +49,17 @@ public class FileGameDAO implements GameDAO {
 				.filter(game -> !home.isPresent() || game.getHome() == home.get())
 				.filter(game -> !away.isPresent() || game.getAway() == away.get())
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public GameStatsWrapper gameStats(String eid) {
+		WebTarget target = client.target("http://www.nfl.com")
+				.path(MessageFormat.format("/liveupdate/game-center/{0}/{0}_gtd.json", eid));
+
+		Response response = target.request().get();
+		GameStatsWrapper gameStats = response.readEntity(new GenericType<GameStatsWrapper>() {});
+
+		return gameStats;
 	}
 
 	/**

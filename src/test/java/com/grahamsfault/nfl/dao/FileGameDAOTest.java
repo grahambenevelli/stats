@@ -3,6 +3,8 @@ package com.grahamsfault.nfl.dao;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grahamsfault.nfl.model.Game;
 import com.grahamsfault.nfl.model.Team;
+import com.grahamsfault.nfl.model.game.GameNotes;
+import com.grahamsfault.nfl.model.game.GameStatsWrapper;
 import com.grahamsfault.nfl.model.game.GameType;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -185,5 +187,18 @@ public class FileGameDAOTest {
 
 		assertTrue(actual.isPresent());
 		assertEquals(actual.get(), expected);
+	}
+
+	@Test
+	public void testGetGameStats() {
+		GameStatsWrapper actual = this.gameDAO.gameStats("2013090500");
+
+		GameNotes stats = new GameNotes("Final", null, null, "", null, null, "0", true, "00:39", Team.DENVER, null);
+
+		GameStatsWrapper expected = new GameStatsWrapper();
+		expected.nextupdate = "366";
+		expected.setDynamicProperty("2013090500", stats);
+
+		assertEquals(actual, expected);
 	}
 }

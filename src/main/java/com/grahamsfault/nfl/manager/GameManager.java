@@ -3,6 +3,8 @@ package com.grahamsfault.nfl.manager;
 import com.grahamsfault.nfl.dao.GameDAO;
 import com.grahamsfault.nfl.model.Game;
 import com.grahamsfault.nfl.model.Team;
+import com.grahamsfault.nfl.model.game.GameNotes;
+import com.grahamsfault.nfl.model.game.GameStatsWrapper;
 import com.grahamsfault.nfl.model.game.GameType;
 
 import java.util.List;
@@ -41,5 +43,13 @@ public class GameManager {
 				home,
 				away
 		);
+	}
+
+	public Optional<GameNotes> gameStats(String eid) {
+		GameStatsWrapper gameStatsWrapper = gameDAO.gameStats(eid);
+		if (!gameStatsWrapper.getProfiles().containsKey(eid)) {
+			return Optional.empty();
+		}
+		return Optional.of(gameStatsWrapper.getProfiles().get(eid));
 	}
 }
