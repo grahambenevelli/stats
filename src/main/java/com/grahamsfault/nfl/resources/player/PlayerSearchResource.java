@@ -2,7 +2,7 @@ package com.grahamsfault.nfl.resources.player;
 
 import com.codahale.metrics.annotation.Timed;
 import com.grahamsfault.nfl.manager.PlayerManager;
-import com.grahamsfault.nfl.model.Player;
+import com.grahamsfault.nfl.api.model.Player;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

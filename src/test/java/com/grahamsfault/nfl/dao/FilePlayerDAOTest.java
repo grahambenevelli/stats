@@ -1,9 +1,9 @@
 package com.grahamsfault.nfl.dao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.grahamsfault.nfl.model.Player;
-import com.grahamsfault.nfl.model.Team;
-import com.grahamsfault.nfl.model.player.Position;
+import com.grahamsfault.nfl.api.model.Player;
+import com.grahamsfault.nfl.api.model.Team;
+import com.grahamsfault.nfl.api.model.player.Position;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

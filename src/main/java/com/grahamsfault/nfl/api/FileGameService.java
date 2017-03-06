@@ -1,12 +1,13 @@
-package com.grahamsfault.nfl.dao;
+package com.grahamsfault.nfl.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
-import com.grahamsfault.nfl.model.Game;
-import com.grahamsfault.nfl.model.Team;
-import com.grahamsfault.nfl.model.game.GameStatsWrapper;
-import com.grahamsfault.nfl.model.game.GameType;
+import com.grahamsfault.nfl.api.model.Game;
+import com.grahamsfault.nfl.api.model.Team;
+import com.grahamsfault.nfl.api.model.game.GameStatsWrapper;
+import com.grahamsfault.nfl.api.model.game.GameType;
+import com.grahamsfault.nfl.dao.GameDAO;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -20,14 +21,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class FileGameDAO implements GameDAO {
+public class FileGameService implements GameDAO {
 
 	private static final String DEFAULT_FILENAME = "assets/db/schedule.json";
 
 	private final ObjectMapper mapper;
 	private final Client client;
 
-	public FileGameDAO(ObjectMapper mapper) {
+	public FileGameService(ObjectMapper mapper) {
 		this.mapper = mapper;
 		client = ClientBuilder.newClient();
 	}

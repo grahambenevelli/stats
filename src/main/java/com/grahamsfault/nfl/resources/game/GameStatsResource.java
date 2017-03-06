@@ -2,7 +2,7 @@ package com.grahamsfault.nfl.resources.game;
 
 import com.codahale.metrics.annotation.Timed;
 import com.grahamsfault.nfl.manager.GameManager;
-import com.grahamsfault.nfl.model.game.GameNotes;
+import com.grahamsfault.nfl.api.model.game.GameNotes;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;

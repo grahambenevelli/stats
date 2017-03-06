@@ -1,11 +1,11 @@
-package com.grahamsfault.nfl.model;
+package com.grahamsfault.nfl.api.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
-import com.grahamsfault.nfl.model.player.Position;
+import com.grahamsfault.nfl.api.model.player.Position;
 
 import java.net.URL;
 import java.util.Objects;

@@ -2,9 +2,9 @@ package com.grahamsfault.nfl.resources.game;
 
 import com.codahale.metrics.annotation.Timed;
 import com.grahamsfault.nfl.manager.GameManager;
-import com.grahamsfault.nfl.model.Game;
-import com.grahamsfault.nfl.model.Team;
-import com.grahamsfault.nfl.model.game.GameType;
+import com.grahamsfault.nfl.api.model.Game;
+import com.grahamsfault.nfl.api.model.Team;
+import com.grahamsfault.nfl.api.model.game.GameType;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

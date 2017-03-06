@@ -1,7 +1,7 @@
 package com.grahamsfault.nfl.manager;
 
 import com.grahamsfault.nfl.dao.PlayerDAO;
-import com.grahamsfault.nfl.model.Player;
+import com.grahamsfault.nfl.api.model.Player;
 
 import java.util.Optional;
 import java.util.Set;

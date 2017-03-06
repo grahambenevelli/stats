@@ -1,9 +1,9 @@
 package com.grahamsfault.nfl.dao;
 
-import com.grahamsfault.nfl.model.Game;
-import com.grahamsfault.nfl.model.Team;
-import com.grahamsfault.nfl.model.game.GameStatsWrapper;
-import com.grahamsfault.nfl.model.game.GameType;
+import com.grahamsfault.nfl.api.model.Game;
+import com.grahamsfault.nfl.api.model.Team;
+import com.grahamsfault.nfl.api.model.game.GameStatsWrapper;
+import com.grahamsfault.nfl.api.model.game.GameType;
 
 import java.util.List;
 import java.util.Optional;

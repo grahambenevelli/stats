@@ -1,7 +1,7 @@
 package com.grahamsfault.nfl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.grahamsfault.nfl.dao.FileGameDAO;
+import com.grahamsfault.nfl.api.FileGameService;
 import com.grahamsfault.nfl.dao.FilePlayerDAO;
 import com.grahamsfault.nfl.dao.GameDAO;
 import com.grahamsfault.nfl.dao.PlayerDAO;
@@ -30,7 +30,7 @@ public class NflStatsService extends Application<StatsConfiguration> {
                     Environment environment) throws ClassNotFoundException {
         ObjectMapper mapper = new ObjectMapper();
         PlayerDAO playerDAO = new FilePlayerDAO(mapper);
-        GameDAO gameDAO = new FileGameDAO(mapper);
+        GameDAO gameDAO = new FileGameService(mapper);
 
         PlayerManager playerManager = new PlayerManager(playerDAO);
         GameManager gameManager = new GameManager(gameDAO);

@@ -3,7 +3,7 @@ package com.grahamsfault.nfl.dao;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
-import com.grahamsfault.nfl.model.Player;
+import com.grahamsfault.nfl.api.model.Player;
 
 import java.io.File;
 import java.io.IOException;

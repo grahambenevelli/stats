@@ -1,9 +1,9 @@
 package com.grahamsfault.nfl.manager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.grahamsfault.nfl.dao.FileGameDAO;
-import com.grahamsfault.nfl.model.Team;
-import com.grahamsfault.nfl.model.game.GameNotes;
+import com.grahamsfault.nfl.api.FileGameService;
+import com.grahamsfault.nfl.api.model.Team;
+import com.grahamsfault.nfl.api.model.game.GameNotes;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -20,7 +20,7 @@ public class GameManagerTest {
 	@BeforeClass
 	public void setup() {
 		mapper = new ObjectMapper();
-		manager = new GameManager(new FileGameDAO(mapper));
+		manager = new GameManager(new FileGameService(mapper));
 	}
 
 	@Test
@@ -29,7 +29,21 @@ public class GameManagerTest {
 
 		assertTrue(gameStats.isPresent());
 
-		GameNotes expected = new GameNotes("Final", null, null, "", null, null, "0", true, "00:39", Team.DENVER, null);
+		GameNotes expected = new GameNotes(
+				"Final",
+				null,
+				null,
+				"",
+				null,
+				0,
+				0,
+				true,
+				"00:39",
+				Team.DENVER,
+				null,
+				null,
+				null,
+				null);
 		assertEquals(gameStats.get(), expected);
 
 		String s = mapper.writeValueAsString(gameStats.get());

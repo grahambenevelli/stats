@@ -1,11 +1,13 @@
-package com.grahamsfault.nfl.model.game;
+package com.grahamsfault.nfl.api.model.game;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
-import com.grahamsfault.nfl.model.Team;
+import com.grahamsfault.nfl.api.model.game.drive.GameDrives;
+import com.grahamsfault.nfl.api.model.game.team.GameTeamNotes;
+import com.grahamsfault.nfl.api.model.Team;
 
 import java.util.Objects;
 
@@ -18,12 +20,15 @@ public class GameNotes {
 	private final String media;
 	private final String yl;
 	private final String note;
-	private final String down;
-	private final String togo;
+	private final Integer down;
+	private final Integer togo;
 	private final boolean redzone;
 	private final String clock;
 	private final Team posteam;
 	private final String stadium;
+	private final GameTeamNotes home;
+	private final GameTeamNotes away;
+	private final GameDrives drives;
 
 	@JsonCreator
 	public GameNotes(
@@ -32,12 +37,15 @@ public class GameNotes {
 			@JsonProperty("media") String media,
 			@JsonProperty("yl") String yl,
 			@JsonProperty("note") String note,
-			@JsonProperty("down") String down,
-			@JsonProperty("togo") String togo,
+			@JsonProperty("down") Integer down,
+			@JsonProperty("togo") Integer togo,
 			@JsonProperty("redzone") boolean redzone,
 			@JsonProperty("clock") String clock,
 			@JsonProperty("posteam") Team posteam,
-			@JsonProperty("stadium") String stadium) {
+			@JsonProperty("stadium") String stadium,
+			@JsonProperty("home") GameTeamNotes home,
+			@JsonProperty("away") GameTeamNotes away,
+			@JsonProperty("drives") GameDrives drives) {
 		this.qtr = qtr;
 		this.weather = weather;
 		this.media = media;
@@ -49,6 +57,9 @@ public class GameNotes {
 		this.clock = clock;
 		this.posteam = posteam;
 		this.stadium = stadium;
+		this.home = home;
+		this.away = away;
+		this.drives = drives;
 	}
 
 	public String getQtr() {
@@ -71,11 +82,11 @@ public class GameNotes {
 		return note;
 	}
 
-	public String getDown() {
+	public Integer getDown() {
 		return down;
 	}
 
-	public String getTogo() {
+	public Integer getTogo() {
 		return togo;
 	}
 
@@ -95,6 +106,18 @@ public class GameNotes {
 		return stadium;
 	}
 
+	public GameTeamNotes getHome() {
+		return home;
+	}
+
+	public GameTeamNotes getAway() {
+		return away;
+	}
+
+	public GameDrives getDrives() {
+		return drives;
+	}
+
 	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
@@ -109,6 +132,9 @@ public class GameNotes {
 				.add("clock", clock)
 				.add("posteam", posteam)
 				.add("stadium", stadium)
+				.add("home", home)
+				.add("away", away)
+				.add("drives", drives)
 				.toString();
 	}
 
@@ -117,21 +143,24 @@ public class GameNotes {
 		if (this == o) return true;
 		if (!(o instanceof GameNotes)) return false;
 		GameNotes gameNotes = (GameNotes) o;
-		return redzone == gameNotes.redzone &&
-				Objects.equals(qtr, gameNotes.qtr) &&
-				Objects.equals(weather, gameNotes.weather) &&
-				Objects.equals(media, gameNotes.media) &&
-				Objects.equals(yl, gameNotes.yl) &&
-				Objects.equals(note, gameNotes.note) &&
-				Objects.equals(down, gameNotes.down) &&
-				Objects.equals(togo, gameNotes.togo) &&
-				Objects.equals(clock, gameNotes.clock) &&
-				posteam == gameNotes.posteam &&
-				Objects.equals(stadium, gameNotes.stadium);
+		return isRedzone() == gameNotes.isRedzone() &&
+				Objects.equals(getQtr(), gameNotes.getQtr()) &&
+				Objects.equals(getWeather(), gameNotes.getWeather()) &&
+				Objects.equals(getMedia(), gameNotes.getMedia()) &&
+				Objects.equals(getYl(), gameNotes.getYl()) &&
+				Objects.equals(getNote(), gameNotes.getNote()) &&
+				Objects.equals(getDown(), gameNotes.getDown()) &&
+				Objects.equals(getTogo(), gameNotes.getTogo()) &&
+				Objects.equals(getClock(), gameNotes.getClock()) &&
+				getPosteam() == gameNotes.getPosteam() &&
+				Objects.equals(getStadium(), gameNotes.getStadium()) &&
+				Objects.equals(getHome(), gameNotes.getHome()) &&
+				Objects.equals(getAway(), gameNotes.getAway()) &&
+				Objects.equals(getDrives(), gameNotes.getDrives());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(qtr, weather, media, yl, note, down, togo, redzone, clock, posteam, stadium);
+		return Objects.hash(getQtr(), getWeather(), getMedia(), getYl(), getNote(), getDown(), getTogo(), isRedzone(), getClock(), getPosteam(), getStadium(), getHome(), getAway(), getDrives());
 	}
 }
