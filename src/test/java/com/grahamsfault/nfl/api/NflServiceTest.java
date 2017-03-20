@@ -28,13 +28,13 @@ import java.util.Optional;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-public class FileGameServiceTest {
+public class NflServiceTest {
 
-	private FileGameService gameDAO;
+	private NflService gameDAO;
 
 	@BeforeMethod
 	public void setup() {
-		gameDAO = new FileGameService(new ObjectMapper());
+		gameDAO = new NflService(new ObjectMapper());
 	}
 
 	@DataProvider

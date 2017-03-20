@@ -1,35 +1,33 @@
-package com.grahamsfault.nfl.api;
+package com.grahamsfault.nfl.dao;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
+import com.grahamsfault.nfl.api.NflService;
 import com.grahamsfault.nfl.api.model.Game;
 import com.grahamsfault.nfl.api.model.Team;
 import com.grahamsfault.nfl.api.model.game.GameStatsWrapper;
 import com.grahamsfault.nfl.api.model.game.GameType;
-import com.grahamsfault.nfl.dao.GameDAO;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class FileGameService implements GameDAO {
+public class FileGameDAO implements GameDAO {
 
 	private static final String DEFAULT_FILENAME = "assets/db/schedule.json";
 
 	private final ObjectMapper mapper;
+	private final NflService gameService;
 	private final Client client;
 
-	public FileGameService(ObjectMapper mapper) {
+	public FileGameDAO(ObjectMapper mapper, NflService gameService) {
 		this.mapper = mapper;
+		this.gameService = gameService;
 		client = ClientBuilder.newClient();
 	}
 
@@ -54,13 +52,7 @@ public class FileGameService implements GameDAO {
 
 	@Override
 	public GameStatsWrapper gameStats(String eid) {
-		WebTarget target = client.target("http://www.nfl.com")
-				.path(MessageFormat.format("/liveupdate/game-center/{0}/{0}_gtd.json", eid));
-
-		Response response = target.request().get();
-		GameStatsWrapper gameStats = response.readEntity(new GenericType<GameStatsWrapper>() {});
-
-		return gameStats;
+		return gameService.gameStats(eid);
 	}
 
 	/**
