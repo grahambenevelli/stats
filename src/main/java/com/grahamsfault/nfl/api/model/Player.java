@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.grahamsfault.nfl.api.model.player.Position;
+import com.grahamsfault.nfl.model.PlayerStats;
 
 import java.net.URL;
 import java.util.Objects;
@@ -179,5 +180,123 @@ public class Player {
 				.add("team", team)
 				.add("position", position)
 				.toString();
+	}
+
+	public static Builder builder(String gsisId, String firstName, String lastName) {
+		return new Builder(gsisId, firstName, lastName);
+	}
+
+	public static class Builder {
+
+		private final String firstName;
+		private final String lastName;
+		private String fullName;
+		private String birthdate;
+		private String college;
+		private final String gsisId;
+		private String gsisName;
+		private Long profileId;
+		private URL profileUrl;
+		private Integer height;
+		private Integer weight;
+		private Integer yearsPro;
+		private Integer number;
+		private String status;
+		private Team team;
+		private Position position;
+
+		private Builder(String gsisId, String firstName, String lastName) {
+			this.firstName = firstName;
+			this.lastName = lastName;
+			this.fullName = firstName + " " + lastName;
+			this.gsisId = gsisId;
+			this.team = Team.FREE_AGENT;
+		}
+
+		public Player build() {
+			return new Player(
+					birthdate,
+					college,
+					firstName,
+					lastName,
+					fullName,
+					gsisId,
+					gsisName,
+					profileId,
+					profileUrl,
+					height,
+					weight,
+					yearsPro,
+					number,
+					status,
+					team,
+					position
+			);
+		}
+
+		public Builder setFullName(String fullName) {
+			this.fullName = fullName;
+			return this;
+		}
+
+		public Builder setBirthdate(String birthdate) {
+			this.birthdate = birthdate;
+			return this;
+		}
+
+		public Builder setCollege(String college) {
+			this.college = college;
+			return this;
+		}
+
+		public Builder setGsisName(String gsisName) {
+			this.gsisName = gsisName;
+			return this;
+		}
+
+		public Builder setProfileId(Long profileId) {
+			this.profileId = profileId;
+			return this;
+		}
+
+		public Builder setProfileUrl(URL profileUrl) {
+			this.profileUrl = profileUrl;
+			return this;
+		}
+
+		public Builder setHeight(Integer height) {
+			this.height = height;
+			return this;
+		}
+
+		public Builder setWeight(Integer weight) {
+			this.weight = weight;
+			return this;
+		}
+
+		public Builder setYearsPro(Integer yearsPro) {
+			this.yearsPro = yearsPro;
+			return this;
+		}
+
+		public Builder setNumber(Integer number) {
+			this.number = number;
+			return this;
+		}
+
+		public Builder setStatus(String status) {
+			this.status = status;
+			return this;
+		}
+
+		public Builder setTeam(Team team) {
+			this.team = team;
+			return this;
+		}
+
+		public Builder setPosition(Position position) {
+			this.position = position;
+			return this;
+		}
 	}
 }

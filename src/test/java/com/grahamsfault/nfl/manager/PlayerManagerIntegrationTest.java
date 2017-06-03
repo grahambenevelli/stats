@@ -1,58 +1,41 @@
-package com.grahamsfault.nfl.dao;
+package com.grahamsfault.nfl.manager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.grahamsfault.nfl.AbstractMysqlIntegrationTest;
 import com.grahamsfault.nfl.api.model.Player;
 import com.grahamsfault.nfl.api.model.Team;
 import com.grahamsfault.nfl.api.model.player.Position;
+import com.grahamsfault.nfl.dao.MySQLPlayerDAO;
+import com.grahamsfault.nfl.dao.PlayerDAO;
+import com.grahamsfault.nfl.file.PlayerFileReader;
+import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.net.MalformedURLException;
+import javax.sql.DataSource;
 import java.net.URL;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-public class FilePlayerDAOTest {
+public class PlayerManagerIntegrationTest extends AbstractMysqlIntegrationTest {
 
-	private FilePlayerDAO playerDAO;
+	private PlayerManager playerManager;
 
 	@BeforeClass
 	public void setup() {
-		this.playerDAO = new FilePlayerDAO(new ObjectMapper());
-	}
-
-	@Test
-	public void testGetAllPlayers() throws MalformedURLException {
-		List<Player> players = this.playerDAO.allPlayers();
-
-		Player expected = new Player(
-				"5/18/1975",
-				"Michigan State",
-				"Flozell",
-				"Adams",
-				"Flozell Adams",
-				"00-0000045",
-				"F.Adams",
-				2499355L,
-				new URL("http://www.nfl.com/player/flozelladams/2499355/profile"),
-				79,
-				338,
-				13,
-				null,
-				null,
-				null,
-				null
+		DataSource dataSource = generateDataSource(
+				"192.168.10.11",
+				3306,
+				"stats",
+				"homestead",
+				"secret"
 		);
-
-		Optional<Player> first = players.stream().findFirst();
-
-		assertTrue(first.isPresent());
-		assertEquals(first.get(), expected);
+		PlayerDAO playerDAO = new MySQLPlayerDAO(dataSource);
+		playerManager = new PlayerManager(new PlayerFileReader(new ObjectMapper()), playerDAO);
 	}
 
 	@DataProvider
@@ -129,7 +112,7 @@ public class FilePlayerDAOTest {
 
 	@Test(dataProvider = "searchPlayerDataProvider")
 	public void testSearchPlayer(String firstName, String lastName, Optional<Player> expected) throws Exception {
-		Set<Player> players = playerDAO.searchForPlayer(Optional.ofNullable(firstName), Optional.ofNullable(lastName));
+		Set<Player> players = playerManager.searchForPlayer(Optional.ofNullable(firstName), Optional.ofNullable(lastName));
 
 		Optional<Player> first = players.stream().findFirst();
 

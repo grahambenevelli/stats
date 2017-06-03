@@ -6,15 +6,30 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-    <changeSet name="1" author="codahale">
-        <createTable tableName="people">
-            <column name="name" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="fullName" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="jobTitle" type="varchar(255)"/>
-        </createTable>
+    <changeSet author="gbenevelli" id="player_table_creation">
+        <sql>
+            CREATE TABLE `players` (
+                `gsis_id` varchar(255) NOT NULL,
+                `first_name` varchar(255) NOT NULL,
+                `last_name` varchar(255) NOT NULL,
+                `full_name` varchar(255) NOT NULL,
+                `gsis_name` varchar(255) NOT NULL,
+                `height` int(11) NOT NULL,
+                `number` int(11) NOT NULL,
+                `profile_id` int(11) NOT NULL,
+                `profile_url` varchar(255) NOT NULL,
+                `weight` int(11) NOT NULL,
+                `years_pro` int(11) NOT NULL,
+                `birthdate` varchar(255),
+                `college` varchar(255),
+                `status` varchar(255),
+                `team` varchar(255),
+                `position` varchar(255),
+                PRIMARY KEY (`gsis_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+        </sql>
+        <rollback>
+            <dropTable tableName="players"/>
+        </rollback>
     </changeSet>
 </databaseChangeLog>

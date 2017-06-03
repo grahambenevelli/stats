@@ -1,12 +1,12 @@
 package com.grahamsfault.nfl.manager;
 
-import com.grahamsfault.nfl.api.model.player.RawStats;
-import com.grahamsfault.nfl.dao.GameDAO;
 import com.grahamsfault.nfl.api.model.Game;
 import com.grahamsfault.nfl.api.model.Team;
 import com.grahamsfault.nfl.api.model.game.GameNotes;
 import com.grahamsfault.nfl.api.model.game.GameStatsWrapper;
 import com.grahamsfault.nfl.api.model.game.GameType;
+import com.grahamsfault.nfl.api.model.player.RawStats;
+import com.grahamsfault.nfl.dao.GameDAO;
 import com.grahamsfault.nfl.manager.builder.GameStatsBuilder;
 import com.grahamsfault.nfl.model.GameStats;
 

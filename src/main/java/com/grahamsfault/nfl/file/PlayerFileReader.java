@@ -1,4 +1,4 @@
-package com.grahamsfault.nfl.dao;
+package com.grahamsfault.nfl.file;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 /**
  * Until we have a working database to back this, we are using a json file as the source of players
  */
-public class FilePlayerDAO implements PlayerDAO {
+public class PlayerFileReader {
 
 	/**
 	 * The json file holding all the players
@@ -27,19 +27,9 @@ public class FilePlayerDAO implements PlayerDAO {
 
 	private final ObjectMapper mapper;
 
-	public FilePlayerDAO(ObjectMapper mapper) {
+	public PlayerFileReader(ObjectMapper mapper) {
 		super();
 		this.mapper = mapper;
-	}
-
-	@Override
-	public Set<Player> searchForPlayer(final Optional<String> firstName, final Optional<String> lastName) {
-		List<Player> allPlayers = allPlayers();
-		Stream<Player> playerStream = allPlayers
-				.stream()
-				.filter(getPlayerPredicate(firstName, lastName));
-
-		return playerStream.collect(Collectors.<Player>toSet());
 	}
 
 	/**
@@ -62,7 +52,7 @@ public class FilePlayerDAO implements PlayerDAO {
 	/**
 	 * Get a list of all the players
 	 */
-	protected List<Player> allPlayers() {
+	public List<Player> allPlayers() {
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource(DEFAULT_FILENAME).getFile());
 		try {
