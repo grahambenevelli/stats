@@ -44,6 +44,14 @@ task migrate(type: JavaExec) {
     args 'db', 'migrate', './src/dist/config/stats.yml'
 }
 
+task importPlayers(type: JavaExec) {
+    group = "Migration for Stats Service"
+    description = "Service used to provide available filters for an active users and authorize their use."
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args 'import-players', './src/dist/config/stats.yml'
+}
+
 test {
     useTestNG()
 	exclude '**/*IntegrationTest.class'

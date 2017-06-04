@@ -132,9 +132,9 @@ public class MySQLPlayerDAO implements PlayerDAO {
 			statement.setString(++i, player.getFirstName());
 			statement.setString(++i, player.getLastName());
 			statement.setString(++i, player.getFullName());
-			statement.setString(++i, player.getGsisName());
+			statement.setString(++i, getGsisNameForSaving(player));
 			statement.setInt(++i, player.getHeight());
-			statement.setInt(++i, player.getNumber());
+			statement.setInt(++i, Optional.ofNullable(player.getNumber()).orElse(0));
 			statement.setLong(++i, player.getProfileId());
 			statement.setString(++i, player.getProfileUrl().toString());
 			statement.setInt(++i, player.getWeight());
@@ -142,16 +142,16 @@ public class MySQLPlayerDAO implements PlayerDAO {
 			statement.setString(++i, player.getBirthdate());
 			statement.setString(++i, player.getCollege());
 			statement.setString(++i, player.getStatus());
-			statement.setString(++i, player.getTeam().abbreviation);
+			statement.setString(++i, player.getTeam() == null ? null : player.getTeam().abbreviation);
 			statement.setString(++i, Optional.ofNullable(player.getPosition()).map(position -> position.abbreviation).orElse(null));
 
 			statement.setString(++i, player.getGsisId());
 			statement.setString(++i, player.getFirstName());
 			statement.setString(++i, player.getLastName());
 			statement.setString(++i, player.getFullName());
-			statement.setString(++i, player.getGsisName());
+			statement.setString(++i, getGsisNameForSaving(player));
 			statement.setInt(++i, player.getHeight());
-			statement.setInt(++i, player.getNumber());
+			statement.setInt(++i, Optional.ofNullable(player.getNumber()).orElse(0));
 			statement.setLong(++i, player.getProfileId());
 			statement.setString(++i, player.getProfileUrl().toString());
 			statement.setInt(++i, player.getWeight());
@@ -159,11 +159,18 @@ public class MySQLPlayerDAO implements PlayerDAO {
 			statement.setString(++i, player.getBirthdate());
 			statement.setString(++i, player.getCollege());
 			statement.setString(++i, player.getStatus());
-			statement.setString(++i, player.getTeam().abbreviation);
+			statement.setString(++i, player.getTeam() == null ? null : player.getTeam().abbreviation);
 			statement.setString(++i, Optional.ofNullable(player.getPosition()).map(position -> position.abbreviation).orElse(null));
 
 			statement.executeUpdate();
 		}
+	}
+
+	private String getGsisNameForSaving(Player player) {
+		if (player.getGsisName() != null) {
+			return player.getGsisName();
+		}
+		return player.getFirstName().substring(0, 1) + "," + player.getLastName();
 	}
 
 	@VisibleForTesting
@@ -173,6 +180,7 @@ public class MySQLPlayerDAO implements PlayerDAO {
 
 		try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 			statement.setString(1, gsisId);
+			statement.execute();
 		}
 	}
 }

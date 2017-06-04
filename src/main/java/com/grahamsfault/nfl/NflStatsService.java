@@ -3,6 +3,7 @@ package com.grahamsfault.nfl;
 import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grahamsfault.nfl.api.NflService;
+import com.grahamsfault.nfl.command.PlayerImportCommand;
 import com.grahamsfault.nfl.dao.FileGameDAO;
 import com.grahamsfault.nfl.dao.GameDAO;
 import com.grahamsfault.nfl.dao.MySQLPlayerDAO;
@@ -23,37 +24,37 @@ import javax.sql.DataSource;
 
 public class NflStatsService extends Application<StatsConfiguration> {
 
-    public static void main(String[] args) throws Exception {
-        new NflStatsService().run(args);
-    }
+	public static void main(String[] args) throws Exception {
+		new NflStatsService().run(args);
+	}
 
-    @Override
-    public void initialize(Bootstrap<StatsConfiguration> bootstrap) {
-        bootstrap.addBundle(new MigrationsBundle<StatsConfiguration>() {
-            @Override
-            public DataSourceFactory getDataSourceFactory(StatsConfiguration configuration) {
-                return configuration.getDataSourceFactory();
-            }
-        });
-    }
+	@Override
+	public void initialize(Bootstrap<StatsConfiguration> bootstrap) {
+		bootstrap.addCommand(new PlayerImportCommand());
+		bootstrap.addBundle(new MigrationsBundle<StatsConfiguration>() {
+			@Override
+			public DataSourceFactory getDataSourceFactory(StatsConfiguration configuration) {
+				return configuration.getDataSourceFactory();
+			}
+		});
+	}
 
-    @Override
-    public void run(StatsConfiguration configuration,
-                    Environment environment) throws ClassNotFoundException {
-        ObjectMapper mapper = new ObjectMapper();
-        DataSource stats = configuration.getDataSourceFactory().build(new MetricRegistry(), "stats");
+	@Override
+	public void run(StatsConfiguration configuration,
+					Environment environment) throws ClassNotFoundException {
+		ObjectMapper mapper = new ObjectMapper();
+		DataSource stats = configuration.getDataSourceFactory().build(new MetricRegistry(), "stats");
 
-        configuration.getDataSourceFactory();
-        PlayerFileReader playerFileReader = new PlayerFileReader(mapper);
+		PlayerFileReader playerFileReader = new PlayerFileReader(mapper);
 
-        GameDAO gameDAO = new FileGameDAO(mapper, new NflService(mapper));
-        PlayerDAO playerDAO = new MySQLPlayerDAO(stats);
+		GameDAO gameDAO = new FileGameDAO(mapper, new NflService(mapper));
+		PlayerDAO playerDAO = new MySQLPlayerDAO(stats);
 
-        PlayerManager playerManager = new PlayerManager(playerFileReader, playerDAO);
-        GameManager gameManager = new GameManager(gameDAO);
+		PlayerManager playerManager = new PlayerManager(playerFileReader, playerDAO);
+		GameManager gameManager = new GameManager(gameDAO);
 
-        environment.jersey().register(new PlayerSearchResource(playerManager));
-        environment.jersey().register(new GameSearchResource(gameManager));
-        environment.jersey().register(new GameStatsResource(gameManager));
-    }
+		environment.jersey().register(new PlayerSearchResource(playerManager));
+		environment.jersey().register(new GameSearchResource(gameManager));
+		environment.jersey().register(new GameStatsResource(gameManager));
+	}
 }
