@@ -1,5 +1,6 @@
 package com.grahamsfault.nfl.dao;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -162,6 +163,16 @@ public class MySQLPlayerDAO implements PlayerDAO {
 			statement.setString(++i, Optional.ofNullable(player.getPosition()).map(position -> position.abbreviation).orElse(null));
 
 			statement.executeUpdate();
+		}
+	}
+
+	@VisibleForTesting
+	protected void deletePlayer(String gsisId) throws SQLException {
+		String sql = "DELETE FROM `players` " +
+				"WHERE gsis_id=?";
+
+		try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+			statement.setString(1, gsisId);
 		}
 	}
 }

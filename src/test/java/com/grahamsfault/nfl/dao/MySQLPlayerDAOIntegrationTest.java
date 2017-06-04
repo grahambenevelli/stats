@@ -22,10 +22,11 @@ import static org.testng.Assert.assertTrue;
 
 public class MySQLPlayerDAOIntegrationTest extends AbstractMysqlIntegrationTest {
 
-	private PlayerDAO playerDAO;
+	private MySQLPlayerDAO playerDAO;
+	private Player player;
 
 	@BeforeClass
-	public void setup() {
+	public void setup() throws MalformedURLException, SQLException {
 		DataSource dataSource = generateDataSource(
 				"192.168.10.11",
 				3306,
@@ -35,34 +36,12 @@ public class MySQLPlayerDAOIntegrationTest extends AbstractMysqlIntegrationTest 
 		);
 
 		playerDAO = new MySQLPlayerDAO(dataSource);
-	}
 
-	@AfterClass
-	public void tearDown() throws SQLException {
-		DataSource dataSource = generateDataSource(
-				"192.168.10.11",
-				3306,
-				"stats",
-				"homestead",
-				"secret"
-		);
-
-		String sql = "TRUNCATE TABLE players;";
-
-		try (Connection connection = dataSource.getConnection();
-			 PreparedStatement statement = connection.prepareStatement(sql);
-		) {
-			statement.execute();
-		}
-	}
-
-	@Test
-	public void testGetPlayerById() throws MalformedURLException, SQLException {
-		Player player = Player.builder("00-0024218", "Vince", "Young")
+		player = Player.builder("hook'em", "Graham", "Benevelli")
 				.setBirthdate("5/18/1983")
 				.setCollege("Texas")
-				.setFullName("Vince Young")
-				.setGsisName("V.Young")
+				.setFullName("Graham Benevelli")
+				.setGsisName("G.Benevelli")
 				.setHeight(77)
 				.setNumber(0)
 				.setProfileId(2506875L)
@@ -73,19 +52,27 @@ public class MySQLPlayerDAOIntegrationTest extends AbstractMysqlIntegrationTest 
 				.setTeam(Team.TENNESSEE)
 				.build();
 
-		assertTrue(playerDAO.isEmpty());
 		playerDAO.updatePlayer(player);
-		Optional<Player> result = playerDAO.getById("00-0024218");
+	}
+
+	@AfterClass
+	public void tearDown() throws SQLException {
+		playerDAO.deletePlayer("hook'em");
+	}
+
+	@Test
+	public void testGetPlayerById() throws MalformedURLException, SQLException {
+		Optional<Player> result = playerDAO.getById("hook'em");
 
 		assertFalse(playerDAO.isEmpty());
 		assertTrue(result.isPresent());
 		assertEquals(result.get(), player);
 
-		player = Player.builder("00-0024218", "Vince", "Young")
+		player = Player.builder("hook'em", "Graham", "Benevelli")
 				.setBirthdate("5/18/1983")
 				.setCollege("Texas")
-				.setFullName("Vince Young")
-				.setGsisName("V.Young")
+				.setFullName("Graham Benevelli")
+				.setGsisName("G.Benevelli")
 				.setHeight(77)
 				.setNumber(0)
 				.setProfileId(2506875L)
@@ -94,10 +81,10 @@ public class MySQLPlayerDAOIntegrationTest extends AbstractMysqlIntegrationTest 
 				.setYearsPro(7)
 				.setStatus("INACTIVE")
 				.setTeam(Team.FREE_AGENT)
-				.build();
+				.build();;
 
 		playerDAO.updatePlayer(player);
-		result = playerDAO.getById("00-0024218");
+		result = playerDAO.getById("hook'em");
 
 		assertFalse(playerDAO.isEmpty());
 		assertTrue(result.isPresent());
@@ -106,11 +93,11 @@ public class MySQLPlayerDAOIntegrationTest extends AbstractMysqlIntegrationTest 
 
 	@Test
 	public void testSearch() throws MalformedURLException, SQLException {
-		Player player = Player.builder("00-0024218", "Vince", "Young")
+		Player player = Player.builder("hook'em", "Graham", "Benevelli")
 				.setBirthdate("5/18/1983")
 				.setCollege("Texas")
-				.setFullName("Vince Young")
-				.setGsisName("V.Young")
+				.setFullName("Graham Benevelli")
+				.setGsisName("G.Benevelli")
 				.setHeight(77)
 				.setNumber(0)
 				.setProfileId(2506875L)
@@ -121,31 +108,29 @@ public class MySQLPlayerDAOIntegrationTest extends AbstractMysqlIntegrationTest 
 				.setTeam(Team.TENNESSEE)
 				.build();
 
-		assertTrue(false);
-
 		playerDAO.updatePlayer(player);
 
-		Set<Player> players = playerDAO.searchForPlayer(Optional.of("Vince"), Optional.of("Young"));
+		Set<Player> players = playerDAO.searchForPlayer(Optional.of("Graham"), Optional.of("Benevelli"));
 
 		assertFalse(players.isEmpty());
 		assertEquals(players.stream().findFirst().get(), player);
 
-		players = playerDAO.searchForPlayer(Optional.of("Vince"), Optional.empty());
+		players = playerDAO.searchForPlayer(Optional.of("Graham"), Optional.empty());
 
 		assertFalse(players.isEmpty());
 		assertEquals(players.stream().findFirst().get(), player);
 
-		players = playerDAO.searchForPlayer(Optional.empty(), Optional.of("Young"));
+		players = playerDAO.searchForPlayer(Optional.empty(), Optional.of("Benevelli"));
 
 		assertFalse(players.isEmpty());
 		assertEquals(players.stream().findFirst().get(), player);
 
-		players = playerDAO.searchForPlayer(Optional.empty(), Optional.of("You"));
+		players = playerDAO.searchForPlayer(Optional.empty(), Optional.of("Benev"));
 
 		assertFalse(players.isEmpty());
 		assertEquals(players.stream().findFirst().get(), player);
 
-		players = playerDAO.searchForPlayer(Optional.of("ince"), Optional.empty());
+		players = playerDAO.searchForPlayer(Optional.of("raham"), Optional.empty());
 
 		assertFalse(players.isEmpty());
 		assertEquals(players.stream().findFirst().get(), player);
