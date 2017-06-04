@@ -46,5 +46,11 @@ task migrate(type: JavaExec) {
 
 test {
     useTestNG()
+	exclude '**/*IntegrationTest.class'
+}
+
+task runIntegrationTests(type: Test) {
+	useTestNG()
+    include '**/*IntegrationTest.class'
 }
 

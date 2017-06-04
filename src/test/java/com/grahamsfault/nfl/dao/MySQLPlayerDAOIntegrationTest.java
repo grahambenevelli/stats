@@ -121,6 +121,8 @@ public class MySQLPlayerDAOIntegrationTest extends AbstractMysqlIntegrationTest 
 				.setTeam(Team.TENNESSEE)
 				.build();
 
+		assertTrue(false);
+
 		playerDAO.updatePlayer(player);
 
 		Set<Player> players = playerDAO.searchForPlayer(Optional.of("Vince"), Optional.of("Young"));
