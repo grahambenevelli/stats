@@ -29,5 +29,11 @@ public interface GameDAO {
 			Optional<Team> away
 	);
 
+	/**
+	 * Get the game stats from a game id
+	 *
+	 * @param eid The id of the game
+	 * @return The wrapper class for the game stats
+	 */
 	GameStatsWrapper gameStats(String eid);
 }

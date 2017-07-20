@@ -37,16 +37,24 @@ run {
 }
 
 task migrate(type: JavaExec) {
-    group = "Migration for Stats Service"
-    description = "Service used to provide available filters for an active users and authorize their use."
+    group = "migration"
+    description = "Migration for Stats Service"
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
     args 'db', 'migrate', './src/dist/config/stats.yml'
 }
 
+task runETL(type: JavaExec) {
+    group = "etl"
+    description = "Run the full ETL to import, convert and save stats."
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args 'run-etl', './src/dist/config/stats.yml'
+}
+
 task importPlayers(type: JavaExec) {
-    group = "Migration for Stats Service"
-    description = "Service used to provide available filters for an active users and authorize their use."
+    group = "import"
+    description = "Import the players that we have available stats on."
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
     args 'import-players', './src/dist/config/stats.yml'

@@ -41,4 +41,12 @@ public class PlayerManager {
 		}
 	}
 
+	public void updatePlayer(Player player) {
+		try {
+			playerDAO.updatePlayer(player);
+		} catch (SQLException e) {
+			throw jersey.repackaged.com.google.common.base.Throwables.propagate(e);
+		}
+	}
+
 }

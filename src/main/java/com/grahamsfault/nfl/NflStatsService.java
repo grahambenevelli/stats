@@ -4,6 +4,7 @@ import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grahamsfault.nfl.api.NflService;
 import com.grahamsfault.nfl.command.PlayerImportCommand;
+import com.grahamsfault.nfl.command.RunETLCommand;
 import com.grahamsfault.nfl.dao.FileGameDAO;
 import com.grahamsfault.nfl.dao.GameDAO;
 import com.grahamsfault.nfl.dao.MySQLPlayerDAO;
@@ -31,6 +32,7 @@ public class NflStatsService extends Application<StatsConfiguration> {
 	@Override
 	public void initialize(Bootstrap<StatsConfiguration> bootstrap) {
 		bootstrap.addCommand(new PlayerImportCommand());
+		bootstrap.addCommand(new RunETLCommand());
 		bootstrap.addBundle(new MigrationsBundle<StatsConfiguration>() {
 			@Override
 			public DataSourceFactory getDataSourceFactory(StatsConfiguration configuration) {

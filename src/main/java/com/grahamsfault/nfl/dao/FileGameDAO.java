@@ -23,12 +23,10 @@ public class FileGameDAO implements GameDAO {
 
 	private final ObjectMapper mapper;
 	private final NflService gameService;
-	private final Client client;
 
 	public FileGameDAO(ObjectMapper mapper, NflService gameService) {
 		this.mapper = mapper;
 		this.gameService = gameService;
-		client = ClientBuilder.newClient();
 	}
 
 	@Override
@@ -56,7 +54,7 @@ public class FileGameDAO implements GameDAO {
 	}
 
 	/**
-	 * Get all the games
+	 * Get all games that we have a record of
 	 */
 	protected List<Game> allGames() {
 		ClassLoader classLoader = getClass().getClassLoader();
