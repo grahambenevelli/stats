@@ -3,11 +3,16 @@ package com.grahamsfault.nfl.command;
 import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grahamsfault.nfl.StatsConfiguration;
+import com.grahamsfault.nfl.command.steps.ImportGameStep;
 import com.grahamsfault.nfl.command.steps.ImportPlayerStep;
 import com.grahamsfault.nfl.command.steps.EtlStep;
-import com.grahamsfault.nfl.dao.MySQLPlayerDAO;
+import com.grahamsfault.nfl.dao.GameDAO;
+import com.grahamsfault.nfl.dao.mysql.MySQLGameDAO;
+import com.grahamsfault.nfl.dao.mysql.MySQLPlayerDAO;
 import com.grahamsfault.nfl.dao.PlayerDAO;
+import com.grahamsfault.nfl.file.GameFileReader;
 import com.grahamsfault.nfl.file.PlayerFileReader;
+import com.grahamsfault.nfl.manager.GameManager;
 import com.grahamsfault.nfl.manager.PlayerManager;
 import io.dropwizard.cli.ConfiguredCommand;
 import io.dropwizard.setup.Bootstrap;
@@ -25,8 +30,11 @@ public abstract class StepCommand extends ConfiguredCommand<StatsConfiguration> 
 	private ObjectMapper objectMapper;
 	private DataSource statsDataSource;
 	private PlayerFileReader playerFileReader;
+	private GameFileReader gameFileReader;
 	private MySQLPlayerDAO playerDAO;
 	private PlayerManager playerManager;
+	private GameManager gameManager;
+	private GameDAO gameDAO;
 
 	protected StepCommand(String name, String description) {
 		super(name, description);
@@ -67,6 +75,19 @@ public abstract class StepCommand extends ConfiguredCommand<StatsConfiguration> 
 		return new ImportPlayerStep(playerFileReader, playerManager);
 	}
 
+	/**
+	 * Get the step to import games into the database, reading from a file
+	 *
+	 * @param configuration The stats server configuration
+	 * @return The step to import games
+	 */
+	protected EtlStep getImportGameStep(StatsConfiguration configuration) {
+		GameFileReader gameFileReader = getGameFileReader();
+		GameManager gameManager = getGameManager(configuration);
+
+		return new ImportGameStep(gameFileReader, gameManager);
+	}
+
 	/*
 	 * The getter method for managers
 	 */
@@ -84,6 +105,14 @@ public abstract class StepCommand extends ConfiguredCommand<StatsConfiguration> 
 			playerManager = new PlayerManager(playerFileReader, playerDAO);
 		}
 		return playerManager;
+	}
+
+	public GameManager getGameManager(StatsConfiguration configuration) {
+		if (gameManager == null) {
+			GameDAO gameDAO = getGameDAO(configuration);
+			gameManager = new GameManager(gameDAO);
+		}
+		return gameManager;
 	}
 
 	/*
@@ -104,6 +133,13 @@ public abstract class StepCommand extends ConfiguredCommand<StatsConfiguration> 
 		return playerDAO;
 	}
 
+	public GameDAO getGameDAO(StatsConfiguration configuration) {
+		if (gameDAO == null) {
+			gameDAO = new MySQLGameDAO(getStatsDataSource(configuration));
+		}
+		return gameDAO;
+	}
+
 	/*
 	 * The getter methods for helper classes
 	 */
@@ -114,10 +150,20 @@ public abstract class StepCommand extends ConfiguredCommand<StatsConfiguration> 
 	 */
 	private PlayerFileReader getPlayerFileReader() {
 		if (playerFileReader == null) {
-			ObjectMapper mapper = getObjectMapper();
-			playerFileReader = new PlayerFileReader(mapper);
+			playerFileReader = new PlayerFileReader(getObjectMapper());
 		}
 		return playerFileReader;
+	}
+
+	/**
+	 * Get the game file reader
+	 * @return The game file reader
+	 */
+	public GameFileReader getGameFileReader() {
+		if (gameFileReader == null) {
+			gameFileReader = new GameFileReader(getObjectMapper());
+		}
+		return gameFileReader;
 	}
 
 	/**

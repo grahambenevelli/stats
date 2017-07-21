@@ -5,6 +5,7 @@ import com.grahamsfault.nfl.api.model.Team;
 import com.grahamsfault.nfl.api.model.game.GameStatsWrapper;
 import com.grahamsfault.nfl.api.model.game.GameType;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,4 +37,20 @@ public interface GameDAO {
 	 * @return The wrapper class for the game stats
 	 */
 	GameStatsWrapper gameStats(String eid);
+
+	/**
+	 * Update the game in the database
+	 *
+	 * @param game The game object to update
+	 */
+	void updateGame(Game game) throws SQLException;
+
+	/**
+	 * Get the game by id
+	 *
+	 * @param id The id of the game
+	 * @return On optional version of the game
+	 * @throws SQLException
+	 */
+	Optional<Game> getById(String id) throws SQLException;
 }

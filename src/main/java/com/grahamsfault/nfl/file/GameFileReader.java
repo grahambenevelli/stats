@@ -1,4 +1,4 @@
-package com.grahamsfault.nfl.dao;
+package com.grahamsfault.nfl.file;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,6 +8,7 @@ import com.grahamsfault.nfl.api.model.Game;
 import com.grahamsfault.nfl.api.model.Team;
 import com.grahamsfault.nfl.api.model.game.GameStatsWrapper;
 import com.grahamsfault.nfl.api.model.game.GameType;
+import com.grahamsfault.nfl.dao.GameDAO;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -17,46 +18,20 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class FileGameDAO implements GameDAO {
+public class GameFileReader {
 
 	private static final String DEFAULT_FILENAME = "assets/db/schedule.json";
 
 	private final ObjectMapper mapper;
-	private final NflService gameService;
 
-	public FileGameDAO(ObjectMapper mapper, NflService gameService) {
+	public GameFileReader(ObjectMapper mapper) {
 		this.mapper = mapper;
-		this.gameService = gameService;
-	}
-
-	@Override
-	public List<Game> searchGames(
-			int year,
-			GameType gameType,
-			Optional<Integer> week,
-			Optional<Team> home,
-			Optional<Team> away
-	) {
-		List<Game> allGames = allGames();
-
-		return allGames.stream()
-				.filter(game -> game.getYear() == year)
-				.filter(game -> game.getSeasonType() == gameType)
-				.filter(game -> !week.isPresent() || game.getWeek() == week.get())
-				.filter(game -> !home.isPresent() || game.getHome() == home.get())
-				.filter(game -> !away.isPresent() || game.getAway() == away.get())
-				.collect(Collectors.toList());
-	}
-
-	@Override
-	public GameStatsWrapper gameStats(String eid) {
-		return gameService.gameStats(eid);
 	}
 
 	/**
 	 * Get all games that we have a record of
 	 */
-	protected List<Game> allGames() {
+	public List<Game> allGames() {
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource(DEFAULT_FILENAME).getFile());
 		try {

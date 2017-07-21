@@ -1,4 +1,4 @@
-package com.grahamsfault.nfl.dao;
+package com.grahamsfault.nfl.dao.mysql;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
@@ -7,6 +7,7 @@ import com.google.common.collect.Iterables;
 import com.grahamsfault.nfl.api.model.Player;
 import com.grahamsfault.nfl.api.model.Team;
 import com.grahamsfault.nfl.api.model.player.Position;
+import com.grahamsfault.nfl.dao.PlayerDAO;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -49,7 +50,15 @@ public class MySQLPlayerDAO implements PlayerDAO {
 		}
 	}
 
-	private Set<Player> consumePlayerResults(ResultSet result) throws SQLException {
+	/**
+	 * Convert the result set into a set of players
+	 *
+	 * @param result The result set from the database
+	 * @return The set of players in the result set
+	 * @throws SQLException
+	 */
+	@VisibleForTesting
+	protected Set<Player> consumePlayerResults(ResultSet result) throws SQLException {
 		ImmutableSet.Builder<Player> ret = ImmutableSet.builder();
 		while (result.next()) {
 			String team = result.getString("team");
@@ -166,6 +175,9 @@ public class MySQLPlayerDAO implements PlayerDAO {
 		}
 	}
 
+	/**
+	 * Get the comma separated name of the player
+	 */
 	private String getGsisNameForSaving(Player player) {
 		if (player.getGsisName() != null) {
 			return player.getGsisName();
@@ -173,6 +185,12 @@ public class MySQLPlayerDAO implements PlayerDAO {
 		return player.getFirstName().substring(0, 1) + "," + player.getLastName();
 	}
 
+	/**
+	 * Delete a given player by id
+	 *
+	 * @param gsisId The id of the player
+	 * @throws SQLException
+	 */
 	@VisibleForTesting
 	protected void deletePlayer(String gsisId) throws SQLException {
 		String sql = "DELETE FROM `players` " +

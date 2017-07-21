@@ -2,12 +2,12 @@ package com.grahamsfault.nfl;
 
 import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.grahamsfault.nfl.api.NflService;
 import com.grahamsfault.nfl.command.PlayerImportCommand;
 import com.grahamsfault.nfl.command.RunETLCommand;
-import com.grahamsfault.nfl.dao.FileGameDAO;
+import com.grahamsfault.nfl.dao.mysql.MySQLGameDAO;
+import com.grahamsfault.nfl.file.GameFileReader;
 import com.grahamsfault.nfl.dao.GameDAO;
-import com.grahamsfault.nfl.dao.MySQLPlayerDAO;
+import com.grahamsfault.nfl.dao.mysql.MySQLPlayerDAO;
 import com.grahamsfault.nfl.dao.PlayerDAO;
 import com.grahamsfault.nfl.file.PlayerFileReader;
 import com.grahamsfault.nfl.manager.GameManager;
@@ -48,8 +48,9 @@ public class NflStatsService extends Application<StatsConfiguration> {
 		DataSource stats = configuration.getDataSourceFactory().build(new MetricRegistry(), "stats");
 
 		PlayerFileReader playerFileReader = new PlayerFileReader(mapper);
+		GameFileReader gameFileReader = new GameFileReader(mapper);
 
-		GameDAO gameDAO = new FileGameDAO(mapper, new NflService(mapper));
+		GameDAO gameDAO = new MySQLGameDAO(stats);
 		PlayerDAO playerDAO = new MySQLPlayerDAO(stats);
 
 		PlayerManager playerManager = new PlayerManager(playerFileReader, playerDAO);

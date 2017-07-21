@@ -9,7 +9,9 @@ import com.grahamsfault.nfl.api.model.player.RawStats;
 import com.grahamsfault.nfl.dao.GameDAO;
 import com.grahamsfault.nfl.manager.builder.GameStatsBuilder;
 import com.grahamsfault.nfl.model.GameStats;
+import jersey.repackaged.com.google.common.base.Throwables;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,7 +25,7 @@ public class GameManager {
 	}
 
 	/**
-	 * Searchh for games given the search criteria
+	 * Search for games given the search criteria
 	 *
 	 * @param year The year of the game to search for
 	 * @param gameType The game type of the game
@@ -49,6 +51,25 @@ public class GameManager {
 		);
 	}
 
+	/**
+	 * Update or insert a game into the database
+	 *
+	 * @param game The game to update
+	 */
+	public void updateGame(Game game) {
+		try {
+			gameDAO.updateGame(game);
+		} catch (SQLException e) {
+			throw Throwables.propagate(e);
+		}
+	}
+
+	/**
+	 * Get the games stats for the given EID
+	 *
+	 * @param eid The id of the game
+	 * @return An optional version of the game's stats
+	 */
 	public Optional<GameStats> gameStats(String eid) {
 		GameStatsWrapper gameStatsWrapper = gameDAO.gameStats(eid);
 		if (!gameStatsWrapper.getProfiles().containsKey(eid)) {
@@ -57,6 +78,12 @@ public class GameManager {
 		return Optional.of(convertToGameStats(gameStatsWrapper.getProfiles().get(eid)));
 	}
 
+	/**
+	 * Convert the games notes into the game stats object
+	 *
+	 * @param gameNotes The game's notes returned from the NFL service
+	 * @return The game stats
+	 */
 	private GameStats convertToGameStats(GameNotes gameNotes) {
 		GameStatsBuilder gameStatsFactory = new GameStatsBuilder();
 

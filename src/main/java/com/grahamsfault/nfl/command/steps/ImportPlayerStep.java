@@ -3,6 +3,8 @@ package com.grahamsfault.nfl.command.steps;
 import com.grahamsfault.nfl.api.model.Player;
 import com.grahamsfault.nfl.file.PlayerFileReader;
 import com.grahamsfault.nfl.manager.PlayerManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -11,6 +13,8 @@ import java.util.List;
  * in new players, those will have to be manually updated until we have a way to pull that from the NFL site.
  */
 public class ImportPlayerStep implements EtlStep {
+
+	private final static Logger LOG = LoggerFactory.getLogger(ImportGameStep.class);
 
 	private final PlayerFileReader playerFileReader;
 	private final PlayerManager playerManager;
@@ -26,9 +30,9 @@ public class ImportPlayerStep implements EtlStep {
 		int index = 0;
 		for(Player player : players) {
 			if (player.getPosition() == null) {
-				System.out.println("Skipping " + player.getFullName() + " (" + ++index + " of " + players.size() + ")");
+				LOG.info("Skipping " + player.getFullName() + " (" + ++index + " of " + players.size() + ")");
 			} else {
-				System.out.println("Importing " + player.getFullName() + " (" + ++index + " of " + players.size() + ")");
+				LOG.info("Importing " + player.getFullName() + " (" + ++index + " of " + players.size() + ")");
 				playerManager.updatePlayer(player);
 			}
 		}

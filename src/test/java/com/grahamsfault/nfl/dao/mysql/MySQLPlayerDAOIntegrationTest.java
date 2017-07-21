@@ -1,8 +1,9 @@
-package com.grahamsfault.nfl.dao;
+package com.grahamsfault.nfl.dao.mysql;
 
 import com.grahamsfault.nfl.AbstractMysqlIntegrationTest;
 import com.grahamsfault.nfl.api.model.Player;
 import com.grahamsfault.nfl.api.model.Team;
+import com.grahamsfault.nfl.dao.mysql.MySQLPlayerDAO;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -10,8 +11,6 @@ import org.testng.annotations.Test;
 import javax.sql.DataSource;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.Set;

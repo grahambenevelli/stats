@@ -32,4 +32,26 @@
             <dropTable tableName="players"/>
         </rollback>
     </changeSet>
+    <changeSet author="gbenevelli" id="game_table_creation">
+        <sql>
+            CREATE TABLE `games` (
+                `eid` varchar(255) NOT NULL,
+                `home` varchar(255) NOT NULL,
+                `away` varchar(255) NOT NULL,
+                `day` int(11) NOT NULL,
+                `gamekey` varchar(255) NOT NULL,
+                `month` int(11) NOT NULL,
+                `season_type` varchar(255) NOT NULL,
+                `time` varchar(255) NOT NULL,
+                `meridiem` varchar(255),
+                `wday` varchar(255) NOT NULL,
+                `week` int(11) NOT NULL,
+                `year` int(11) NOT NULL,
+                PRIMARY KEY (`eid`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+        </sql>
+        <rollback>
+            <dropTable tableName="players"/>
+        </rollback>
+    </changeSet>
 </databaseChangeLog>

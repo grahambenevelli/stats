@@ -33,23 +33,6 @@ public class PlayerFileReader {
 	}
 
 	/**
-	 * Returns a predicate statement that matches a player to first and last name if included
-	 */
-	private Predicate<Player> getPlayerPredicate(Optional<String> firstName, Optional<String> lastName) {
-		return player -> {
-			if (firstName.isPresent() && !player.getFirstName().equalsIgnoreCase(firstName.get())) {
-				return false;
-			}
-
-			if (lastName.isPresent() && !player.getLastName().equalsIgnoreCase(lastName.get())) {
-				return false;
-			}
-
-			return true;
-		};
-	}
-
-	/**
 	 * Get a list of all the players
 	 */
 	public List<Player> allPlayers() {

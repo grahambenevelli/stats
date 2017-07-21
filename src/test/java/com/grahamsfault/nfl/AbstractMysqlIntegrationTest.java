@@ -9,7 +9,6 @@ public abstract class AbstractMysqlIntegrationTest {
 
 	protected static DataSource generateDataSource(String host, int port, String database, String username, String password) {
 		String url = String.format("jdbc:mysql://%s:%d/%s", host, port, database);
-		// jdbc:mysql://127.0.0.1:33060/stats
 
 		MysqlConnectionPoolDataSource ds = new MysqlConnectionPoolDataSource();
 		ds.setURL(url);
