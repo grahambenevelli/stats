@@ -4,11 +4,9 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.grahamsfault.nfl.api.model.Game;
-import com.grahamsfault.nfl.api.model.Player;
 import com.grahamsfault.nfl.api.model.Team;
 import com.grahamsfault.nfl.api.model.game.GameStatsWrapper;
 import com.grahamsfault.nfl.api.model.game.GameType;
-import com.grahamsfault.nfl.api.model.player.Position;
 import com.grahamsfault.nfl.dao.GameDAO;
 import org.apache.commons.lang3.NotImplementedException;
 
@@ -32,11 +30,6 @@ public class MySQLGameDAO implements GameDAO {
 	@Override
 	public List<Game> searchGames(int year, GameType gameType, Optional<Integer> week, Optional<Team> home, Optional<Team> away) {
 		throw new NotImplementedException("searchGames is not yet implemented");
-	}
-
-	@Override
-	public GameStatsWrapper gameStats(String eid) {
-		throw new NotImplementedException("gameStats is not yet implemented");
 	}
 
 	@Override
@@ -116,8 +109,19 @@ public class MySQLGameDAO implements GameDAO {
 			statement.setString(1, id);
 
 			try (ResultSet result = statement.executeQuery()) {
-				Set<Game> players = consumeGameResult(result);
-				return Optional.ofNullable(Iterables.getFirst(players, null));
+				Set<Game> games = consumeGameResult(result);
+				return Optional.ofNullable(Iterables.getFirst(games, null));
+			}
+		}
+	}
+
+	@Override
+	public Set<Game> allGames() throws SQLException {
+		String sql = "SELECT * FROM games;";
+
+		try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+			try (ResultSet result = statement.executeQuery()) {
+				return consumeGameResult(result);
 			}
 		}
 	}

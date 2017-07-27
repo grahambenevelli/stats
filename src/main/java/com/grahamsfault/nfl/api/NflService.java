@@ -30,6 +30,7 @@ public class NflService {
 
 	public NflService(ObjectMapper mapper) {
 		this.mapper = mapper;
+		// TODO pass this in
 		client = ClientBuilder.newClient();
 	}
 

@@ -3,17 +3,25 @@ package com.grahamsfault.nfl.command;
 import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grahamsfault.nfl.StatsConfiguration;
+import com.grahamsfault.nfl.api.NflService;
+import com.grahamsfault.nfl.command.steps.ImportGameStatsStep;
 import com.grahamsfault.nfl.command.steps.ImportGameStep;
 import com.grahamsfault.nfl.command.steps.ImportPlayerStep;
 import com.grahamsfault.nfl.command.steps.EtlStep;
 import com.grahamsfault.nfl.dao.GameDAO;
+import com.grahamsfault.nfl.dao.ImportDAO;
+import com.grahamsfault.nfl.dao.StatsDAO;
 import com.grahamsfault.nfl.dao.mysql.MySQLGameDAO;
+import com.grahamsfault.nfl.dao.mysql.MySQLImportDAO;
 import com.grahamsfault.nfl.dao.mysql.MySQLPlayerDAO;
 import com.grahamsfault.nfl.dao.PlayerDAO;
+import com.grahamsfault.nfl.dao.mysql.MySQLStatsDAO;
 import com.grahamsfault.nfl.file.GameFileReader;
 import com.grahamsfault.nfl.file.PlayerFileReader;
 import com.grahamsfault.nfl.manager.GameManager;
+import com.grahamsfault.nfl.manager.ImportManager;
 import com.grahamsfault.nfl.manager.PlayerManager;
+import com.grahamsfault.nfl.manager.StatsManager;
 import io.dropwizard.cli.ConfiguredCommand;
 import io.dropwizard.setup.Bootstrap;
 import net.sourceforge.argparse4j.inf.Namespace;
@@ -27,14 +35,19 @@ import java.util.List;
  */
 public abstract class StepCommand extends ConfiguredCommand<StatsConfiguration> {
 
+	private PlayerManager playerManager;
+	private GameManager gameManager;
+	private StatsManager statsManager;
+	private ImportManager importManager;
+	private MySQLPlayerDAO playerDAO;
+	private GameDAO gameDAO;
+	private StatsDAO statsDAO;
+	private ImportDAO importDAO;
 	private ObjectMapper objectMapper;
 	private DataSource statsDataSource;
 	private PlayerFileReader playerFileReader;
 	private GameFileReader gameFileReader;
-	private MySQLPlayerDAO playerDAO;
-	private PlayerManager playerManager;
-	private GameManager gameManager;
-	private GameDAO gameDAO;
+	private NflService nflService;
 
 	protected StepCommand(String name, String description) {
 		super(name, description);
@@ -88,6 +101,21 @@ public abstract class StepCommand extends ConfiguredCommand<StatsConfiguration> 
 		return new ImportGameStep(gameFileReader, gameManager);
 	}
 
+	/**
+	 * Get the step to import the game stats into the database
+	 *
+	 * @param configuration The stats server configuration
+	 * @return The step to import game stats
+	 */
+	protected EtlStep getImportGameStatsStep(StatsConfiguration configuration) {
+		GameManager gameManager = getGameManager(configuration);
+		StatsManager statsManager = getStatsManager(configuration);
+		NflService nflService = getNflService();
+		ImportManager importManager = getImportManager(configuration);
+
+		return new ImportGameStatsStep(gameManager, statsManager, nflService, importManager);
+	}
+
 	/*
 	 * The getter method for managers
 	 */
@@ -100,19 +128,52 @@ public abstract class StepCommand extends ConfiguredCommand<StatsConfiguration> 
 	 */
 	private PlayerManager getPlayerManager(StatsConfiguration configuration) {
 		if (playerManager == null) {
-			PlayerFileReader playerFileReader = getPlayerFileReader();
 			PlayerDAO playerDAO = getPlayerDAO(configuration);
-			playerManager = new PlayerManager(playerFileReader, playerDAO);
+			playerManager = new PlayerManager(playerDAO);
 		}
 		return playerManager;
 	}
 
-	public GameManager getGameManager(StatsConfiguration configuration) {
+	/**
+	 * Get the manager for business logic around games
+	 *
+	 * @param configuration The stats server configuration
+	 * @return The game manager
+	 */
+	private GameManager getGameManager(StatsConfiguration configuration) {
 		if (gameManager == null) {
 			GameDAO gameDAO = getGameDAO(configuration);
 			gameManager = new GameManager(gameDAO);
 		}
 		return gameManager;
+	}
+
+	/**
+	 * Get the manager fro business logic around stats
+	 *
+	 * @param configuration The stats server configuration
+	 * @return The stats manager
+	 */
+	private StatsManager getStatsManager(StatsConfiguration configuration) {
+		if (statsManager == null) {
+			StatsDAO statsDAO = getStatsDAO(configuration);
+			statsManager = new StatsManager(statsDAO);
+		}
+		return statsManager;
+	}
+
+	/**
+	 * Get the manager for handling imports
+	 *
+	 * @param configuration The stats server configuration
+	 * @return The impor manager
+	 */
+	private ImportManager getImportManager(StatsConfiguration configuration) {
+		if (importManager == null) {
+			ImportDAO importDAO = getImportDAO(configuration);
+			importManager = new ImportManager(importDAO);
+		}
+		return importManager;
 	}
 
 	/*
@@ -133,11 +194,43 @@ public abstract class StepCommand extends ConfiguredCommand<StatsConfiguration> 
 		return playerDAO;
 	}
 
+	/**
+	 * Get the game DAO
+	 *
+	 * @param configuration The stats server configuration
+	 * @return The game DAO
+	 */
 	public GameDAO getGameDAO(StatsConfiguration configuration) {
 		if (gameDAO == null) {
 			gameDAO = new MySQLGameDAO(getStatsDataSource(configuration));
 		}
 		return gameDAO;
+	}
+
+	/**
+	 * Get the stats DAO
+	 *
+	 * @param configuration The stats server configuration
+	 * @return The stats DAO
+	 */
+	private StatsDAO getStatsDAO(StatsConfiguration configuration) {
+		if (statsDAO == null) {
+			statsDAO = new MySQLStatsDAO(getStatsDataSource(configuration));
+		}
+		return statsDAO;
+	}
+
+	/**
+	 * Get the import DAO
+	 *
+	 * @param configuration The stats server configuration
+	 * @return The import DAO
+	 */
+	private ImportDAO getImportDAO(StatsConfiguration configuration) {
+		if (importDAO == null) {
+			importDAO = new MySQLImportDAO(getStatsDataSource(configuration));
+		}
+		return importDAO;
 	}
 
 	/*
@@ -189,5 +282,17 @@ public abstract class StepCommand extends ConfiguredCommand<StatsConfiguration> 
 			objectMapper = new ObjectMapper();
 		}
 		return objectMapper;
+	}
+
+	/**
+	 * The NFL service object
+	 *
+	 * @return THe NFL service object
+	 */
+	public NflService getNflService() {
+		if (nflService == null) {
+			nflService = new NflService(getObjectMapper());
+		}
+		return nflService;
 	}
 }

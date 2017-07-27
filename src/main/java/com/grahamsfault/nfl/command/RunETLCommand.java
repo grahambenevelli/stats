@@ -23,6 +23,7 @@ public class RunETLCommand extends StepCommand {
 		return ImmutableList.<EtlStep>builder()
 				.add(getImportPlayerStep(configuration))
 				.add(getImportGameStep(configuration))
+				.add(getImportGameStatsStep(configuration))
 				// 2. Import game stats 4. add drive stats
 				// 3. Compile to yearly stats
 				.build();

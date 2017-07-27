@@ -60,6 +60,14 @@ task importPlayers(type: JavaExec) {
     args 'import-players', './src/dist/config/stats.yml'
 }
 
+task importGameStats(type: JavaExec) {
+    group = "import"
+    description = "Import the stats on a per game level."
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args 'import-game-stats', './src/dist/config/stats.yml'
+}
+
 test {
     useTestNG()
 	exclude '**/*IntegrationTest.class'

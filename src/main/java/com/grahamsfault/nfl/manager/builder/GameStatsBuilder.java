@@ -16,6 +16,12 @@ public class GameStatsBuilder {
 		this.statsMap = Maps.newHashMap();
 	}
 
+	/**
+	 * Add passing yards to the game stats map
+	 *
+	 * @param key The player key
+	 * @param value The passing stats
+	 */
 	public void addPassing(String key, RawStats value) {
 		if (statsMap.containsKey(key)) {
 			statsMap.put(key, combinePassingStats(key, statsMap.get(key), value));
@@ -24,6 +30,12 @@ public class GameStatsBuilder {
 		}
 	}
 
+	/**
+	 * Add the rushing stats to the game stats map
+	 *
+	 * @param key The player key
+	 * @param value The rushing stats
+	 */
 	public void addRushing(String key, RawStats value) {
 		if (statsMap.containsKey(key)) {
 			statsMap.put(key, combineRushingStats(key, statsMap.get(key), value));
@@ -32,6 +44,12 @@ public class GameStatsBuilder {
 		}
 	}
 
+	/**
+	 * Add the receiving stats to the game stats map
+	 *
+	 * @param key The player key
+	 * @param value The receiving stats
+	 */
 	public void addReceiving(String key, RawStats value) {
 		if (statsMap.containsKey(key)) {
 			statsMap.put(key, combineReceivingStats(key, statsMap.get(key), value));
@@ -40,6 +58,13 @@ public class GameStatsBuilder {
 		}
 	}
 
+	/**
+	 * Add the fumbles stats to the game stats map
+	 *
+	 * @param key The player key
+	 * @param value The fumble stats
+	 *
+	 */
 	public void addFumbles(String key, RawStats value) {
 		if (statsMap.containsKey(key)) {
 			statsMap.put(key, combineFumbleStats(key, statsMap.get(key), value));
@@ -53,7 +78,9 @@ public class GameStatsBuilder {
 		builder.rushingYards(value.getYds());
 		builder.rushingTouchdowns(value.getTds());
 		builder.rushingLong(value.getLng());
-		builder.rushingLongTouchdown(value.getLngtd());
+		if (value.getLngtd() != null) {
+			builder.rushingLongTouchdown(value.getLngtd());
+		}
 
 		return builder;
 	}
@@ -65,7 +92,9 @@ public class GameStatsBuilder {
 		builder.rushingYards(value.getYds());
 		builder.rushingTouchdowns(value.getTds());
 		builder.rushingLong(value.getLng());
-		builder.rushingLongTouchdown(value.getLngtd());
+		if (value.getLngtd() != null) {
+			builder.rushingLongTouchdown(value.getLngtd());
+		}
 
 		return builder;
 	}
@@ -99,7 +128,9 @@ public class GameStatsBuilder {
 		builder.receivingYards(value.getYds());
 		builder.receivingTouchdowns(value.getTds());
 		builder.receivingLong(value.getLng());
-		builder.receivingLongTouchdown(value.getLngtd());
+		if (value.getLngtd() != null) {
+			builder.receivingLongTouchdown(value.getLngtd());
+		}
 
 		return builder;
 	}
@@ -109,7 +140,9 @@ public class GameStatsBuilder {
 		builder.receivingYards(value.getYds());
 		builder.receivingTouchdowns(value.getTds());
 		builder.receivingLong(value.getLng());
-		builder.receivingLongTouchdown(value.getLngtd());
+		if (value.getLngtd() != null) {
+			builder.receivingLongTouchdown(value.getLngtd());
+		}
 
 		return builder;
 	}

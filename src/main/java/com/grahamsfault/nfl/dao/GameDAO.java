@@ -8,6 +8,7 @@ import com.grahamsfault.nfl.api.model.game.GameType;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface GameDAO {
 
@@ -31,14 +32,6 @@ public interface GameDAO {
 	);
 
 	/**
-	 * Get the game stats from a game id
-	 *
-	 * @param eid The id of the game
-	 * @return The wrapper class for the game stats
-	 */
-	GameStatsWrapper gameStats(String eid);
-
-	/**
 	 * Update the game in the database
 	 *
 	 * @param game The game object to update
@@ -53,4 +46,11 @@ public interface GameDAO {
 	 * @throws SQLException
 	 */
 	Optional<Game> getById(String id) throws SQLException;
+
+	/**
+	 * Get the set of all games
+	 *
+	 * @return The set of all games
+	 */
+	Set<Game> allGames() throws SQLException;
 }

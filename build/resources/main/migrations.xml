@@ -51,7 +51,50 @@
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
         </sql>
         <rollback>
-            <dropTable tableName="players"/>
+            <dropTable tableName="games"/>
+        </rollback>
+    </changeSet>
+    <changeSet author="gbenevelli" id="game_stats_table_creation">
+        <sql>
+            CREATE TABLE `game_stats` (
+            `player_id` varchar(255) NOT NULL,
+            `game_id` varchar(255) NOT NULL,
+            `passing_attempts` int(11) NOT NULL,
+            `passing_completions` int(11) NOT NULL,
+            `passing_yards` int(11) NOT NULL,
+            `passing_touchdowns` int(11) NOT NULL,
+            `interceptions` int(11) NOT NULL,
+            `rushing_attempts` int(11) NOT NULL,
+            `rushing_yards` int(11) NOT NULL,
+            `rushing_touchdowns` int(11) NOT NULL,
+            `rushing_long` int(11) NOT NULL,
+            `rushing_long_touchdown` int(11) NOT NULL,
+            `receptions` int(11) NOT NULL,
+            `receiving_yards` int(11) NOT NULL,
+            `receiving_touchdowns` int(11) NOT NULL,
+            `receiving_long` int(11) NOT NULL,
+            `receiving_long_touchdown` int(11) NOT NULL,
+            `fumbles` int(11) NOT NULL,
+            `fumbles_lost` int(11) NOT NULL,
+            `fumbles_recovered` int(11) NOT NULL,
+            `fumble_yards` int(11) NOT NULL,
+            PRIMARY KEY (`player_id`, `game_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+        </sql>
+        <rollback>
+            <dropTable tableName="games"/>
+        </rollback>
+    </changeSet>
+    <changeSet author="gbenevelli" id="game_stats_import_log_table_creation">
+        <sql>
+            CREATE TABLE `game_stats_import_log` (
+                `game_id` varchar(255) NOT NULL,
+                `updated` timestamp DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (`game_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+        </sql>
+        <rollback>
+            <dropTable tableName="games"/>
         </rollback>
     </changeSet>
 </databaseChangeLog>

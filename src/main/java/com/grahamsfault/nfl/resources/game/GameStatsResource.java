@@ -2,6 +2,7 @@ package com.grahamsfault.nfl.resources.game;
 
 import com.codahale.metrics.annotation.Timed;
 import com.grahamsfault.nfl.manager.GameManager;
+import com.grahamsfault.nfl.manager.StatsManager;
 import com.grahamsfault.nfl.model.GameStats;
 
 import javax.ws.rs.GET;
@@ -16,16 +17,16 @@ import java.util.Optional;
 @Produces(MediaType.APPLICATION_JSON)
 public class GameStatsResource {
 
-    private final GameManager gameManager;
+    private final StatsManager statsManager;
 
-    public GameStatsResource(GameManager gameManager) {
-        this.gameManager = gameManager;
+    public GameStatsResource(StatsManager statsManager) {
+        this.statsManager = statsManager;
     }
 
     @GET
     @Timed(name = "stats")
     public GameStats stats(@PathParam("eid") String eid) {
-        Optional<GameStats> gameStats = gameManager.gameStats(eid);
+        Optional<GameStats> gameStats = statsManager.gameStats(eid);
         if (!gameStats.isPresent()) {
             throw new NotFoundException();
         }

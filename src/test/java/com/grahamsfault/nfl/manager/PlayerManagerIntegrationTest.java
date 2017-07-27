@@ -1,13 +1,11 @@
 package com.grahamsfault.nfl.manager;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grahamsfault.nfl.AbstractMysqlIntegrationTest;
 import com.grahamsfault.nfl.api.model.Player;
 import com.grahamsfault.nfl.api.model.Team;
 import com.grahamsfault.nfl.api.model.player.Position;
-import com.grahamsfault.nfl.dao.mysql.MySQLPlayerDAO;
 import com.grahamsfault.nfl.dao.PlayerDAO;
-import com.grahamsfault.nfl.file.PlayerFileReader;
+import com.grahamsfault.nfl.dao.mysql.MySQLPlayerDAO;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -34,7 +32,7 @@ public class PlayerManagerIntegrationTest extends AbstractMysqlIntegrationTest {
 				"secret"
 		);
 		PlayerDAO playerDAO = new MySQLPlayerDAO(dataSource);
-		playerManager = new PlayerManager(new PlayerFileReader(new ObjectMapper()), playerDAO);
+		playerManager = new PlayerManager(playerDAO);
 	}
 
 	@DataProvider
