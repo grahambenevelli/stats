@@ -4,6 +4,7 @@ import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grahamsfault.nfl.StatsConfiguration;
 import com.grahamsfault.nfl.api.NflService;
+import com.grahamsfault.nfl.command.steps.CompileYearlyStatsStep;
 import com.grahamsfault.nfl.command.steps.ImportGameStatsStep;
 import com.grahamsfault.nfl.command.steps.ImportGameStep;
 import com.grahamsfault.nfl.command.steps.ImportPlayerStep;
@@ -114,6 +115,10 @@ public abstract class StepCommand extends ConfiguredCommand<StatsConfiguration> 
 		ImportManager importManager = getImportManager(configuration);
 
 		return new ImportGameStatsStep(gameManager, statsManager, nflService, importManager);
+	}
+
+	protected EtlStep getCompileYearlyStatsStep(StatsConfiguration configuration) {
+		return new CompileYearlyStatsStep(importManager);
 	}
 
 	/*

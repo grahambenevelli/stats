@@ -24,8 +24,11 @@ public class RunETLCommand extends StepCommand {
 				.add(getImportPlayerStep(configuration))
 				.add(getImportGameStep(configuration))
 				.add(getImportGameStatsStep(configuration))
-				// 2. Import game stats 4. add drive stats
-				// 3. Compile to yearly stats
+				// 4. add drive stats
+				// 5. get the games played
+				.add(getCompileYearlyStatsStep(configuration))
+				// Draft pick taken
+				// Age
 				.build();
 	}
 }

@@ -2,6 +2,7 @@ package com.grahamsfault.nfl.dao;
 
 
 import java.sql.SQLException;
+import java.util.List;
 
 public interface ImportDAO {
 
@@ -21,4 +22,18 @@ public interface ImportDAO {
 	 * @throws SQLException
 	 */
 	void markAsImported(String gameId) throws SQLException;
+
+	/**
+	 * Get the years we have stats for
+	 *
+	 * @return The list of years available
+	 */
+	List<Integer> getYears() throws SQLException;
+
+	/**
+	 * Get the compile the yearly stats into a table
+	 *
+	 * @param year The year to compile stats for
+	 */
+	void compileYearlyStats(int year) throws SQLException;
 }

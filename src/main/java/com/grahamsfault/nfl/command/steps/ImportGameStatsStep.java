@@ -86,7 +86,7 @@ public class ImportGameStatsStep implements EtlStep {
 		if (!gameStatsWrapper.getProfiles().containsKey(eid)) {
 			return Optional.empty();
 		}
-		return Optional.of(convertToGameStats(gameStatsWrapper.getProfiles().get(eid)));
+		return Optional.of(convertToGameStats(eid, gameStatsWrapper.getProfiles().get(eid)));
 	}
 
 	/**
@@ -95,55 +95,71 @@ public class ImportGameStatsStep implements EtlStep {
 	 * @param gameNotes The game's notes returned from the NFL service
 	 * @return The game stats
 	 */
-	private GameStats convertToGameStats(GameNotes gameNotes) {
+	private GameStats convertToGameStats(String eid, GameNotes gameNotes) {
 		GameStatsBuilder gameStatsFactory = new GameStatsBuilder();
 
 		if (gameNotes.getHome().getTeamStats().getPassing() != null) {
 			for (Map.Entry<String, RawStats> entry : gameNotes.getHome().getTeamStats().getPassing().getStats().entrySet()) {
 				gameStatsFactory.addPassing(entry.getKey(), entry.getValue());
 			}
+		} else {
+			LOG.warn("Missing passing stats for home team for game " + eid);
 		}
 
 		if (gameNotes.getHome().getTeamStats().getRushing() != null) {
 			for (Map.Entry<String, RawStats> entry : gameNotes.getHome().getTeamStats().getRushing().getStats().entrySet()) {
 				gameStatsFactory.addRushing(entry.getKey(), entry.getValue());
 			}
+		} else {
+			LOG.warn("Missing rushing stats for home team for game " + eid);
 		}
 
 		if (gameNotes.getHome().getTeamStats().getReceiving() != null) {
 			for (Map.Entry<String, RawStats> entry : gameNotes.getHome().getTeamStats().getReceiving().getStats().entrySet()) {
 				gameStatsFactory.addReceiving(entry.getKey(), entry.getValue());
 			}
+		} else {
+			LOG.warn("Missing receiving stats for home team for game " + eid);
 		}
 
 		if (gameNotes.getHome().getTeamStats().getFumbles() != null) {
 			for (Map.Entry<String, RawStats> entry : gameNotes.getHome().getTeamStats().getFumbles().getStats().entrySet()) {
 				gameStatsFactory.addFumbles(entry.getKey(), entry.getValue());
 			}
+		} else {
+			LOG.warn("Missing fumble stats for home team for game " + eid);
 		}
 
 		if (gameNotes.getAway().getTeamStats().getPassing() != null) {
 			for (Map.Entry<String, RawStats> entry : gameNotes.getAway().getTeamStats().getPassing().getStats().entrySet()) {
 				gameStatsFactory.addPassing(entry.getKey(), entry.getValue());
 			}
+		} else {
+			LOG.warn("Missing passing stats for away team for game " + eid);
 		}
 
 		if (gameNotes.getAway().getTeamStats().getRushing() != null) {
 			for (Map.Entry<String, RawStats> entry : gameNotes.getAway().getTeamStats().getRushing().getStats().entrySet()) {
 				gameStatsFactory.addRushing(entry.getKey(), entry.getValue());
 			}
+		} else {
+			LOG.warn("Missing rushing stats for away team for game " + eid);
 		}
 
 		if (gameNotes.getAway().getTeamStats().getReceiving() != null) {
 			for (Map.Entry<String, RawStats> entry : gameNotes.getAway().getTeamStats().getReceiving().getStats().entrySet()) {
 				gameStatsFactory.addReceiving(entry.getKey(), entry.getValue());
 			}
+		} else {
+			LOG.warn("Missing receiving stats for away team for game " + eid);
 		}
 
 		if (gameNotes.getAway().getTeamStats().getFumbles() != null) {
 			for (Map.Entry<String, RawStats> entry : gameNotes.getAway().getTeamStats().getFumbles().getStats().entrySet()) {
 				gameStatsFactory.addFumbles(entry.getKey(), entry.getValue());
 			}
+		} else {
+			LOG.warn("Missing fumble stats for away team for game " + eid);
 		}
 
 		return gameStatsFactory.build();

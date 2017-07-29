@@ -3,6 +3,7 @@ package com.grahamsfault.nfl.manager;
 import com.grahamsfault.nfl.dao.ImportDAO;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class ImportManager {
 	private final ImportDAO importDAO;
@@ -33,6 +34,22 @@ public class ImportManager {
 	public void markAsImported(String gameId) {
 		try {
 			importDAO.markAsImported(gameId);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<Integer> getYears() {
+		try {
+			return importDAO.getYears();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public void compileYearlyStats(int year) {
+		try {
+			importDAO.compileYearlyStats(year);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
