@@ -7,20 +7,23 @@ import com.grahamsfault.nfl.command.prediction.model.AverageStats;
 import com.grahamsfault.nfl.manager.PlayerManager;
 import com.grahamsfault.nfl.manager.StatsManager;
 import com.grahamsfault.nfl.manager.helper.AverageHelper;
+import com.grahamsfault.nfl.manager.helper.QualifyingNumbersHelper;
 import com.grahamsfault.nfl.model.PlayerStats;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class NaiveAverageHelper extends AverageHelper {
+public class QualifyingAverageHelper extends AverageHelper {
 
 	private final PlayerManager playerManager;
 	private final StatsManager statsManager;
+	private final QualifyingNumbersHelper qualifyingNumbersHelper;
 
-	public NaiveAverageHelper(PlayerManager playerManager, StatsManager statsManager) {
+	public QualifyingAverageHelper(PlayerManager playerManager, StatsManager statsManager, QualifyingNumbersHelper qualifyingNumbersHelper) {
 		this.playerManager = playerManager;
 		this.statsManager = statsManager;
+		this.qualifyingNumbersHelper = qualifyingNumbersHelper;
 	}
 
 	@Override
@@ -34,7 +37,7 @@ public class NaiveAverageHelper extends AverageHelper {
 
 		for (Player player : playerManager.getPlayersPerYear(year)) {
 			Optional<PlayerStats> playerStats = statsManager.getPlayerYearlyStats(player, year);
-			if (playerStats.isPresent()) {
+			if (playerStats.isPresent() && qualifyingNumbersHelper.qualifies(player.getPosition(), playerStats)) {
 				AverageStats.Builder builder = averageStatsBuilderPerPosition.get(player.getPosition());
 				incrementAverageStats(builder, playerStats.get());
 			}
@@ -46,4 +49,5 @@ public class NaiveAverageHelper extends AverageHelper {
 						e -> e.getValue().build()
 				));
 	}
+
 }

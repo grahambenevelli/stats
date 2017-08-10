@@ -21,7 +21,8 @@ import com.grahamsfault.nfl.manager.ImportManager;
 import com.grahamsfault.nfl.manager.PlayerManager;
 import com.grahamsfault.nfl.manager.PredictionManager;
 import com.grahamsfault.nfl.manager.StatsManager;
-import com.grahamsfault.nfl.manager.helper.AverageHelper;
+import com.grahamsfault.nfl.manager.helper.average.QualifyingAverageHelper;
+import com.grahamsfault.nfl.manager.helper.QualifyingNumbersHelper;
 import com.grahamsfault.nfl.manager.helper.average.NaiveAverageHelper;
 
 import javax.sql.DataSource;
@@ -48,7 +49,8 @@ public class StatsApplicationFactory {
 	private NflService nflService;
 	private PredictionManager predictionManager;
 	private PredictionDAO predictionDAO;
-	private AverageHelper averageHelper;
+	private NaiveAverageHelper naiveAverageHelper;
+	private QualifyingAverageHelper qualifyingAverageHelper;
 
 	private StatsApplicationFactory() {}
 
@@ -263,13 +265,30 @@ public class StatsApplicationFactory {
 	 * @param configuration The stats server configuration
 	 * @return The naive average helper
 	 */
-	public AverageHelper getNaiveAverageHelper(StatsConfiguration configuration) {
-		if (averageHelper == null) {
-			averageHelper = new NaiveAverageHelper(
+	public NaiveAverageHelper getNaiveAverageHelper(StatsConfiguration configuration) {
+		if (naiveAverageHelper == null) {
+			naiveAverageHelper = new NaiveAverageHelper(
 					getPlayerManager(configuration),
 					getStatsManager(configuration)
 			);
 		}
-		return averageHelper;
+		return naiveAverageHelper;
+	}
+
+	/**
+	 * Get the qualifying average helper
+	 *
+	 * @param configuration The stats server configuration
+	 * @return The qualifying average helper
+	 */
+	public QualifyingAverageHelper getQualifyingAverageHelper(QualifyingNumbersHelper qualifyingNumbersHelper, StatsConfiguration configuration) {
+		if (qualifyingAverageHelper == null) {
+			qualifyingAverageHelper = new QualifyingAverageHelper(
+					getPlayerManager(configuration),
+					getStatsManager(configuration),
+					qualifyingNumbersHelper
+			);
+		}
+		return qualifyingAverageHelper;
 	}
 }

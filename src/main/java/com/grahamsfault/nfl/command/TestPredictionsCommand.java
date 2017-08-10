@@ -4,7 +4,9 @@ import com.grahamsfault.nfl.StatsConfiguration;
 import com.grahamsfault.nfl.command.prediction.PredictionExecution;
 import com.grahamsfault.nfl.command.prediction.PredictionResults;
 import com.grahamsfault.nfl.command.prediction.impl.AverageOnlyPredictionExecution;
+import com.grahamsfault.nfl.command.prediction.impl.QualifyingAveragePredictionExecution;
 import com.grahamsfault.nfl.manager.PredictionManager;
+import com.grahamsfault.nfl.manager.helper.QualifyingNumbersHelper;
 import io.dropwizard.cli.ConfiguredCommand;
 import io.dropwizard.setup.Bootstrap;
 import net.sourceforge.argparse4j.inf.Namespace;
@@ -36,7 +38,7 @@ public class TestPredictionsCommand extends ConfiguredCommand<StatsConfiguration
 	 * @return The current prediction execution
 	 */
 	private PredictionExecution getCurrentTest(StatsConfiguration configuration) {
-		return getAverageOnlyPredictionExecution(configuration);
+		return getQualifyingAveragePredictionExecution(configuration);
 	}
 
 	/**
@@ -52,6 +54,25 @@ public class TestPredictionsCommand extends ConfiguredCommand<StatsConfiguration
 				factory.getStatsManager(configuration),
 				factory.getPlayerManager(configuration),
 				factory.getNaiveAverageHelper(configuration)
+		);
+	}
+
+	/**
+	 * Get the average only prediciton execution
+	 *
+	 * @param configuration The stats server configuration
+	 * @return The average only prediction execution
+	 */
+	private PredictionExecution getQualifyingAveragePredictionExecution(StatsConfiguration configuration) {
+		StatsApplicationFactory factory = StatsApplicationFactory.instance();
+		QualifyingNumbersHelper qualifyingNumbersHelper = new QualifyingNumbersHelper();
+		return new QualifyingAveragePredictionExecution(
+				factory.getImportManager(configuration),
+				factory.getStatsManager(configuration),
+				factory.getPlayerManager(configuration),
+				qualifyingNumbersHelper,
+				factory.getNaiveAverageHelper(configuration),
+				factory.getQualifyingAverageHelper(qualifyingNumbersHelper, configuration)
 		);
 	}
 }

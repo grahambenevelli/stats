@@ -8,6 +8,8 @@ import com.grahamsfault.nfl.command.prediction.model.AverageStats;
 import com.grahamsfault.nfl.manager.ImportManager;
 import com.grahamsfault.nfl.manager.PlayerManager;
 import com.grahamsfault.nfl.manager.StatsManager;
+import com.grahamsfault.nfl.manager.helper.average.QualifyingAverageHelper;
+import com.grahamsfault.nfl.manager.helper.QualifyingNumbersHelper;
 import com.grahamsfault.nfl.manager.helper.average.NaiveAverageHelper;
 import com.grahamsfault.nfl.model.PlayerStats;
 
@@ -16,19 +18,32 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class AverageOnlyPredictionExecution extends PredictionExecution {
+/**
+ * Prediction algorithm that takes the average of qualifying players and uses that
+ */
+public class QualifyingAveragePredictionExecution extends PredictionExecution {
 
 	private final ImportManager importManager;
 	private final StatsManager statsManager;
 	private final PlayerManager playerManager;
-	private final NaiveAverageHelper averageHelper;
+	private final QualifyingNumbersHelper qualifyingNumbersHelper;
+	private final NaiveAverageHelper naiveAverageHelper;
+	private final QualifyingAverageHelper qualifyingAverageHelper;;
 
-	public AverageOnlyPredictionExecution(ImportManager importManager, StatsManager statsManager, PlayerManager playerManager, NaiveAverageHelper averageHelper) {
-		super("average-only");
+	public QualifyingAveragePredictionExecution(
+			ImportManager importManager,
+			StatsManager statsManager,
+			PlayerManager playerManager,
+			QualifyingNumbersHelper qualifyingNumbersHelper,
+			NaiveAverageHelper naiveAverageHelper,
+			QualifyingAverageHelper qualifyingAverageHelper) {
+		super("qualifying-average");
 		this.importManager = importManager;
 		this.statsManager = statsManager;
 		this.playerManager = playerManager;
-		this.averageHelper = averageHelper;
+		this.qualifyingNumbersHelper = qualifyingNumbersHelper;
+		this.naiveAverageHelper = naiveAverageHelper;
+		this.qualifyingAverageHelper = qualifyingAverageHelper;
 	}
 
 	@Override
@@ -36,12 +51,17 @@ public class AverageOnlyPredictionExecution extends PredictionExecution {
 		PredictionResults.Builder predictionBuilder = PredictionResults.builder();
 
 		for (Integer year : getPredictionYears()) {
-			Map<Position, AverageStats> averageStatsPerPosition = averageHelper.getAveragePerPosition(year - 1);
+			Map<Position, AverageStats> averageStatsPerPosition = naiveAverageHelper.getAveragePerPosition(year - 1);
+			Map<Position, AverageStats> averageStatsQualifying = qualifyingAverageHelper.getAveragePerPosition(year - 1);
 
 			for (Player player : playerManager.getPlayersPerYear(year - 1)) {
 				Optional<PlayerStats> playerStats = statsManager.getPlayerYearlyStats(player, year);
 				if (playerStats.isPresent()) {
-					predictionBuilder.increment(player.getPosition(), playerStats.get(), averageStatsPerPosition.get(player.getPosition()));
+					if (qualifyingNumbersHelper.qualifies(player.getPosition(), statsManager.getPlayerYearlyStats(player, year - 1))) {
+						predictionBuilder.increment(player.getPosition(), playerStats.get(), averageStatsQualifying.get(player.getPosition()));
+					} else {
+						predictionBuilder.increment(player.getPosition(), playerStats.get(), averageStatsPerPosition.get(player.getPosition()));
+					}
 				}
 			}
 		}
