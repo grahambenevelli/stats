@@ -1,18 +1,16 @@
 package com.grahamsfault.nfl;
 
 import com.codahale.metrics.MetricRegistry;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grahamsfault.nfl.command.GameStatImportCommand;
 import com.grahamsfault.nfl.command.PlayerImportCommand;
 import com.grahamsfault.nfl.command.RunETLCommand;
+import com.grahamsfault.nfl.command.TestPredictionsCommand;
+import com.grahamsfault.nfl.dao.GameDAO;
+import com.grahamsfault.nfl.dao.PlayerDAO;
 import com.grahamsfault.nfl.dao.StatsDAO;
 import com.grahamsfault.nfl.dao.mysql.MySQLGameDAO;
-import com.grahamsfault.nfl.dao.mysql.MySQLStatsDAO;
-import com.grahamsfault.nfl.file.GameFileReader;
-import com.grahamsfault.nfl.dao.GameDAO;
 import com.grahamsfault.nfl.dao.mysql.MySQLPlayerDAO;
-import com.grahamsfault.nfl.dao.PlayerDAO;
-import com.grahamsfault.nfl.file.PlayerFileReader;
+import com.grahamsfault.nfl.dao.mysql.MySQLStatsDAO;
 import com.grahamsfault.nfl.manager.GameManager;
 import com.grahamsfault.nfl.manager.PlayerManager;
 import com.grahamsfault.nfl.manager.StatsManager;
@@ -38,6 +36,7 @@ public class NflStatsService extends Application<StatsConfiguration> {
 		bootstrap.addCommand(new PlayerImportCommand());
 		bootstrap.addCommand(new GameStatImportCommand());
 		bootstrap.addCommand(new RunETLCommand());
+		bootstrap.addCommand(new TestPredictionsCommand());
 		bootstrap.addBundle(new MigrationsBundle<StatsConfiguration>() {
 			@Override
 			public DataSourceFactory getDataSourceFactory(StatsConfiguration configuration) {

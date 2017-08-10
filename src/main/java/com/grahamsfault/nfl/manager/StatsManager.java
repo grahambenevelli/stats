@@ -1,7 +1,7 @@
 package com.grahamsfault.nfl.manager;
 
-import com.google.common.base.Throwables;
 import com.grahamsfault.nfl.api.model.Game;
+import com.grahamsfault.nfl.api.model.Player;
 import com.grahamsfault.nfl.dao.StatsDAO;
 import com.grahamsfault.nfl.model.GameStats;
 import com.grahamsfault.nfl.model.PlayerStats;
@@ -37,7 +37,22 @@ public class StatsManager {
 		try {
 			statsDAO.updateGameStats(game, stats);
 		} catch (SQLException e) {
-			throw Throwables.propagate(e);
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Get the yearly stats for a given player
+	 *
+	 * @param player The player to fetch stats for
+	 * @param year The year to collect stats for
+	 * @return The optional player stats
+	 */
+	public Optional<PlayerStats> getPlayerYearlyStats(Player player, Integer year) {
+		try {
+			return statsDAO.getPlayerYearlyStats(player, year);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
 	}
 }

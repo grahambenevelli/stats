@@ -45,4 +45,13 @@ public interface PlayerDAO {
 	 * @throws SQLException
 	 */
 	Optional<Player> getById(String id) throws SQLException;
+
+	/**
+	 * Get the players that played in a given year
+	 *
+	 * @param year The year we are looking up
+	 * @return A set of players that have stats for the year
+	 * @throws SQLException
+	 */
+	Set<Player> getPlayersPerYear(int year) throws SQLException;
 }

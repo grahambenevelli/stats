@@ -185,6 +185,24 @@ public class MySQLPlayerDAO implements PlayerDAO {
 		return player.getFirstName().substring(0, 1) + "," + player.getLastName();
 	}
 
+	@Override
+	public Set<Player> getPlayersPerYear(int year) throws SQLException {
+		String sql = "select p.*\n" +
+				"from players p\n" +
+				"\tjoin game_stats gs on p.gsis_id = gs.player_id\n" +
+				"\tjoin games g on gs.game_id = g.eid\n" +
+				"where year = ?\n" +
+				"group by p.gsis_id;";
+
+		try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+			statement.setInt(1, year);
+
+			try (ResultSet result = statement.executeQuery()) {
+				return consumePlayerResults(result);
+			}
+		}
+	}
+
 	/**
 	 * Delete a given player by id
 	 *

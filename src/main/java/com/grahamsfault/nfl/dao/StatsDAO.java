@@ -1,6 +1,7 @@
 package com.grahamsfault.nfl.dao;
 
 import com.grahamsfault.nfl.api.model.Game;
+import com.grahamsfault.nfl.api.model.Player;
 import com.grahamsfault.nfl.model.GameStats;
 import com.grahamsfault.nfl.model.PlayerStats;
 
@@ -25,4 +26,14 @@ public interface StatsDAO {
 	 * @return The optional stats for the game if they exist
 	 */
 	Optional<GameStats> gameStats(String eid);
+
+	/**
+	 * Get the yearly stats for the given player
+	 *
+	 * @param player The player we want stats for
+	 * @param year The year of his stats
+	 * @return An optional version of the player's stats
+	 * @throws SQLException
+	 */
+	Optional<PlayerStats> getPlayerYearlyStats(Player player, Integer year) throws SQLException;
 }

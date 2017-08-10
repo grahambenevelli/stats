@@ -1,9 +1,11 @@
 package com.grahamsfault.nfl.manager;
 
 import com.grahamsfault.nfl.dao.ImportDAO;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ImportManager {
 	private final ImportDAO importDAO;
@@ -39,6 +41,11 @@ public class ImportManager {
 		}
 	}
 
+	/**
+	 * Get the years we have stats for
+	 *
+	 * @return The list of years available
+	 */
 	public List<Integer> getYears() {
 		try {
 			return importDAO.getYears();
@@ -47,6 +54,11 @@ public class ImportManager {
 		}
 	}
 
+	/**
+	 * Compile the yearly stats
+	 *
+	 * @param year The year to gather stats
+	 */
 	public void compileYearlyStats(int year) {
 		try {
 			importDAO.compileYearlyStats(year);

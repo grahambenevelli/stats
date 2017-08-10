@@ -128,4 +128,35 @@
             <dropTable tableName="games"/>
         </rollback>
     </changeSet>
+    <changeSet author="gbenevelli" id="prediction_accuracy_table_creation">
+        <sql>
+            CREATE TABLE `prediction_accuracy` (
+                `name` varchar(255) NOT NULL,
+                `position` varchar(255) NOT NULL,
+                `passing_attempts` float(23) NOT NULL,
+                `passing_completions` float(23) NOT NULL,
+                `passing_yards` float(23) NOT NULL,
+                `passing_touchdowns` float(23) NOT NULL,
+                `interceptions` float(23) NOT NULL,
+                `rushing_attempts` float(23) NOT NULL,
+                `rushing_yards` float(23) NOT NULL,
+                `rushing_touchdowns` float(23) NOT NULL,
+                `rushing_long` float(23) NOT NULL,
+                `rushing_long_touchdown` float(23) NOT NULL,
+                `receptions` float(23) NOT NULL,
+                `receiving_yards` float(23) NOT NULL,
+                `receiving_touchdowns` float(23) NOT NULL,
+                `receiving_long` float(23) NOT NULL,
+                `receiving_long_touchdown` float(23) NOT NULL,
+                `fumbles` float(23) NOT NULL,
+                `fumbles_lost` float(23) NOT NULL,
+                `fumbles_recovered` float(23) NOT NULL,
+                `fumble_yards` float(23) NOT NULL,
+                PRIMARY KEY (`name`, `position`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+        </sql>
+        <rollback>
+            <dropTable tableName="prediction_accuracy"/>
+        </rollback>
+    </changeSet>
 </databaseChangeLog>
