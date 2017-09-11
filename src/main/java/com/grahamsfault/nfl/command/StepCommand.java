@@ -4,6 +4,7 @@ import com.grahamsfault.nfl.StatsConfiguration;
 import com.grahamsfault.nfl.api.NflService;
 import com.grahamsfault.nfl.command.steps.CompileYearlyStatsStep;
 import com.grahamsfault.nfl.command.steps.EtlStep;
+import com.grahamsfault.nfl.command.steps.ImportGamePlayerMapping;
 import com.grahamsfault.nfl.command.steps.ImportGameStatsStep;
 import com.grahamsfault.nfl.command.steps.ImportGameStep;
 import com.grahamsfault.nfl.command.steps.ImportPlayerStep;
@@ -103,5 +104,19 @@ public abstract class StepCommand extends ConfiguredCommand<StatsConfiguration> 
 	 */
 	protected EtlStep getCompileYearlyStatsStep(StatsConfiguration configuration) {
 		return new CompileYearlyStatsStep(factory.getImportManager(configuration));
+	}
+
+	/**
+	 * Get the step to import player ids from games
+	 *
+	 * @param configuration The stats server configuration
+	 * @return The step to import player ids from games
+	 */
+	protected EtlStep getImportGamePlayerMapping(StatsConfiguration configuration) {
+		GameManager gameManager = factory.getGameManager(configuration);
+		NflService nflService = factory.getNflService();
+		ImportManager importManager = factory.getImportManager(configuration);
+
+		return new ImportGamePlayerMapping(gameManager, nflService, importManager);
 	}
 }

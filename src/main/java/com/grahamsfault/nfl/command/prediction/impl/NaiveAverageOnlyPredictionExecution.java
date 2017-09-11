@@ -16,14 +16,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class AverageOnlyPredictionExecution extends PredictionExecution {
+public class NaiveAverageOnlyPredictionExecution extends PredictionExecution {
 
 	private final ImportManager importManager;
 	private final StatsManager statsManager;
 	private final PlayerManager playerManager;
 	private final NaiveAverageHelper averageHelper;
 
-	public AverageOnlyPredictionExecution(ImportManager importManager, StatsManager statsManager, PlayerManager playerManager, NaiveAverageHelper averageHelper) {
+	public NaiveAverageOnlyPredictionExecution(ImportManager importManager, StatsManager statsManager, PlayerManager playerManager, NaiveAverageHelper averageHelper) {
 		super("average-only");
 		this.importManager = importManager;
 		this.statsManager = statsManager;

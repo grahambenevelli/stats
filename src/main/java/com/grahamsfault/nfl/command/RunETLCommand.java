@@ -21,14 +21,15 @@ public class RunETLCommand extends StepCommand {
 	@Override
 	public List<EtlStep> steps(StatsConfiguration configuration) {
 		return ImmutableList.<EtlStep>builder()
-				.add(getImportPlayerStep(configuration))
 				.add(getImportGameStep(configuration))
-				.add(getImportGameStatsStep(configuration))
-				// 4. add drive stats
-				// 5. get the games played
-				.add(getCompileYearlyStatsStep(configuration))
-				// Draft pick taken
-				// Age
+				.add(getImportGamePlayerMapping(configuration))
+//				.add(getImportPlayerStep(configuration))
+//				.add(getImportGameStatsStep(configuration))
+//				// 4. add drive stats
+//				// 5. get the games played
+//				.add(getCompileYearlyStatsStep(configuration))
+//				// Draft pick taken
+//				// Age
 				.build();
 	}
 }

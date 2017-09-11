@@ -9,6 +9,7 @@
     <changeSet author="gbenevelli" id="player_table_creation">
         <sql>
             CREATE TABLE `players` (
+                `id` int(11) NOT NULL AUTO_INCREMENT,
                 `gsis_id` varchar(255) NOT NULL,
                 `first_name` varchar(255) NOT NULL,
                 `last_name` varchar(255) NOT NULL,
@@ -25,7 +26,8 @@
                 `status` varchar(255),
                 `team` varchar(255),
                 `position` varchar(255),
-                PRIMARY KEY (`gsis_id`)
+                PRIMARY KEY (`id`),
+                INDEX `gsis_id_index` (`gsis_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
         </sql>
         <rollback>
@@ -35,6 +37,7 @@
     <changeSet author="gbenevelli" id="game_table_creation">
         <sql>
             CREATE TABLE `games` (
+                `id` int(11) NOT NULL AUTO_INCREMENT,
                 `eid` varchar(255) NOT NULL,
                 `home` varchar(255) NOT NULL,
                 `away` varchar(255) NOT NULL,
@@ -47,116 +50,40 @@
                 `wday` varchar(255) NOT NULL,
                 `week` int(11) NOT NULL,
                 `year` int(11) NOT NULL,
+                PRIMARY KEY (`id`),
+                INDEX `eid_index` (`eid`),
+                INDEX `year_index` (`year`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+        </sql>
+        <rollback>
+            <dropTable tableName="games"/>
+        </rollback>
+    </changeSet>
+    <changeSet author="gbenevelli" id="player_id_import_log">
+        <sql>
+            CREATE TABLE `player_id_import_log` (
+                `gsis_id` varchar(255) NOT NULL,
+                `year` int(11) NOT NULL,
+                `basic_info_imported` BOOLEAN NOT NULL,
+                PRIMARY KEY (`gsis_id`),
+                INDEX `year_index` (`year`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+        </sql>
+        <rollback>
+            <dropTable tableName="games"/>
+        </rollback>
+    </changeSet>
+    <changeSet author="gbenevelli" id="game_import_log_table_creation">
+        <sql>
+            CREATE TABLE `game_import_log` (
+                `eid` varchar(255) NOT NULL,
+                `player_id_imported` BOOLEAN DEFAULT 0,
+                `updated` timestamp DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (`eid`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
         </sql>
         <rollback>
             <dropTable tableName="games"/>
-        </rollback>
-    </changeSet>
-    <changeSet author="gbenevelli" id="game_stats_table_creation">
-        <sql>
-            CREATE TABLE `game_stats` (
-            `player_id` varchar(255) NOT NULL,
-            `game_id` varchar(255) NOT NULL,
-            `passing_attempts` int(11) NOT NULL,
-            `passing_completions` int(11) NOT NULL,
-            `passing_yards` int(11) NOT NULL,
-            `passing_touchdowns` int(11) NOT NULL,
-            `interceptions` int(11) NOT NULL,
-            `rushing_attempts` int(11) NOT NULL,
-            `rushing_yards` int(11) NOT NULL,
-            `rushing_touchdowns` int(11) NOT NULL,
-            `rushing_long` int(11) NOT NULL,
-            `rushing_long_touchdown` int(11) NOT NULL,
-            `receptions` int(11) NOT NULL,
-            `receiving_yards` int(11) NOT NULL,
-            `receiving_touchdowns` int(11) NOT NULL,
-            `receiving_long` int(11) NOT NULL,
-            `receiving_long_touchdown` int(11) NOT NULL,
-            `fumbles` int(11) NOT NULL,
-            `fumbles_lost` int(11) NOT NULL,
-            `fumbles_recovered` int(11) NOT NULL,
-            `fumble_yards` int(11) NOT NULL,
-            PRIMARY KEY (`player_id`, `game_id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-        </sql>
-        <rollback>
-            <dropTable tableName="games"/>
-        </rollback>
-    </changeSet>
-    <changeSet author="gbenevelli" id="game_stats_import_log_table_creation">
-        <sql>
-            CREATE TABLE `game_stats_import_log` (
-                `game_id` varchar(255) NOT NULL,
-                `updated` timestamp DEFAULT CURRENT_TIMESTAMP,
-                PRIMARY KEY (`game_id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-        </sql>
-        <rollback>
-            <dropTable tableName="games"/>
-        </rollback>
-    </changeSet>
-    <changeSet author="gbenevelli" id="yearly_stats_table_creation">
-        <sql>
-            CREATE TABLE `yearly_stats` (
-            `player_id` varchar(255) NOT NULL,
-            `year` varchar(255) NOT NULL,
-            `passing_attempts` int(11) NOT NULL,
-            `passing_completions` int(11) NOT NULL,
-            `passing_yards` int(11) NOT NULL,
-            `passing_touchdowns` int(11) NOT NULL,
-            `interceptions` int(11) NOT NULL,
-            `rushing_attempts` int(11) NOT NULL,
-            `rushing_yards` int(11) NOT NULL,
-            `rushing_touchdowns` int(11) NOT NULL,
-            `rushing_long` int(11) NOT NULL,
-            `rushing_long_touchdown` int(11) NOT NULL,
-            `receptions` int(11) NOT NULL,
-            `receiving_yards` int(11) NOT NULL,
-            `receiving_touchdowns` int(11) NOT NULL,
-            `receiving_long` int(11) NOT NULL,
-            `receiving_long_touchdown` int(11) NOT NULL,
-            `fumbles` int(11) NOT NULL,
-            `fumbles_lost` int(11) NOT NULL,
-            `fumbles_recovered` int(11) NOT NULL,
-            `fumble_yards` int(11) NOT NULL,
-            PRIMARY KEY (`player_id`, `year`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-        </sql>
-        <rollback>
-            <dropTable tableName="games"/>
-        </rollback>
-    </changeSet>
-    <changeSet author="gbenevelli" id="prediction_accuracy_table_creation">
-        <sql>
-            CREATE TABLE `prediction_accuracy` (
-                `name` varchar(255) NOT NULL,
-                `position` varchar(255) NOT NULL,
-                `passing_attempts` float(23) NOT NULL,
-                `passing_completions` float(23) NOT NULL,
-                `passing_yards` float(23) NOT NULL,
-                `passing_touchdowns` float(23) NOT NULL,
-                `interceptions` float(23) NOT NULL,
-                `rushing_attempts` float(23) NOT NULL,
-                `rushing_yards` float(23) NOT NULL,
-                `rushing_touchdowns` float(23) NOT NULL,
-                `rushing_long` float(23) NOT NULL,
-                `rushing_long_touchdown` float(23) NOT NULL,
-                `receptions` float(23) NOT NULL,
-                `receiving_yards` float(23) NOT NULL,
-                `receiving_touchdowns` float(23) NOT NULL,
-                `receiving_long` float(23) NOT NULL,
-                `receiving_long_touchdown` float(23) NOT NULL,
-                `fumbles` float(23) NOT NULL,
-                `fumbles_lost` float(23) NOT NULL,
-                `fumbles_recovered` float(23) NOT NULL,
-                `fumble_yards` float(23) NOT NULL,
-                PRIMARY KEY (`name`, `position`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-        </sql>
-        <rollback>
-            <dropTable tableName="prediction_accuracy"/>
         </rollback>
     </changeSet>
 </databaseChangeLog>

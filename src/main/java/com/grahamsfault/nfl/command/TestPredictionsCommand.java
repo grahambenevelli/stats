@@ -3,7 +3,8 @@ package com.grahamsfault.nfl.command;
 import com.grahamsfault.nfl.StatsConfiguration;
 import com.grahamsfault.nfl.command.prediction.PredictionExecution;
 import com.grahamsfault.nfl.command.prediction.PredictionResults;
-import com.grahamsfault.nfl.command.prediction.impl.AverageOnlyPredictionExecution;
+import com.grahamsfault.nfl.command.prediction.impl.NaiveAverageOnlyPredictionExecution;
+import com.grahamsfault.nfl.command.prediction.impl.NaiveRepeatStatsPredictionExecution;
 import com.grahamsfault.nfl.command.prediction.impl.QualifyingAveragePredictionExecution;
 import com.grahamsfault.nfl.manager.PredictionManager;
 import com.grahamsfault.nfl.manager.helper.QualifyingNumbersHelper;
@@ -38,7 +39,7 @@ public class TestPredictionsCommand extends ConfiguredCommand<StatsConfiguration
 	 * @return The current prediction execution
 	 */
 	private PredictionExecution getCurrentTest(StatsConfiguration configuration) {
-		return getQualifyingAveragePredictionExecution(configuration);
+		return getRepeatStatsPredictionExecution(configuration);
 	}
 
 	/**
@@ -49,7 +50,7 @@ public class TestPredictionsCommand extends ConfiguredCommand<StatsConfiguration
 	 */
 	private PredictionExecution getAverageOnlyPredictionExecution(StatsConfiguration configuration) {
 		StatsApplicationFactory factory = StatsApplicationFactory.instance();
-		return new AverageOnlyPredictionExecution(
+		return new NaiveAverageOnlyPredictionExecution(
 				factory.getImportManager(configuration),
 				factory.getStatsManager(configuration),
 				factory.getPlayerManager(configuration),
@@ -73,6 +74,21 @@ public class TestPredictionsCommand extends ConfiguredCommand<StatsConfiguration
 				qualifyingNumbersHelper,
 				factory.getNaiveAverageHelper(configuration),
 				factory.getQualifyingAverageHelper(qualifyingNumbersHelper, configuration)
+		);
+	}
+
+	/**
+	 * Get the repeat stats prediction execution
+	 *
+	 * @param configuration The stats server configuration
+	 * @return The average only prediction execution
+	 */
+	private PredictionExecution getRepeatStatsPredictionExecution(StatsConfiguration configuration) {
+		StatsApplicationFactory factory = StatsApplicationFactory.instance();
+		return new NaiveRepeatStatsPredictionExecution(
+				factory.getImportManager(configuration),
+				factory.getStatsManager(configuration),
+				factory.getPlayerManager(configuration)
 		);
 	}
 }

@@ -5,6 +5,7 @@ import com.grahamsfault.nfl.api.model.Game;
 import com.grahamsfault.nfl.api.model.Team;
 import com.grahamsfault.nfl.api.model.game.GameType;
 import com.grahamsfault.nfl.dao.ImportDAO;
+import com.grahamsfault.nfl.model.GameImportLog;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -12,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 public class MySQLImportDAO implements ImportDAO {
 	private final DataSource dataSource;
@@ -108,8 +110,75 @@ public class MySQLImportDAO implements ImportDAO {
 				"group by player_id;";
 
 		try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-			statement.setInt(1, year);
+			int i = 1;
+			statement.setInt(i++, year);
 			statement.executeUpdate();
 		}
+	}
+
+	@Override
+	public void recordPlayerIdForImport(int year, String s) throws SQLException {
+		String sql = "INSERT INTO `player_id_import_log` " +
+				"(`gsis_id`, `year`, `basic_info_imported`)" +
+				"VALUES (?, ?, 0) " +
+				"ON DUPLICATE KEY UPDATE " +
+				"`gsis_id`=?, " +
+				"`year`=?;";
+
+		try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+			int i = 1;
+			statement.setString(i++, s);
+			statement.setInt(i++, year);
+			statement.setString(i++, s);
+			statement.setInt(i++, year);
+
+			statement.executeUpdate();
+		}
+	}
+
+	@Override
+	public void markPlayerIdsAsImported(String eid) throws SQLException {
+		String sql = "INSERT INTO `game_import_log` " +
+				"(`eid`, `player_id_imported`)" +
+				"VALUES (?, 1) " +
+				"ON DUPLICATE KEY UPDATE " +
+				"`player_id_imported`=1;";
+
+		try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+			int i = 1;
+			statement.setString(i++, eid);
+			statement.executeUpdate();
+		}
+	}
+
+	@Override
+	public Optional<GameImportLog> getImportLog(String eid) throws SQLException {
+		String sql = "SELECT * FROM game_import_log WHERE eid = ?";
+		try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+			int i = 1;
+			statement.setString(i, eid);
+			try (ResultSet result = statement.executeQuery()) {
+				return consumeGameImportLogFromResultSet(result).stream().findFirst();
+			}
+		}
+	}
+
+	/**
+	 * Consume the result set for an game import log
+	 * @param result The result set from the DB
+	 * @return The matching list of GameImportLogs
+	 * @throws SQLException
+	 */
+	private List<GameImportLog> consumeGameImportLogFromResultSet(ResultSet result) throws SQLException {
+		ImmutableList.Builder<GameImportLog> builder = ImmutableList.builder();
+		while (result.next()) {
+			GameImportLog log = GameImportLog.builder()
+					.eid(result.getString("eid"))
+					.playerIdImported(result.getBoolean("player_id_imported"))
+					.build();
+
+			builder.add(log);
+		}
+		return builder.build();
 	}
 }

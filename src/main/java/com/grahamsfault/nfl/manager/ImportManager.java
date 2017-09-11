@@ -1,10 +1,12 @@
 package com.grahamsfault.nfl.manager;
 
 import com.grahamsfault.nfl.dao.ImportDAO;
+import com.grahamsfault.nfl.model.GameImportLog;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ImportManager {
@@ -62,6 +64,51 @@ public class ImportManager {
 	public void compileYearlyStats(int year) {
 		try {
 			importDAO.compileYearlyStats(year);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Record a player id that was just imported
+	 *
+	 * @param year The year to import
+	 * @param gsisId The player id according to nfl.com
+	 */
+	public void recordPlayerIdForImport(int year, String gsisId) {
+		try {
+			importDAO.recordPlayerIdForImport(year, gsisId);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Mark the player id as being imported
+	 *
+	 * @param eid The game id according to nfl.com
+	 */
+	public void markPlayerIdsAsImported(String eid) {
+		try {
+			importDAO.markPlayerIdsAsImported(eid);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Check to see the player ids have been imported for a game
+	 *
+	 * @param eid The game id according to nfl.com
+	 * @return true if the players have been imported
+	 */
+	public boolean hasPlayerIdsBeenImported(String eid) {
+		try {
+			Optional<GameImportLog> gameImportLog = importDAO.getImportLog(eid);
+			if (gameImportLog.isPresent()) {
+				return gameImportLog.get().hasPlayerIdImported();
+			}
+			return false;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
