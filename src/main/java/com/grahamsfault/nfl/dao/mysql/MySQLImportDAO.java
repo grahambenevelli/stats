@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class MySQLImportDAO implements ImportDAO {
+
 	private final DataSource dataSource;
 
 	public MySQLImportDAO(DataSource statsDataSource) {
@@ -163,8 +164,34 @@ public class MySQLImportDAO implements ImportDAO {
 		}
 	}
 
+	@Override
+	public List<String> getPlayerIdsForImport() throws SQLException {
+		String sql = "SELECT * FROM player_id_import_log WHERE basic_info_imported = 0";
+		try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+			try (ResultSet result = statement.executeQuery()) {
+				ImmutableList.Builder<String> builder = ImmutableList.builder();
+				while (result.next()) {
+					builder.add(result.getString("gsis_id"));
+				}
+				return builder.build();
+			}
+		}
+	}
+
+	@Override
+	public void markPlayerBasicInfoImported(String playerId) throws SQLException {
+		String sql = "UPDATE player_id_import_log SET basic_info_imported = 1 WHERE gsis_id = ?";
+
+		try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+			int i = 1;
+			statement.setString(i++, playerId);
+			statement.executeUpdate();
+		}
+	}
+
 	/**
 	 * Consume the result set for an game import log
+	 *
 	 * @param result The result set from the DB
 	 * @return The matching list of GameImportLogs
 	 * @throws SQLException

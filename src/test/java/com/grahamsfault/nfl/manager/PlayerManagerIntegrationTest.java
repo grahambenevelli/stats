@@ -53,11 +53,13 @@ public class PlayerManagerIntegrationTest extends AbstractMysqlIntegrationTest {
 								new URL("http://www.nfl.com/player/andrejohnson/2505551/profile"),
 								75,
 								229,
-								14,
 								81,
 								"ACT",
 								Team.TENNESSEE,
-								Position.WR
+								Position.WR,
+								null,
+								14,
+								null
 						))
 				},
 				{
@@ -75,11 +77,13 @@ public class PlayerManagerIntegrationTest extends AbstractMysqlIntegrationTest {
 								new URL("http://www.nfl.com/player/braxtonmiller/2555348/profile"),
 								73,
 								201,
-								0,
 								13,
 								"ACT",
 								Team.HOUSTON,
-								Position.WR
+								Position.WR,
+								null,
+								0,
+								null
 						))
 				},
 				{
@@ -97,10 +101,12 @@ public class PlayerManagerIntegrationTest extends AbstractMysqlIntegrationTest {
 								new URL("http://www.nfl.com/player/andrewmiller/2550497/profile"),
 								76,
 								296,
-								1,
 								0,
 								null,
 								null,
+								null,
+								null,
+								1,
 								null
 						))
 				},

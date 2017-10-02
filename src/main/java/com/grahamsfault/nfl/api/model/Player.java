@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.grahamsfault.nfl.api.model.player.Position;
-import com.grahamsfault.nfl.model.PlayerStats;
 
 import java.net.URL;
 import java.util.Objects;
@@ -26,11 +25,13 @@ public class Player {
 	private final URL profileUrl;
 	private final Integer height;
 	private final Integer weight;
-	private final Integer yearsPro;
 	private final Integer number;
 	private final String status;
 	private final Team team;
 	private final Position position;
+	private final String placeOfBirth;
+	private final Integer experience;
+	private final String highSchool;
 
 	@JsonCreator
 	public Player(
@@ -45,11 +46,13 @@ public class Player {
 			@JsonProperty("profile_url") URL profileUrl,
 			@JsonProperty("height") Integer height,
 			@JsonProperty("weight") Integer weight,
-			@JsonProperty("years_pro") Integer yearsPro,
 			@JsonProperty("number") Integer number,
 			@JsonProperty("status") String status,
 			@JsonProperty("team") Team team,
-			@JsonProperty("position") Position position) {
+			@JsonProperty("position") Position position,
+			@JsonProperty("place_of_birth") String placeOfBirth,
+			@JsonProperty("experience") Integer experience,
+			@JsonProperty("high_school") String highSchool) {
 		this.birthdate = birthdate;
 		this.college = college;
 		this.firstName = firstName;
@@ -61,11 +64,13 @@ public class Player {
 		this.profileUrl = profileUrl;
 		this.height = height;
 		this.weight = weight;
-		this.yearsPro = yearsPro;
 		this.number = number;
 		this.status = status;
 		this.team = team;
 		this.position = position;
+		this.placeOfBirth = placeOfBirth;
+		this.experience = experience;
+		this.highSchool = highSchool;
 	}
 
 	public String getBirthdate() {
@@ -112,10 +117,6 @@ public class Player {
 		return weight;
 	}
 
-	public Integer getYearsPro() {
-		return yearsPro;
-	}
-
 	public Integer getNumber() {
 		return number;
 	}
@@ -130,6 +131,22 @@ public class Player {
 
 	public Position getPosition() {
 		return position;
+	}
+
+	public String getPlaceOfBirth() {
+		return placeOfBirth;
+	}
+
+	public Integer getExperience() {
+		return experience;
+	}
+
+	public static Builder builder(String gsisId, String firstName, String lastName) {
+		return new Builder(gsisId, firstName, lastName);
+	}
+
+	public String getHighSchool() {
+		return highSchool;
 	}
 
 	@Override
@@ -148,16 +165,18 @@ public class Player {
 				Objects.equals(getProfileUrl(), player.getProfileUrl()) &&
 				Objects.equals(getHeight(), player.getHeight()) &&
 				Objects.equals(getWeight(), player.getWeight()) &&
-				Objects.equals(getYearsPro(), player.getYearsPro()) &&
 				Objects.equals(getNumber(), player.getNumber()) &&
 				Objects.equals(getStatus(), player.getStatus()) &&
 				getTeam() == player.getTeam() &&
-				getPosition() == player.getPosition();
+				getPosition() == player.getPosition() &&
+				Objects.equals(getPlaceOfBirth(), player.getPlaceOfBirth()) &&
+				Objects.equals(getExperience(), player.getExperience()) &&
+				Objects.equals(getHighSchool(), player.getHighSchool());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getBirthdate(), getCollege(), getFirstName(), getLastName(), getFullName(), getGsisId(), getGsisName(), getProfileId(), getProfileUrl(), getHeight(), getWeight(), getYearsPro(), getNumber(), getStatus(), getTeam(), getPosition());
+		return Objects.hash(getBirthdate(), getCollege(), getFirstName(), getLastName(), getFullName(), getGsisId(), getGsisName(), getProfileId(), getProfileUrl(), getHeight(), getWeight(), getNumber(), getStatus(), getTeam(), getPosition(), getPlaceOfBirth(), getExperience(), getHighSchool());
 	}
 
 	@Override
@@ -174,16 +193,14 @@ public class Player {
 				.add("profileUrl", profileUrl)
 				.add("height", height)
 				.add("weight", weight)
-				.add("yearsPro", yearsPro)
 				.add("number", number)
 				.add("status", status)
 				.add("team", team)
 				.add("position", position)
+				.add("placeOfBirth", placeOfBirth)
+				.add("experience", experience)
+				.add("highSchool", highSchool)
 				.toString();
-	}
-
-	public static Builder builder(String gsisId, String firstName, String lastName) {
-		return new Builder(gsisId, firstName, lastName);
 	}
 
 	public static class Builder {
@@ -199,11 +216,13 @@ public class Player {
 		private URL profileUrl;
 		private Integer height;
 		private Integer weight;
-		private Integer yearsPro;
 		private Integer number;
 		private String status;
 		private Team team;
 		private Position position;
+		private String placeOfBirth;
+		private Integer experience;
+		private String highSchool;
 
 		private Builder(String gsisId, String firstName, String lastName) {
 			this.firstName = firstName;
@@ -226,12 +245,13 @@ public class Player {
 					profileUrl,
 					height,
 					weight,
-					yearsPro,
 					number,
 					status,
 					team,
-					position
-			);
+					position,
+					placeOfBirth,
+					experience,
+					highSchool);
 		}
 
 		public Builder setFullName(String fullName) {
@@ -274,11 +294,6 @@ public class Player {
 			return this;
 		}
 
-		public Builder setYearsPro(Integer yearsPro) {
-			this.yearsPro = yearsPro;
-			return this;
-		}
-
 		public Builder setNumber(Integer number) {
 			this.number = number;
 			return this;
@@ -296,6 +311,21 @@ public class Player {
 
 		public Builder setPosition(Position position) {
 			this.position = position;
+			return this;
+		}
+
+		public Builder setPlaceOfBirth(String placeOfBirth) {
+			this.placeOfBirth = placeOfBirth;
+			return this;
+		}
+
+		public Builder setExperience(Integer experience) {
+			this.experience = experience;
+			return this;
+		}
+
+		public Builder setHighSchool(String highSchool) {
+			this.highSchool = highSchool;
 			return this;
 		}
 	}

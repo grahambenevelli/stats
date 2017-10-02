@@ -113,4 +113,30 @@ public class ImportManager {
 			throw new RuntimeException(e);
 		}
 	}
+
+	/**
+	 * Ge the players id to import
+	 *
+	 * @return The list of player ids
+	 */
+	public List<String> getPlayerIds() {
+		try {
+			return importDAO.getPlayerIdsForImport();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Mark the player id as having imported the basic info
+	 *
+	 * @param playerId The player id
+	 */
+	public void markPlayerBasicInfoImported(String playerId) {
+		try {
+			importDAO.markPlayerBasicInfoImported(playerId);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

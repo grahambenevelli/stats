@@ -74,11 +74,13 @@ public class MySQLPlayerDAO implements PlayerDAO {
 					result.getURL("profile_url"),
 					result.getInt("height"),
 					result.getInt("weight"),
-					result.getInt("years_pro"),
 					result.getInt("number"),
 					result.getString("status"),
 					Team.forValue(team),
-					Position.forValue(result.getString("position"))
+					Position.forValue(result.getString("position")),
+					null,
+					result.getInt("years_pro"),
+					null
 			));
 		}
 		return ret.build();
@@ -142,12 +144,12 @@ public class MySQLPlayerDAO implements PlayerDAO {
 			statement.setString(++i, player.getLastName());
 			statement.setString(++i, player.getFullName());
 			statement.setString(++i, getGsisNameForSaving(player));
-			statement.setInt(++i, player.getHeight());
+			statement.setInt(++i, Optional.ofNullable(player.getHeight()).orElse(0));
 			statement.setInt(++i, Optional.ofNullable(player.getNumber()).orElse(0));
-			statement.setLong(++i, player.getProfileId());
+			statement.setLong(++i, Optional.ofNullable(player.getProfileId()).orElse(0L));
 			statement.setString(++i, player.getProfileUrl().toString());
-			statement.setInt(++i, player.getWeight());
-			statement.setInt(++i, player.getYearsPro());
+			statement.setInt(++i, Optional.ofNullable(player.getWeight()).orElse(0));
+			statement.setInt(++i, Optional.ofNullable(player.getExperience()).orElse(0));
 			statement.setString(++i, player.getBirthdate());
 			statement.setString(++i, player.getCollege());
 			statement.setString(++i, player.getStatus());
@@ -159,12 +161,12 @@ public class MySQLPlayerDAO implements PlayerDAO {
 			statement.setString(++i, player.getLastName());
 			statement.setString(++i, player.getFullName());
 			statement.setString(++i, getGsisNameForSaving(player));
-			statement.setInt(++i, player.getHeight());
+			statement.setInt(++i, Optional.ofNullable(player.getHeight()).orElse(0));
 			statement.setInt(++i, Optional.ofNullable(player.getNumber()).orElse(0));
-			statement.setLong(++i, player.getProfileId());
+			statement.setLong(++i, Optional.ofNullable(player.getProfileId()).orElse(0L));
 			statement.setString(++i, player.getProfileUrl().toString());
-			statement.setInt(++i, player.getWeight());
-			statement.setInt(++i, player.getYearsPro());
+			statement.setInt(++i, Optional.ofNullable(player.getWeight()).orElse(0));
+			statement.setInt(++i, Optional.ofNullable(player.getExperience()).orElse(0));
 			statement.setString(++i, player.getBirthdate());
 			statement.setString(++i, player.getCollege());
 			statement.setString(++i, player.getStatus());

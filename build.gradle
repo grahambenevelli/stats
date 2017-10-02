@@ -25,6 +25,7 @@ dependencies {
     compile group: 'com.google.guava', name: 'guava', version: '21.0'
     compile 'com.h2database:h2:1.4.191'
     compile 'mysql:mysql-connector-java:5.1.38'
+    compile 'org.jsoup:jsoup:1.7.2'
 
     testCompile group: 'org.testng', name: 'testng', version: '6.3.1'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.8.4'

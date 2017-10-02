@@ -55,11 +55,13 @@ public class NaiveAverageHelperTest {
 				new URL("https://fake.url"),
 				65,
 				210,
-				3,
 				21,
 				"ACT",
 				Team.DENVER,
-				Position.RB
+				Position.RB,
+				null,
+				3,
+				null
 		);
 
 		jamaalCharlesStats = PlayerStats.builder("Jamaal Charles", "fake id")
@@ -79,11 +81,13 @@ public class NaiveAverageHelperTest {
 				new URL("https://fake.url"),
 				65,
 				210,
-				3,
 				21,
 				"ACT",
 				Team.DENVER,
-				Position.RB
+				Position.RB,
+				null,
+				3,
+				null
 		);
 
 		priestHolmesStats = PlayerStats.builder("Priest Holmes", "fake id")
@@ -103,11 +107,13 @@ public class NaiveAverageHelperTest {
 				new URL("https://fake.url"),
 				65,
 				210,
-				3,
 				21,
 				"ACT",
 				Team.DENVER,
-				Position.RB
+				Position.RB,
+				null,
+				3,
+				null
 		);
 
 		rickyWilliamsStats = PlayerStats.builder("Ricky Williams", "fake id")
@@ -127,11 +133,13 @@ public class NaiveAverageHelperTest {
 				new URL("https://fake.url"),
 				65,
 				210,
-				3,
 				21,
 				"ACT",
 				Team.DENVER,
-				Position.RB
+				Position.RB,
+				null,
+				3,
+				null
 		);
 
 		malcolmBrown = new Player(
@@ -146,11 +154,13 @@ public class NaiveAverageHelperTest {
 				new URL("https://fake.url"),
 				65,
 				210,
-				3,
 				21,
 				"ACT",
 				Team.DENVER,
-				Position.RB
+				Position.RB,
+				null,
+				3,
+				null
 		);
 
 		malcolmBrownStats = PlayerStats.builder("Malcolm Brown", "fake id")
@@ -170,11 +180,13 @@ public class NaiveAverageHelperTest {
 				new URL("https://fake.url"),
 				65,
 				210,
-				3,
 				21,
 				"ACT",
 				Team.DENVER,
-				Position.QB
+				Position.QB,
+				null,
+				3,
+				null
 		);
 
 		vinceYoungStats = PlayerStats.builder("Vince Young", "fake id")
@@ -196,11 +208,13 @@ public class NaiveAverageHelperTest {
 				new URL("https://fake.url"),
 				65,
 				210,
-				3,
 				21,
 				"ACT",
 				Team.DENVER,
-				Position.QB
+				Position.QB,
+				null,
+				3,
+				null
 		);
 
 		coltMcCoyStats = PlayerStats.builder("Colt McCoy", "fake id")

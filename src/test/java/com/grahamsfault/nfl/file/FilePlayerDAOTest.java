@@ -42,10 +42,12 @@ public class FilePlayerDAOTest {
 				new URL("http://www.nfl.com/player/flozelladams/2499355/profile"),
 				79,
 				338,
+				null,
+				null,
+				null,
+				null,
+				null,
 				13,
-				null,
-				null,
-				null,
 				null
 		);
 

@@ -9,7 +9,6 @@ import com.grahamsfault.nfl.command.steps.ImportGameStatsStep;
 import com.grahamsfault.nfl.command.steps.ImportGameStep;
 import com.grahamsfault.nfl.command.steps.ImportPlayerStep;
 import com.grahamsfault.nfl.file.GameFileReader;
-import com.grahamsfault.nfl.file.PlayerFileReader;
 import com.grahamsfault.nfl.manager.GameManager;
 import com.grahamsfault.nfl.manager.ImportManager;
 import com.grahamsfault.nfl.manager.PlayerManager;
@@ -62,10 +61,11 @@ public abstract class StepCommand extends ConfiguredCommand<StatsConfiguration> 
 	 * @return The step to import players
 	 */
 	protected ImportPlayerStep getImportPlayerStep(StatsConfiguration configuration) {
-		PlayerFileReader playerFileReader = factory.getPlayerFileReader();
+		ImportManager importManager = factory.getImportManager(configuration);
+		NflService service = factory.getNflService();
 		PlayerManager playerManager = factory.getPlayerManager(configuration);
 
-		return new ImportPlayerStep(playerFileReader, playerManager);
+		return new ImportPlayerStep(importManager, playerManager, service);
 	}
 
 	/**

@@ -65,4 +65,19 @@ public interface ImportDAO {
 	 * @throws SQLException
 	 */
 	Optional<GameImportLog> getImportLog(String eid) throws SQLException;
+
+	/**
+	 * Get the players ids that are needed to be imported
+	 *
+	 * @return The list of player ids
+	 * @throws SQLException
+	 */
+	List<String> getPlayerIdsForImport() throws SQLException;
+
+	/**
+	 * Mark the player id as having imported the basic info
+	 *
+	 * @param playerId The id of the player to mark
+	 */
+	void markPlayerBasicInfoImported(String playerId) throws SQLException;
 }

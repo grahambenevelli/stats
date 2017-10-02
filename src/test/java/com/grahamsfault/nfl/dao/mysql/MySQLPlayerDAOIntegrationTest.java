@@ -46,7 +46,7 @@ public class MySQLPlayerDAOIntegrationTest extends AbstractMysqlIntegrationTest 
 				.setProfileId(2506875L)
 				.setProfileUrl(new URL("http://www.nfl.com/player/vinceyoung/2506875/profile"))
 				.setWeight(232)
-				.setYearsPro(7)
+				.setExperience(7)
 				.setStatus("INACTIVE")
 				.setTeam(Team.TENNESSEE)
 				.build();
@@ -77,7 +77,7 @@ public class MySQLPlayerDAOIntegrationTest extends AbstractMysqlIntegrationTest 
 				.setProfileId(2506875L)
 				.setProfileUrl(new URL("http://www.nfl.com/player/vinceyoung/2506875/profile"))
 				.setWeight(232)
-				.setYearsPro(7)
+				.setExperience(7)
 				.setStatus("INACTIVE")
 				.setTeam(Team.FREE_AGENT)
 				.build();;
@@ -102,7 +102,7 @@ public class MySQLPlayerDAOIntegrationTest extends AbstractMysqlIntegrationTest 
 				.setProfileId(2506875L)
 				.setProfileUrl(new URL("http://www.nfl.com/player/vinceyoung/2506875/profile"))
 				.setWeight(232)
-				.setYearsPro(7)
+				.setExperience(7)
 				.setStatus("INACTIVE")
 				.setTeam(Team.TENNESSEE)
 				.build();
