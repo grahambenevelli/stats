@@ -2,9 +2,12 @@
 
 ### TODO list
 
-* Get a complete list of players
-* Figure out a id system that is internal
-* Find a way to import game ids
-* Pull out the stats prediction mechanism to its own repo
-
-http://www.nfl.com/players/profile?id=00-0026035
+* Figure out all tests
+* Get games from the site and not a file
+* Combine game stats steps so we only have one call
+* Get drive stats
+* Get a games played stat
+* Get player draft info
+* Get player age
+* Convert to query DSL
+* Fill out actual README

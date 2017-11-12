@@ -7,7 +7,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 defaultTasks 'clean', 'test'
 
 // The main class of the application
-mainClassName = 'com.grahamsfault.nfl.NflStatsService'
+mainClassName = 'com.grahamsfault.nfl.stats.NflStatsService'
 
 repositories {
     mavenCentral()
@@ -67,14 +67,6 @@ task importGameStats(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
     args 'import-game-stats', './src/dist/config/stats.yml'
-}
-
-task testPredictions(type: JavaExec) {
-    group = "test"
-    description = "Test a prediction algorithm."
-    classpath = sourceSets.main.runtimeClasspath
-    main = mainClassName
-    args 'test-prediction', './src/dist/config/stats.yml'
 }
 
 test {

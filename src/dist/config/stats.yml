@@ -1,10 +1,4 @@
-template: Hello, %s!
-
-defaultName: ${DW_DEFAULT_NAME:-Stranger}
-
 server:
-#  softNofileLimit: 1000
-#  hardNofileLimit: 1000
   applicationConnectors:
     - type: http
       port: 8080
@@ -12,11 +6,6 @@ server:
       port: 8443
       keyStorePath: example.keystore
       keyStorePassword: example
-    #this requires the alpn-boot library on the JVM's boot classpath
-    #- type: h2
-    #  port: 8445
-    #  keyStorePath: example.keystore
-    #  keyStorePassword: example
   adminConnectors:
     - type: http
       port: 8081
@@ -25,12 +14,8 @@ server:
       keyStorePath: example.keystore
       keyStorePassword: example
 
-# Logging settings.
 logging:
-
-  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
   level: INFO
-
   appenders:
     - type: console
     - type: file
@@ -43,42 +28,17 @@ logging:
       maxFileSize: 10MB
 
 database:
-  # the name of your JDBC driver
   driverClass: com.mysql.jdbc.Driver
-
-  # the username
   user: homestead
-
-  # the password
   password: secret
-
-  # the JDBC URL
   url: jdbc:mysql://app.dynasty.com/stats
-
-  # any properties specific to your JDBC driver:
   properties:
     charSet: UTF-8
-
-  # the maximum amount of time to wait on an empty pool before throwing an exception
   maxWaitForConnection: 1s
-
-  # the SQL query to run when validating a connection's liveness
   validationQuery: "/* StatsService Health Check */ SELECT 1"
-
-  # the timeout before a connection validation queries fail
   validationQueryTimeout: 3s
-
-  # the minimum number of connections to keep open
   minSize: 8
-
-  # the maximum number of connections to keep open
   maxSize: 32
-
-  # whether or not idle connections should be validated
   checkConnectionWhileIdle: false
-
-  # the amount of time to sleep between runs of the idle connection validation, abandoned cleaner and idle pool resizing
   evictionInterval: 10s
-
-  # the minimum amount of time an connection must sit idle in the pool before it is eligible for eviction
   minIdleTime: 1 minute
