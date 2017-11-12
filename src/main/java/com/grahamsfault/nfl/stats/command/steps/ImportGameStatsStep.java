@@ -1,7 +1,9 @@
 package com.grahamsfault.nfl.stats.command.steps;
 
 import com.grahamsfault.nfl.stats.api.NflService;
+import com.grahamsfault.nfl.stats.api.exception.NflServiceException;
 import com.grahamsfault.nfl.stats.api.model.Game;
+import com.grahamsfault.nfl.stats.api.model.game.GameNotes;
 import com.grahamsfault.nfl.stats.api.model.game.GameStatsWrapper;
 import com.grahamsfault.nfl.stats.manager.GameManager;
 import com.grahamsfault.nfl.stats.manager.ImportManager;
@@ -80,13 +82,15 @@ public class ImportGameStatsStep implements EtlStep {
 	 * @return An optional version of the game's stats
 	 */
 	private Optional<GameStats> gameStats(String eid) {
-		GameStatsWrapper gameStatsWrapper = nflService.gameStats(eid);
-		if (!gameStatsWrapper.getProfiles().containsKey(eid)) {
+		try {
+			GameNotes gameNotes = nflService.getGameNotes(eid);
+			return Optional.of(
+					GameStats.fromGameNotes(eid, gameNotes)
+			);
+		} catch (NflServiceException e) {
+			// TODO make sure this is only happens when the game can not be found
 			return Optional.empty();
 		}
-		return Optional.of(
-				GameStats.fromGameNotes(eid, gameStatsWrapper.getProfiles().get(eid))
-		);
 	}
 
 }

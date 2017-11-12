@@ -1,8 +1,10 @@
 package com.grahamsfault.nfl.stats.api;
 
 import com.grahamsfault.nfl.stats.api.exception.NflServiceException;
+import com.grahamsfault.nfl.stats.api.exception.NflServiceGameDataException;
 import com.grahamsfault.nfl.stats.api.exception.NflServicePlayerDataException;
 import com.grahamsfault.nfl.stats.api.model.Player;
+import com.grahamsfault.nfl.stats.api.model.game.GameNotes;
 import com.grahamsfault.nfl.stats.api.model.game.GameStatsWrapper;
 import com.grahamsfault.nfl.stats.api.model.player.Position;
 import org.jsoup.Jsoup;
@@ -33,14 +35,30 @@ public class NflService {
 	 *
 	 * @param eid The game id
 	 * @return The Game Stats
-	 * TODO tests
 	 */
-	public GameStatsWrapper gameStats(String eid) {
+	private GameStatsWrapper gameStats(String eid) {
 		WebTarget target = client.target("http://www.nfl.com")
 				.path(MessageFormat.format("/liveupdate/game-center/{0}/{0}_gtd.json", eid));
 
 		Response response = target.request().get();
 		return response.readEntity(new GenericType<GameStatsWrapper>() {});
+	}
+
+	/**
+	 * Get the game notes for the given eid
+	 *
+	 * @param eid The id of the game
+	 * @return The Game notes of the matching game
+	 * @throws NflServiceException
+	 * TODO tests
+	 */
+	public GameNotes getGameNotes(String eid) throws NflServiceException {
+		GameStatsWrapper wrapper = this.gameStats(eid);
+		if(wrapper.getProfiles().containsKey(eid)) {
+			throw new NflServiceGameDataException("No games found for eid: " + eid);
+		}
+
+		return wrapper.getProfiles().get(eid);
 	}
 
 	/**

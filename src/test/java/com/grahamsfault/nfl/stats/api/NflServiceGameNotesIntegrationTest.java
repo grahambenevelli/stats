@@ -1,6 +1,7 @@
 package com.grahamsfault.nfl.stats.api;
 
 import com.google.common.collect.Lists;
+import com.grahamsfault.nfl.stats.api.exception.NflServiceException;
 import com.grahamsfault.nfl.stats.api.model.Game;
 import com.grahamsfault.nfl.stats.api.model.Team;
 import com.grahamsfault.nfl.stats.api.model.game.GameNotes;
@@ -16,7 +17,7 @@ import com.grahamsfault.nfl.stats.api.model.game.team.QuarterlyScores;
 import com.grahamsfault.nfl.stats.api.model.player.PlayerStatsSet;
 import com.grahamsfault.nfl.stats.api.model.player.RawStats;
 import com.grahamsfault.nfl.stats.api.model.team.TeamStats;
-import com.grahamsfault.nfl.stats.command.StatsApplicationFactory;
+import com.grahamsfault.nfl.stats.factory.StatsApplicationFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -27,14 +28,16 @@ import java.util.Map;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-public class NflServiceTest {
+public class NflServiceGameNotesIntegrationTest {
 
 	private NflService nflService;
+	private GameNotes gameNotes;
 
 	@BeforeMethod
-	public void setup() {
+	public void setup() throws NflServiceException {
 		StatsApplicationFactory factory = StatsApplicationFactory.instance();
 		nflService = factory.getNflService();
+		gameNotes = this.nflService.getGameNotes("2013090500");
 	}
 
 	@DataProvider
@@ -154,17 +157,7 @@ public class NflServiceTest {
 	}
 
 	@Test
-	public void testGetGameStatsNextUpdate() {
-		GameStatsWrapper actual = this.nflService.gameStats("2013090500");
-		assertEquals(actual.nextupdate, "366");
-	}
-
-	@Test
-	public void testGetGameStatsBasicGameNotes() {
-		GameStatsWrapper actual = this.nflService.gameStats("2013090500");
-		assertTrue(actual.getProfiles().containsKey("2013090500"));
-
-		GameNotes gameNotes = actual.getProfiles().get("2013090500");
+	public void testGetGameStatsBasicGameNotes() throws NflServiceException {
 		assertEquals(gameNotes.getWeather(), null);
 		assertEquals(gameNotes.getMedia(), null);
 		assertEquals(gameNotes.getYl(), "");
@@ -179,9 +172,8 @@ public class NflServiceTest {
 	}
 
 	@Test
-	public void testGetGameStatsAway() {
-		GameStatsWrapper wrapper = this.nflService.gameStats("2013090500");
-		GameTeamNotes actual = wrapper.getProfiles().get("2013090500").getAway();
+	public void testGetGameStatsAway() throws NflServiceException {
+		GameTeamNotes actual = gameNotes.getAway();
 
 		GameTeamNotes expected = new GameTeamNotes(
 				new QuarterlyScores(
@@ -444,8 +436,7 @@ public class NflServiceTest {
 
 	@Test
 	public void testGetGameStatsHome() {
-		GameStatsWrapper wrapper = this.nflService.gameStats("2013090500");
-		GameTeamNotes actual = wrapper.getProfiles().get("2013090500").getHome();
+		GameTeamNotes actual = gameNotes.getHome();
 
 		GameTeamNotes expected = new GameTeamNotes(
 				new QuarterlyScores(
@@ -725,16 +716,14 @@ public class NflServiceTest {
 
 	@Test
 	public void testGetGameStatsGameDrivesBasic() {
-		GameStatsWrapper wrapper = this.nflService.gameStats("2013090500");
-		GameDrives actual = wrapper.getProfiles().get("2013090500").getDrives();
+		GameDrives actual = gameNotes.getDrives();
 
 		assertEquals(actual.getCrntdrv(), 33);
 	}
 
 	@Test
 	public void testGetGameStatsFirstDriveBasic() {
-		GameStatsWrapper wrapper = this.nflService.gameStats("2013090500");
-		Drive actual = wrapper.getProfiles().get("2013090500").getDrives().getDrives().get(0);
+		Drive actual = gameNotes.getDrives().getDrives().get(0);
 
 		assertEquals(actual.getPosteam(), Team.BALTIMORE);
 		assertEquals(actual.getQuarter().intValue(), 1);
@@ -749,8 +738,7 @@ public class NflServiceTest {
 
 	@Test
 	public void testGetGameStatsFirstDrivesFirstPlayBasic() {
-		GameStatsWrapper wrapper = this.nflService.gameStats("2013090500");
-		PlayEntry actual = wrapper.getProfiles().get("2013090500").getDrives().getDrives().get(0).getPlays().getPlays().get(0);
+		PlayEntry actual = gameNotes.getDrives().getDrives().get(0).getPlays().getPlays().get(0);
 
 		assertEquals(actual.getSp().intValue(), 0);
 		assertEquals(actual.getQtr().intValue(), 1);
@@ -766,8 +754,7 @@ public class NflServiceTest {
 
 	@Test
 	public void testGetGameStatsFirstDrivesFirstPlayPlayersStats() {
-		GameStatsWrapper wrapper = this.nflService.gameStats("2013090500");
-		PlayEntry actual = wrapper.getProfiles().get("2013090500").getDrives().getDrives().get(0).getPlays().getPlays().get(0);
+		PlayEntry actual = gameNotes.getDrives().getDrives().get(0).getPlays().getPlays().get(0);
 		PlayPlayersWrapper players = actual.getPlayers();
 
 		Map<String, List<PlayPlayerStatEntry>> playersMap = players.getPlayersMap();
@@ -802,8 +789,7 @@ public class NflServiceTest {
 
 	@Test
 	public void testGetGameStatsSecondDrivesFirstPlayBasic() {
-		GameStatsWrapper wrapper = this.nflService.gameStats("2013090500");
-		PlayEntry actual = wrapper.getProfiles().get("2013090500").getDrives().getDrives().get(0).getPlays().getPlays().get(1);
+		PlayEntry actual = gameNotes.getDrives().getDrives().get(0).getPlays().getPlays().get(1);
 
 		assertEquals(actual.getSp().intValue(), 0);
 		assertEquals(actual.getQtr().intValue(), 1);
@@ -819,8 +805,7 @@ public class NflServiceTest {
 
 	@Test
 	public void testGetGameStatsSecondDrivesFirstPlayPlayersStats() {
-		GameStatsWrapper wrapper = this.nflService.gameStats("2013090500");
-		PlayEntry actual = wrapper.getProfiles().get("2013090500").getDrives().getDrives().get(0).getPlays().getPlays().get(1);
+		PlayEntry actual = gameNotes.getDrives().getDrives().get(0).getPlays().getPlays().get(1);
 		PlayPlayersWrapper players = actual.getPlayers();
 
 		Map<String, List<PlayPlayerStatEntry>> playersMap = players.getPlayersMap();

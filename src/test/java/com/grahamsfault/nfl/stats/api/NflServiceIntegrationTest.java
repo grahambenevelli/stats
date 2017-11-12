@@ -1,13 +1,15 @@
 package com.grahamsfault.nfl.stats.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grahamsfault.nfl.stats.api.model.Player;
+import com.grahamsfault.nfl.stats.api.model.Team;
+import com.grahamsfault.nfl.stats.api.model.game.GameNotes;
 import com.grahamsfault.nfl.stats.api.model.player.Position;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.ws.rs.client.ClientBuilder;
+
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 public class NflServiceIntegrationTest {
 
@@ -15,7 +17,7 @@ public class NflServiceIntegrationTest {
 
 	@BeforeMethod
 	public void setup() {
-		nflService = new NflService(new ObjectMapper());
+		nflService = new NflService(ClientBuilder.newClient());
 	}
 
 	@Test
@@ -48,5 +50,14 @@ public class NflServiceIntegrationTest {
 		assertEquals(player.getCollege(), "Michigan State");
 		assertEquals(player.getExperience(), new Integer(13));
 		assertEquals(player.getHighSchool(), null);
+	}
+
+	@Test
+	public void testGameNotes() throws Exception {
+		GameNotes notes = nflService.getGameNotes("2011100910");
+
+		assertEquals(notes.getHome().getTeam(), Team.DENVER);
+
+		assertEquals(notes.getHome().getTeam(), Team.LOS_ANGELES_CHARGERS);
 	}
 }

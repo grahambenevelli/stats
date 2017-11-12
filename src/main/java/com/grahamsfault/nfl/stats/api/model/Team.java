@@ -1,6 +1,9 @@
 package com.grahamsfault.nfl.stats.api.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.google.common.collect.ImmutableList;
+
+import java.util.List;
 
 public enum Team {
 	ARIZONA("ARI", "Arizona", "Cardinals"),
@@ -9,7 +12,7 @@ public enum Team {
 	BUFFALO("BUF", "Buffalo", "Bills"),
 	CAROLINA("CAR", "Carolina", "Panthers"),
 	CHICAGO("CHI", "Chicago", "Bears"),
-	CINNCINATI("CIN", "Cincinnati", "Bengals"),
+	CINCINNATI("CIN", "Cincinnati", "Bengals"),
 	CLEVELAND("CLE", "Cleveland", "Browns"),
 	DALLAS("DAL", "Dallas", "Cowboys"),
 	DENVER("DEN", "Denver", "Broncos"),
@@ -19,7 +22,8 @@ public enum Team {
 	INDIANAPOLIS("IND", "Indianapolis", "Colts"),
 	JACKSONVILLE("JAC", "Jacksonville", "Jaguars"),
 	KANSAS_CITY("KC", "Kansas City", "Chiefs"),
-	LOS_ANGELES("LA", "Los Angeles", "Rams"),
+	LOS_ANGELES_RAMS(ImmutableList.of("LAR", "STL"), "Los Angeles", "Rams"),
+	LOS_ANGELES_CHARGERS(ImmutableList.of("SD", "LAC"), "Los Angeles", "Chargers"),
 	MIAMI("MIA", "Miami", "Dolphins"),
 	MINNESOTA("MIN", "Minnesota", "Vikings"),
 	NEW_ENGLAND("NE", "New England", "Patriots"),
@@ -29,7 +33,6 @@ public enum Team {
 	OAKLAND("OAK", "Oakland", "Raiders"),
 	PHILADELPHIA("PHI", "Philadelphia", "Eagles"),
 	PITTSBURGH("PIT", "Pittsburgh", "Steelers"),
-	SAN_DIEGO("SD", "San Diego", "Chargers"),
 	SEATTLE("SEA", "Seattle", "Seahawks"),
 	SAN_FRANCISCO("SF", "San Francisco", "49ers"),
 	TAMPA_BAY("TB", "Tampa Bay", "Buccaneers"),
@@ -38,11 +41,17 @@ public enum Team {
 	FREE_AGENT("FA", null, null);
 
 	public final String abbreviation;
+	public final List<String> abbreviations;
 	public final String location;
 	public final String name;
 
 	Team(String abbreviation, String location, String name) {
-		this.abbreviation = abbreviation;
+		this(ImmutableList.of(abbreviation), location, name);
+	}
+
+	Team(List<String> abbreviations, String location, String name) {
+		this.abbreviation = abbreviations.stream().findFirst().get();
+		this.abbreviations = abbreviations;
 		this.location = location;
 		this.name = name;
 	}
@@ -50,7 +59,7 @@ public enum Team {
 	@JsonCreator
 	public static Team forValue(String value) {
 		for (Team team : Team.values()) {
-			if (team.abbreviation.equals(value)) {
+			if (team.abbreviations.stream().anyMatch(s -> s.equals(value))) {
 				return team;
 			}
 		}
