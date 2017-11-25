@@ -1,2 +1,3 @@
-rootProject.name = 'nfl-stats'
-
+rootProject.name = 'live-stats'
+include 'nfl-stats'
+include 'prediction-util'

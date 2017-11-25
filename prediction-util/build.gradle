@@ -1,0 +1,23 @@
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'com.google.guava', name: 'guava', version: '21.0'
+
+    testCompile group: 'org.testng', name: 'testng', version: '6.3.1'
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.8.4'
+}
+
+test {
+    useTestNG()
+	exclude '**/*IntegrationTest.class'
+}
+
+task runIntegrationTests(type: Test) {
+	useTestNG()
+    include '**/*IntegrationTest.class'
+}
+
