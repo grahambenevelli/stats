@@ -1,11 +1,13 @@
 package com.grahamsfault.prediction.util.similarity;
 
-import java.util.Map;
+import com.grahamsfault.prediction.util.Node;
+
+import java.util.List;
 
 public interface CorrelationCalculator {
 
 	/**
 	 * Return the calculateCorrelation from the data and the two entries
 	 */
-	Correlation calculateCorrelation(Map<String, Map<String, Double>> prefs, String person1, String person2);
+	<T extends Number> Correlation calculateCorrelation(List<Node<T>> data1, List<Node<T>> data2);
 }

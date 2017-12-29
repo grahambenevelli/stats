@@ -1,38 +1,29 @@
 package com.grahamsfault.prediction.util.similarity.impl;
 
-import com.google.common.collect.ImmutableList;
 import com.grahamsfault.prediction.util.similarity.Correlation;
 import com.grahamsfault.prediction.util.similarity.CorrelationCalculator;
+import com.grahamsfault.prediction.util.Node;
 
 import java.util.List;
-import java.util.Map;
+import java.util.function.IntConsumer;
+import java.util.function.IntUnaryOperator;
+import java.util.stream.IntStream;
 
 public class EuclideanCalculator implements CorrelationCalculator {
 
 	@Override
-	public Correlation calculateCorrelation(Map<String, Map<String, Double>> prefs, String person1, String person2) {
-		ImmutableList.Builder<String> builder = ImmutableList.<String>builder();
-		if (!prefs.containsKey(person1) || !prefs.containsKey(person2)) {
-			return new Correlation(0);
-		}
-
-		prefs.get(person1).keySet().stream()
-				.filter(key -> prefs.get(person2).containsKey(key))
-				.forEach(builder::add);
-
-		List<String> similarItems = builder.build();
-		if (similarItems.isEmpty()) {
-			return new Correlation(0);
+	public <T extends Number> Correlation calculateCorrelation(List<Node<T>> data1, List<Node<T>> data2) {
+		if (data1.size() != data2.size()) {
+			throw new IllegalArgumentException("Node lists need to be the same size");
 		}
 
 		double sumOfSquares = 0;
-		for (String item : similarItems) {
-			Double score1 = prefs.get(person1).get(item);
-			Double score2 = prefs.get(person2).get(item);
-
-			sumOfSquares += Math.pow(score1-score2, 2);
+		for(int i = 0; i < data1.size(); ++i) {
+			double d1 = data1.get(i).getValue().doubleValue();
+			double d2 = data2.get(i).getValue().doubleValue();
+			sumOfSquares += Math.pow(d1 - d2, 2);
 		}
 
-		return new Correlation(1/(1+Math.sqrt(sumOfSquares)));
+		return Correlation.of(1/(1+Math.sqrt(sumOfSquares)));
 	}
 }

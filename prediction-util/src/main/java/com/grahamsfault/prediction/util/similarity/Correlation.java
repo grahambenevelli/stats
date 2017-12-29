@@ -8,8 +8,12 @@ public class Correlation {
 
 	private final double value;
 
-	public Correlation(double value) {
+	private Correlation(double value) {
 		this.value = value;
+	}
+
+	public static Correlation of(double value) {
+		return new Correlation(value);
 	}
 
 	public double getValue() {
