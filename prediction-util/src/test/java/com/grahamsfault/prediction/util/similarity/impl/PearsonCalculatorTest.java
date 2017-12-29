@@ -3,7 +3,7 @@ package com.grahamsfault.prediction.util.similarity.impl;
 import com.google.common.collect.ImmutableList;
 import com.grahamsfault.prediction.util.similarity.Correlation;
 import com.grahamsfault.prediction.util.similarity.CorrelationCalculator;
-import com.grahamsfault.prediction.util.similarity.Node;
+import com.grahamsfault.prediction.util.Node;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

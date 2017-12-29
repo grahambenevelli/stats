@@ -6,6 +6,8 @@ import com.grahamsfault.prediction.util.similarity.CorrelationCalculator;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.IntStream;
 
 public class PearsonCalculator implements CorrelationCalculator {
 
@@ -17,10 +19,12 @@ public class PearsonCalculator implements CorrelationCalculator {
 
 		double[] p1array = new double[data1.size()];
 		double[] p2array = new double[data2.size()];
-		for (int i = 0; i < data1.size(); ++i) {
-			p1array[i] = data1.get(i).getValue().doubleValue();
-			p2array[i] = data2.get(i).getValue().doubleValue();
-		}
+		IntStream.range(0, data1.size())
+				.boxed()
+				.forEach(i -> {
+					p1array[i] = data1.get(i).getValue().doubleValue();
+					p2array[i] = data2.get(i).getValue().doubleValue();
+				});
 
 		double corr = new PearsonsCorrelation().correlation(p1array, p2array);
 		return Correlation.of(corr);
