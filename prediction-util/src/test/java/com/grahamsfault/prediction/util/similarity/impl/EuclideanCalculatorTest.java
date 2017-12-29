@@ -1,8 +1,8 @@
 package com.grahamsfault.prediction.util.similarity.impl;
 
 import com.google.common.collect.ImmutableMap;
-import com.grahamsfault.prediction.util.similarity.Score;
-import com.grahamsfault.prediction.util.similarity.SimilarityScoreProvider;
+import com.grahamsfault.prediction.util.similarity.Correlation;
+import com.grahamsfault.prediction.util.similarity.CorrelationCalculator;
 import com.grahamsfault.prediction.util.similarity.TestDataset;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -11,32 +11,32 @@ import java.util.Map;
 
 import static org.testng.Assert.assertEquals;
 
-public class EuclideanProviderTest {
+public class EuclideanCalculatorTest {
 
-	private SimilarityScoreProvider scoreProvider;
+	private CorrelationCalculator scoreProvider;
 
 	@BeforeMethod
 	public void setup() {
-		scoreProvider = new EuclideanProvider();
+		scoreProvider = new EuclideanCalculator();
 	}
 
 	@Test
 	public void testTranslatePassingStats() throws Exception {
-		Score actual = scoreProvider.score(TestDataset.getDataset(), TestDataset.LISA_ROSE, TestDataset.GENE_SEYMOUR);
-		assertEquals(actual, new Score(0.29429805508554946));
+		Correlation actual = scoreProvider.calculateCorrelation(TestDataset.getDataset(), TestDataset.LISA_ROSE, TestDataset.GENE_SEYMOUR);
+		assertEquals(actual, new Correlation(0.29429805508554946));
 	}
 
 	@Test
 	public void testFirstEntryEmpty() throws Exception {
-		Score actual = scoreProvider.score(TestDataset.getDataset(), "No One", TestDataset.GENE_SEYMOUR);
-		assertEquals(actual, new Score(0));
+		Correlation actual = scoreProvider.calculateCorrelation(TestDataset.getDataset(), "No One", TestDataset.GENE_SEYMOUR);
+		assertEquals(actual, new Correlation(0));
 	}
 
 	@Test
 	public void testSecondEntryEmpty() throws Exception {
 		Map<String, Map<String, Double>> dataset = TestDataset.getDataset();
-		Score actual = scoreProvider.score(dataset, TestDataset.LISA_ROSE, "No One");
-		assertEquals(actual, new Score(0));
+		Correlation actual = scoreProvider.calculateCorrelation(dataset, TestDataset.LISA_ROSE, "No One");
+		assertEquals(actual, new Correlation(0));
 	}
 
 	@Test
@@ -60,8 +60,8 @@ public class EuclideanProviderTest {
 				)
 				.build();
 
-		Score actual = scoreProvider.score(dataset, TestDataset.LISA_ROSE, TestDataset.GENE_SEYMOUR);
-		assertEquals(actual, new Score(0));
+		Correlation actual = scoreProvider.calculateCorrelation(dataset, TestDataset.LISA_ROSE, TestDataset.GENE_SEYMOUR);
+		assertEquals(actual, new Correlation(0));
 	}
 
 }
