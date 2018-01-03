@@ -187,6 +187,15 @@ public class MySQLImportDAO implements ImportDAO {
 		}
 	}
 
+	@Override
+	public void truncateYearlyStats() throws SQLException {
+		String sql = "TRUNCATE TABLE yearly_stats";
+
+		try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+			statement.execute();
+		}
+	}
+
 	/**
 	 * Consume the result set for an game import log
 	 *

@@ -7,16 +7,22 @@ import com.grahamsfault.nfl.stats.api.NflService;
 import com.grahamsfault.nfl.stats.dao.GameDAO;
 import com.grahamsfault.nfl.stats.dao.ImportDAO;
 import com.grahamsfault.nfl.stats.dao.PlayerDAO;
+import com.grahamsfault.nfl.stats.dao.PredictionDAO;
 import com.grahamsfault.nfl.stats.dao.StatsDAO;
 import com.grahamsfault.nfl.stats.dao.mysql.MySQLGameDAO;
 import com.grahamsfault.nfl.stats.dao.mysql.MySQLImportDAO;
 import com.grahamsfault.nfl.stats.dao.mysql.MySQLPlayerDAO;
+import com.grahamsfault.nfl.stats.dao.mysql.MySQLPredictionDAO;
 import com.grahamsfault.nfl.stats.dao.mysql.MySQLStatsDAO;
 import com.grahamsfault.nfl.stats.file.GameFileReader;
 import com.grahamsfault.nfl.stats.manager.GameManager;
 import com.grahamsfault.nfl.stats.manager.ImportManager;
 import com.grahamsfault.nfl.stats.manager.PlayerManager;
+import com.grahamsfault.nfl.stats.manager.PredictionManager;
 import com.grahamsfault.nfl.stats.manager.StatsManager;
+import com.grahamsfault.nfl.stats.manager.helper.QualifyingNumbersHelper;
+import com.grahamsfault.nfl.stats.manager.helper.average.NaiveAverageHelper;
+import com.grahamsfault.nfl.stats.manager.helper.average.QualifyingAverageHelper;
 
 import javax.sql.DataSource;
 import javax.ws.rs.client.ClientBuilder;
@@ -40,6 +46,10 @@ public class StatsApplicationFactory {
 	private DataSource statsDataSource;
 	private GameFileReader gameFileReader;
 	private NflService nflService;
+	private PredictionManager predictionManager;
+	private PredictionDAO predictionDAO;
+	private NaiveAverageHelper naiveAverageHelper;
+	private QualifyingAverageHelper qualifyingAverageHelper;
 
 	private StatsApplicationFactory() {}
 
@@ -107,6 +117,14 @@ public class StatsApplicationFactory {
 		return importManager;
 	}
 
+	public PredictionManager getPredictionManager(StatsConfiguration configuration) {
+		if (predictionManager == null) {
+			PredictionDAO predictionDAO = getPredictionDAO(configuration);
+			predictionManager = new PredictionManager(predictionDAO);
+		}
+		return predictionManager;
+	}
+
 	/*
 	 * The getter method for DAOs
 	 */
@@ -164,6 +182,19 @@ public class StatsApplicationFactory {
 		return importDAO;
 	}
 
+	/**
+	 * Get the prediction DAO
+	 *
+	 * @param configuration The stats server configuration
+	 * @return The prediction DAO
+	 */
+	public PredictionDAO getPredictionDAO(StatsConfiguration configuration) {
+		if (predictionDAO == null) {
+			predictionDAO = new MySQLPredictionDAO(getStatsDataSource(configuration));
+		}
+		return predictionDAO;
+	}
+
 	/*
 	 * The getter methods for helper classes
 	 */
@@ -214,5 +245,38 @@ public class StatsApplicationFactory {
 			nflService = new NflService(ClientBuilder.newClient());
 		}
 		return nflService;
+	}
+
+	/**
+	 * Get the naive average helper
+	 *
+	 * @param configuration The stats server configuration
+	 * @return The naive average helper
+	 */
+	public NaiveAverageHelper getNaiveAverageHelper(StatsConfiguration configuration) {
+		if (naiveAverageHelper == null) {
+			naiveAverageHelper = new NaiveAverageHelper(
+					getPlayerManager(configuration),
+					getStatsManager(configuration)
+			);
+		}
+		return naiveAverageHelper;
+	}
+
+	/**
+	 * Get the qualifying average helper
+	 *
+	 * @param configuration The stats server configuration
+	 * @return The qualifying average helper
+	 */
+	public QualifyingAverageHelper getQualifyingAverageHelper(QualifyingNumbersHelper qualifyingNumbersHelper, StatsConfiguration configuration) {
+		if (qualifyingAverageHelper == null) {
+			qualifyingAverageHelper = new QualifyingAverageHelper(
+					getPlayerManager(configuration),
+					getStatsManager(configuration),
+					qualifyingNumbersHelper
+			);
+		}
+		return qualifyingAverageHelper;
 	}
 }

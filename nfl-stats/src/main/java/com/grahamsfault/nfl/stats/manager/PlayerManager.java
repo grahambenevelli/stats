@@ -59,4 +59,18 @@ public class PlayerManager {
 			throw new RuntimeException(e);
 		}
 	}
+
+	/**
+	 * Get the set of players that we have stats for in a given year
+	 *
+	 * @param year The year to get players for
+	 * @return The set of players that have stats
+	 */
+	public Set<Player> getPlayersPerYear(int year) {
+		try {
+			return playerDAO.getPlayersPerYear(year);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

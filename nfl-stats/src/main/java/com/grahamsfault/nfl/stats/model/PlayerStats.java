@@ -4,29 +4,10 @@ import com.google.common.base.MoreObjects;
 
 import java.util.Objects;
 
-public class PlayerStats {
+public class PlayerStats extends ActualStats {
 
 	private final String name;
 	private final String id;
-	private final Long passingAttempts;
-	private final Long passingCompletions;
-	private final Long passingYards;
-	private final Long passingTouchdowns;
-	private final Long interceptions;
-	private final Long rushingAttempts;
-	private final Long rushingYards;
-	private final Long rushingTouchdowns;
-	private final Long rushingLong;
-	private final Long rushingLongTouchdown;
-	private final Long receptions;
-	private final Long receivingYards;
-	private final Long receivingTouchdowns;
-	private final Long receivingLong;
-	private final Long receivingLongTouchdown;
-	private final Long fumbles;
-	private final Long fumblesLost;
-	private final Long fumblesRecovered;
-	private final Long fumbleYards;
 
 	private PlayerStats(
 			String name,
@@ -51,27 +32,9 @@ public class PlayerStats {
 			Long fumblesRecovered,
 			Long fumbleYards
 	) {
+		super(passingAttempts, passingCompletions, passingYards, passingTouchdowns, interceptions, rushingAttempts, rushingYards, rushingTouchdowns, rushingLong, rushingLongTouchdown, receptions, receivingYards, receivingTouchdowns, receivingLong, receivingLongTouchdown, fumbles, fumblesLost, fumblesRecovered, fumbleYards);
 		this.name = name;
 		this.id = id;
-		this.passingAttempts = passingAttempts;
-		this.passingCompletions = passingCompletions;
-		this.passingYards = passingYards;
-		this.passingTouchdowns = passingTouchdowns;
-		this.interceptions = interceptions;
-		this.rushingAttempts = rushingAttempts;
-		this.rushingYards = rushingYards;
-		this.rushingTouchdowns = rushingTouchdowns;
-		this.rushingLong = rushingLong;
-		this.rushingLongTouchdown = rushingLongTouchdown;
-		this.receptions = receptions;
-		this.receivingYards = receivingYards;
-		this.receivingTouchdowns = receivingTouchdowns;
-		this.receivingLong = receivingLong;
-		this.receivingLongTouchdown = receivingLongTouchdown;
-		this.fumbles = fumbles;
-		this.fumblesLost = fumblesLost;
-		this.fumblesRecovered = fumblesRecovered;
-		this.fumbleYards = fumbleYards;
 	}
 
 	public String getName() {
@@ -82,140 +45,26 @@ public class PlayerStats {
 		return id;
 	}
 
-	public Long getPassingAttempts() {
-		return passingAttempts;
-	}
-
-	public Long getPassingCompletions() {
-		return passingCompletions;
-	}
-
-	public Long getPassingYards() {
-		return passingYards;
-	}
-
-	public Long getPassingTouchdowns() {
-		return passingTouchdowns;
-	}
-
-	public Long getInterceptions() {
-		return interceptions;
-	}
-
-	public Long getRushingAttempts() {
-		return rushingAttempts;
-	}
-
-	public Long getRushingYards() {
-		return rushingYards;
-	}
-
-	public Long getRushingTouchdowns() {
-		return rushingTouchdowns;
-	}
-
-	public Long getRushingLong() {
-		return rushingLong;
-	}
-
-	public Long getRushingLongTouchdown() {
-		return rushingLongTouchdown;
-	}
-
-	public Long getReceptions() {
-		return receptions;
-	}
-
-	public Long getReceivingYards() {
-		return receivingYards;
-	}
-
-	public Long getReceivingTouchdowns() {
-		return receivingTouchdowns;
-	}
-
-	public Long getReceivingLong() {
-		return receivingLong;
-	}
-
-	public Long getReceivingLongTouchdown() {
-		return receivingLongTouchdown;
-	}
-
-	public Long getFumbles() {
-		return fumbles;
-	}
-
-	public Long getFumblesLost() {
-		return fumblesLost;
-	}
-
-	public Long getFumblesRecovered() {
-		return fumblesRecovered;
-	}
-
-	public Long getFumbleYards() {
-		return fumbleYards;
-	}
-
-	@Override
-	public String toString() {
-		return MoreObjects.toStringHelper(this)
-				.add("name", getName())
-				.add("id", getId())
-				.add("passingAttempts", getPassingAttempts())
-				.add("passingCompletions", getPassingCompletions())
-				.add("passingYards", getPassingYards())
-				.add("passingTouchdowns", getPassingTouchdowns())
-				.add("interceptions", getInterceptions())
-				.add("rushingAttempts", getRushingAttempts())
-				.add("rushingYards", getRushingYards())
-				.add("rushingTouchdowns", getRushingTouchdowns())
-				.add("rushingLong", getRushingLong())
-				.add("rushingLongTouchdown", getRushingTouchdowns())
-				.add("receptions", getReceptions())
-				.add("receivingYards", getReceivingYards())
-				.add("receivingTouchdowns", getReceivingTouchdowns())
-				.add("receivingLong", getReceivingLong())
-				.add("receivingLongTouchdown", getReceivingLongTouchdown())
-				.add("fumbles", getFumbles())
-				.add("fumblesLost", getFumblesLost())
-				.add("fumblesRecovered", getFumblesRecovered())
-				.add("fumbleYards", getFumbleYards())
-				.toString();
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (!(o instanceof PlayerStats)) return false;
 		PlayerStats that = (PlayerStats) o;
-		return Objects.equals(getName(), that.getName()) &&
-				Objects.equals(getId(), that.getId()) &&
-				Objects.equals(getPassingAttempts(), that.getPassingAttempts()) &&
-				Objects.equals(getPassingCompletions(), that.getPassingCompletions()) &&
-				Objects.equals(getPassingYards(), that.getPassingYards()) &&
-				Objects.equals(getPassingTouchdowns(), that.getPassingTouchdowns()) &&
-				Objects.equals(getInterceptions(), that.getInterceptions()) &&
-				Objects.equals(getRushingAttempts(), that.getRushingAttempts()) &&
-				Objects.equals(getRushingYards(), that.getRushingYards()) &&
-				Objects.equals(getRushingTouchdowns(), that.getRushingTouchdowns()) &&
-				Objects.equals(getRushingLong(), that.getRushingLong()) &&
-				Objects.equals(getRushingLongTouchdown(), that.getRushingLongTouchdown()) &&
-				Objects.equals(getReceptions(), that.getReceptions()) &&
-				Objects.equals(getReceivingYards(), that.getReceivingYards()) &&
-				Objects.equals(getReceivingTouchdowns(), that.getReceivingTouchdowns()) &&
-				Objects.equals(getReceivingLong(), that.getReceivingLong()) &&
-				Objects.equals(getReceivingLongTouchdown(), that.getReceivingLongTouchdown()) &&
-				Objects.equals(getFumbles(), that.getFumbles()) &&
-				Objects.equals(getFumblesLost(), that.getFumblesLost()) &&
-				Objects.equals(getFumblesRecovered(), that.getFumblesRecovered()) &&
-				Objects.equals(getFumbleYards(), that.getFumbleYards());
+		return com.google.common.base.Objects.equal(getName(), that.getName()) &&
+				com.google.common.base.Objects.equal(getId(), that.getId());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getName(), getId(), getPassingAttempts(), getPassingCompletions(), getPassingYards(), getPassingTouchdowns(), getInterceptions(), getRushingAttempts(), getRushingYards(), getRushingTouchdowns(), getRushingLong(), getRushingLongTouchdown(), getReceptions(), getReceivingYards(), getReceivingTouchdowns(), getReceivingLong(), getReceivingLongTouchdown(), getFumbles(), getFumblesLost(), getFumblesRecovered(), getFumbleYards());
+		return com.google.common.base.Objects.hashCode(getName(), getId());
+	}
+
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this)
+				.add("name", name)
+				.add("id", id)
+				.toString();
 	}
 
 	public static Builder builder(String name, String id) {

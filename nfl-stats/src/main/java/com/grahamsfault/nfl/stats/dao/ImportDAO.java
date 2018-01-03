@@ -80,4 +80,9 @@ public interface ImportDAO {
 	 * @param playerId The id of the player to mark
 	 */
 	void markPlayerBasicInfoImported(String playerId) throws SQLException;
+
+	/**
+	 * Truncate the yearly stats table so we can rebuild it
+	 */
+	void truncateYearlyStats() throws SQLException;
 }

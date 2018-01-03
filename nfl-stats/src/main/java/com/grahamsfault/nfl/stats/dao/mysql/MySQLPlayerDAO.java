@@ -195,6 +195,7 @@ public class MySQLPlayerDAO implements PlayerDAO {
 				"\tjoin game_stats gs on p.gsis_id = gs.player_id\n" +
 				"\tjoin games g on gs.game_id = g.eid\n" +
 				"where year = ?\n" +
+				"\tAND p.position is not null\n" +
 				"group by p.gsis_id;";
 
 		try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {

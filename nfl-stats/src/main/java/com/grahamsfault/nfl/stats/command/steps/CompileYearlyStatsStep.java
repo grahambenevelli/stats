@@ -19,6 +19,7 @@ public class CompileYearlyStatsStep implements EtlStep {
 	@Override
 	public void run() {
 		List<Integer> years = importManager.getYears();
+		importManager.truncateYearlyStats();
 		for(Integer year : years) {
 			importManager.compileYearlyStats(year);
 		}

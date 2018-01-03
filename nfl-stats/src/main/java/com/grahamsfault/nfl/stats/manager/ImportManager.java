@@ -140,4 +140,12 @@ public class ImportManager {
 			throw new RuntimeException(e);
 		}
 	}
+
+	public void truncateYearlyStats() {
+		try {
+			importDAO.truncateYearlyStats();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

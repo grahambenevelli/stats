@@ -3,6 +3,7 @@ package com.grahamsfault.nfl.stats;
 import com.grahamsfault.nfl.stats.command.GameStatImportCommand;
 import com.grahamsfault.nfl.stats.command.PlayerImportCommand;
 import com.grahamsfault.nfl.stats.command.RunETLCommand;
+import com.grahamsfault.nfl.stats.command.TestPredictionsCommand;
 import com.grahamsfault.nfl.stats.factory.StatsApplicationFactory;
 import com.grahamsfault.nfl.stats.manager.PlayerManager;
 import com.grahamsfault.nfl.stats.resources.player.PlayerByIdResource;
@@ -24,6 +25,7 @@ public class NflStatsService extends Application<StatsConfiguration> {
 		bootstrap.addCommand(new PlayerImportCommand());
 		bootstrap.addCommand(new GameStatImportCommand());
 		bootstrap.addCommand(new RunETLCommand());
+		bootstrap.addCommand(new TestPredictionsCommand());
 		bootstrap.addBundle(new MigrationsBundle<StatsConfiguration>() {
 			@Override
 			public DataSourceFactory getDataSourceFactory(StatsConfiguration configuration) {
