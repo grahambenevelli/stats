@@ -1,6 +1,8 @@
 package com.grahamsfault.nfl.stats.command.prediction.impl;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.grahamsfault.nfl.stats.api.model.Player;
+import com.grahamsfault.nfl.stats.api.model.player.Position;
 import com.grahamsfault.nfl.stats.command.prediction.PredictionExecution;
 import com.grahamsfault.nfl.stats.command.prediction.PredictionResults;
 import com.grahamsfault.nfl.stats.command.prediction.model.AverageStats;
@@ -32,7 +34,7 @@ public class NaiveRepeatStatsPredictionExecution extends PredictionExecution {
 		PredictionResults.Builder predictionBuilder = PredictionResults.builder();
 
 		for (Integer year : getPredictionYears()) {
-			for (Player player : playerManager.getPlayersPerYear(year - 1)) {
+			for (Player player : playerManager.getQualifyingPlayersForYear(year - 1)) {
 				Optional<GuessStats> predictionStats = convertToGuessStats(statsManager.getPlayerYearlyStats(player, year - 1));
 				Optional<PlayerStats> playerStats = statsManager.getPlayerYearlyStats(player, year);
 				if (playerStats.isPresent()) {

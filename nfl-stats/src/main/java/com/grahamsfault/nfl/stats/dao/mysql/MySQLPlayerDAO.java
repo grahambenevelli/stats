@@ -8,6 +8,7 @@ import com.grahamsfault.nfl.stats.api.model.Player;
 import com.grahamsfault.nfl.stats.api.model.Team;
 import com.grahamsfault.nfl.stats.api.model.player.Position;
 import com.grahamsfault.nfl.stats.dao.PlayerDAO;
+import com.grahamsfault.nfl.stats.manager.helper.QualifyingNumbersHelper;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -235,6 +236,36 @@ public class MySQLPlayerDAO implements PlayerDAO {
 
 			try (ResultSet result = statement.executeQuery()) {
 				return consumePlayerResults(result).stream().findFirst();
+			}
+		}
+	}
+
+	@Override
+	public Set<Player> getQualifyingPlayersForYear(int year) throws SQLException {
+		String sql = "select p.*\n" +
+				"from players p\n" +
+				"join yearly_stats ys on p.gsis_id = ys.player_id\n" +
+				"where year = ?\n" +
+				"AND p.position is not null\n" +
+				"AND (" +
+				"(p.position = 'QB' AND ys.passing_attempts > ?) OR " +
+				"(p.position = 'RB' AND (ys.rushing_attempts > ? OR ys.receptions > ?)) OR " +
+				"(p.position = 'WR' AND ys.receptions > ?) OR " +
+				"(p.position = 'TE' AND ys.receptions > ?)" +
+				")" +
+				"group by p.gsis_id;";
+
+		try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+			int i = 0;
+			statement.setInt(++i, year);
+			statement.setInt(++i, QualifyingNumbersHelper.DEFAULT_QB_QUALIFYING_PASSING_ATTEMPTS);
+			statement.setInt(++i, QualifyingNumbersHelper.DEFAULT_RB_QUALIFYING_RUSHING_ATTEMPTS);
+			statement.setInt(++i, QualifyingNumbersHelper.DEFAULT_RB_QUALIFYING_RECEPTIONS);
+			statement.setInt(++i, QualifyingNumbersHelper.DEFAULT_WR_QUALIFYING_RECEPTIONS);
+			statement.setInt(++i, QualifyingNumbersHelper.DEFAULT_TE_QUALIFYING_RECEPTIONS);
+
+			try (ResultSet result = statement.executeQuery()) {
+				return consumePlayerResults(result);
 			}
 		}
 	}

@@ -5,6 +5,7 @@ import com.grahamsfault.nfl.stats.api.model.Player;
 import com.grahamsfault.nfl.stats.dao.PlayerDAO;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -69,6 +70,14 @@ public class PlayerManager {
 	public Set<Player> getPlayersPerYear(int year) {
 		try {
 			return playerDAO.getPlayersPerYear(year);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public Set<Player> getQualifyingPlayersForYear(int year) {
+		try {
+			return playerDAO.getQualifyingPlayersForYear(year);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}

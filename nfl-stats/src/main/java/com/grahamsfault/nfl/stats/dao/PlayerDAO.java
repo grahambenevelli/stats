@@ -62,4 +62,6 @@ public interface PlayerDAO {
 	 * @return The matching player
 	 */
 	Optional<Player> getById(Long playerId) throws SQLException;
+
+	Set<Player> getQualifyingPlayersForYear(int year) throws SQLException;
 }

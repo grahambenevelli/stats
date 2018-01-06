@@ -13,8 +13,9 @@ import java.util.Optional;
  */
 public class QualifyingNumbersHelper {
 
-	public static final int DEFAULT_QB_QUALIFYING_PASSING_ATTEMPTS = 150;
-	public static final int DEFAULT_RB_QUALIFYING_RUSHING_ATTEMPTS = 100;
+	public static final int DEFAULT_QB_QUALIFYING_PASSING_ATTEMPTS = 100;
+	public static final int DEFAULT_RB_QUALIFYING_RUSHING_ATTEMPTS = 50;
+	public static final int DEFAULT_RB_QUALIFYING_RECEPTIONS = 20;
 	public static final int DEFAULT_WR_QUALIFYING_RECEPTIONS = 30;
 	public static final int DEFAULT_TE_QUALIFYING_RECEPTIONS = 20;
 
@@ -61,7 +62,7 @@ public class QualifyingNumbersHelper {
 	 * @return true if qualifies, false if not
 	 */
 	public boolean rbQualifies(PlayerStats playerStats) {
-		return playerStats.getRushingAttempts() > rbQualifyingRushingAttempts;
+		return playerStats.getRushingAttempts() > rbQualifyingRushingAttempts || playerStats.getReceptions() > DEFAULT_RB_QUALIFYING_RECEPTIONS;
 	}
 
 	/**

@@ -1,5 +1,6 @@
 package com.grahamsfault.nfl.stats.command;
 
+import com.google.common.collect.Lists;
 import com.grahamsfault.nfl.stats.StatsConfiguration;
 import com.grahamsfault.nfl.stats.command.prediction.PredictionExecution;
 import com.grahamsfault.nfl.stats.command.prediction.PredictionResults;
@@ -12,11 +13,17 @@ import com.grahamsfault.nfl.stats.manager.helper.QualifyingNumbersHelper;
 import io.dropwizard.cli.ConfiguredCommand;
 import io.dropwizard.setup.Bootstrap;
 import net.sourceforge.argparse4j.inf.Namespace;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * Command to test a prediction process
  */
 public class TestPredictionsCommand extends ConfiguredCommand<StatsConfiguration> {
+
+	private final static Logger LOG = LoggerFactory.getLogger(TestPredictionsCommand.class);
 
 	private static final StatsApplicationFactory factory = StatsApplicationFactory.instance();
 
@@ -26,11 +33,14 @@ public class TestPredictionsCommand extends ConfiguredCommand<StatsConfiguration
 
 	@Override
 	protected void run(Bootstrap<StatsConfiguration> bootstrap, Namespace namespace, StatsConfiguration configuration) throws Exception {
-		PredictionExecution execution = getCurrentTest(configuration);
-		PredictionResults results = execution.run();
+		List<PredictionExecution> executions = getCurrentTests(configuration);
+		for (PredictionExecution execution : executions) {
+			LOG.info("Executing prediction execution: {}", execution.getName());
+			PredictionResults results = execution.run();
 
-		PredictionManager predictionManager = factory.getPredictionManager(configuration);
-		predictionManager.recordResults(execution.getName(), results);
+			PredictionManager predictionManager = factory.getPredictionManager(configuration);
+			predictionManager.recordResults(execution.getName(), results);
+		}
 	}
 
 	/**
@@ -39,8 +49,12 @@ public class TestPredictionsCommand extends ConfiguredCommand<StatsConfiguration
 	 * @param configuration The stats server configuration
 	 * @return The current prediction execution
 	 */
-	private PredictionExecution getCurrentTest(StatsConfiguration configuration) {
-		return getRepeatStatsPredictionExecution(configuration);
+	private List<PredictionExecution> getCurrentTests(StatsConfiguration configuration) {
+		return Lists.newArrayList(
+				getAverageOnlyPredictionExecution(configuration),
+				getQualifyingAveragePredictionExecution(configuration),
+				getRepeatStatsPredictionExecution(configuration)
+		);
 	}
 
 	/**
