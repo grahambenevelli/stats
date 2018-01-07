@@ -3,9 +3,9 @@ package com.grahamsfault.stats.server.dao.mysql;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import com.grahamsfault.stats.server.api.model.Game;
-import com.grahamsfault.stats.server.api.model.Team;
-import com.grahamsfault.stats.server.api.model.game.GameType;
+import com.grahamsfault.nfl.api.model.Game;
+import com.grahamsfault.nfl.api.model.Team;
+import com.grahamsfault.nfl.api.model.game.GameType;
 import com.grahamsfault.stats.server.dao.GameDAO;
 import org.apache.commons.lang3.NotImplementedException;
 

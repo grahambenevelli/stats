@@ -1,9 +1,9 @@
 package com.grahamsfault.stats.server.command.steps;
 
-import com.grahamsfault.stats.server.api.NflService;
-import com.grahamsfault.stats.server.api.exception.NflServiceException;
-import com.grahamsfault.stats.server.api.model.Game;
-import com.grahamsfault.stats.server.api.model.game.GameNotes;
+import com.grahamsfault.nfl.api.NflService;
+import com.grahamsfault.nfl.api.exception.NflServiceException;
+import com.grahamsfault.nfl.api.model.Game;
+import com.grahamsfault.nfl.api.model.game.GameNotes;
 import com.grahamsfault.stats.server.manager.GameManager;
 import com.grahamsfault.stats.server.manager.ImportManager;
 import com.grahamsfault.stats.server.manager.StatsManager;

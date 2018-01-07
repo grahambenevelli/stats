@@ -3,7 +3,7 @@ package com.grahamsfault.stats.server.factory;
 import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grahamsfault.stats.server.StatsConfiguration;
-import com.grahamsfault.stats.server.api.NflService;
+import com.grahamsfault.nfl.api.NflService;
 import com.grahamsfault.stats.server.dao.GameDAO;
 import com.grahamsfault.stats.server.dao.ImportDAO;
 import com.grahamsfault.stats.server.dao.PlayerDAO;

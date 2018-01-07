@@ -1,9 +1,9 @@
 package com.grahamsfault.stats.server.dao.mysql;
 
 import com.grahamsfault.stats.server.AbstractMysqlIntegrationTest;
-import com.grahamsfault.stats.server.api.model.Game;
-import com.grahamsfault.stats.server.api.model.Team;
-import com.grahamsfault.stats.server.api.model.game.GameType;
+import com.grahamsfault.nfl.api.model.Game;
+import com.grahamsfault.nfl.api.model.Team;
+import com.grahamsfault.nfl.api.model.game.GameType;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

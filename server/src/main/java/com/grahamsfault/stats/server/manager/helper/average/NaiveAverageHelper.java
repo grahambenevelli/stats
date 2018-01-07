@@ -1,8 +1,8 @@
 package com.grahamsfault.stats.server.manager.helper.average;
 
 import com.google.common.collect.ImmutableMap;
-import com.grahamsfault.stats.server.api.model.Player;
-import com.grahamsfault.stats.server.api.model.player.Position;
+import com.grahamsfault.nfl.api.model.Player;
+import com.grahamsfault.nfl.api.model.player.Position;
 import com.grahamsfault.stats.server.command.prediction.model.AverageStats;
 import com.grahamsfault.stats.server.manager.PlayerManager;
 import com.grahamsfault.stats.server.manager.StatsManager;

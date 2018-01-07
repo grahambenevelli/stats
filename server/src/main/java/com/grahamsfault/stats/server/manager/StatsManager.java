@@ -1,7 +1,7 @@
 package com.grahamsfault.stats.server.manager;
 
-import com.grahamsfault.stats.server.api.model.Game;
-import com.grahamsfault.stats.server.api.model.Player;
+import com.grahamsfault.nfl.api.model.Game;
+import com.grahamsfault.nfl.api.model.Player;
 import com.grahamsfault.stats.server.dao.StatsDAO;
 import com.grahamsfault.stats.server.model.PlayerStats;
 

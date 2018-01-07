@@ -2,7 +2,7 @@ package com.grahamsfault.stats.server.file;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.grahamsfault.stats.server.api.model.Game;
+import com.grahamsfault.nfl.api.model.Game;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,7 +1,7 @@
 package com.grahamsfault.stats.server.command;
 
 import com.grahamsfault.stats.server.StatsConfiguration;
-import com.grahamsfault.stats.server.api.NflService;
+import com.grahamsfault.nfl.api.NflService;
 import com.grahamsfault.stats.server.command.steps.CompileYearlyStatsStep;
 import com.grahamsfault.stats.server.command.steps.EtlStep;
 import com.grahamsfault.stats.server.command.steps.ImportGamePlayerMapping;

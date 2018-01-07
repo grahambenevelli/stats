@@ -1,6 +1,6 @@
 package com.grahamsfault.stats.server.command.steps;
 
-import com.grahamsfault.stats.server.api.model.Game;
+import com.grahamsfault.nfl.api.model.Game;
 import com.grahamsfault.stats.server.file.GameFileReader;
 import com.grahamsfault.stats.server.manager.GameManager;
 import org.slf4j.Logger;

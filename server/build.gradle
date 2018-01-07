@@ -26,6 +26,7 @@ dependencies {
 	compile 'com.h2database:h2:1.4.191'
 	compile 'mysql:mysql-connector-java:5.1.38'
 	compile 'org.jsoup:jsoup:1.7.2'
+	compile project(':nfl-client')
 
 	testCompile group: 'org.testng', name: 'testng', version: '6.3.1'
 	testCompile group: 'org.mockito', name: 'mockito-all', version: '1.8.4'
@@ -34,6 +35,13 @@ dependencies {
 
 // Configure the run task to start the Dropwizard service
 run {
+	args 'server', './src/dist/config/stats.yml'
+}
+
+task runServer(type: JavaExec) {
+	group = "server"
+	classpath = sourceSets.main.runtimeClasspath
+	main = mainClassName
 	args 'server', './src/dist/config/stats.yml'
 }
 

@@ -1,9 +1,9 @@
 package com.grahamsfault.stats.server.command.steps;
 
-import com.grahamsfault.stats.server.api.NflService;
-import com.grahamsfault.stats.server.api.exception.NflServiceException;
-import com.grahamsfault.stats.server.api.exception.NflServicePlayerDataException;
-import com.grahamsfault.stats.server.api.model.Player;
+import com.grahamsfault.nfl.api.NflService;
+import com.grahamsfault.nfl.api.exception.NflServiceException;
+import com.grahamsfault.nfl.api.exception.NflServicePlayerDataException;
+import com.grahamsfault.nfl.api.model.Player;
 import com.grahamsfault.stats.server.manager.ImportManager;
 import com.grahamsfault.stats.server.manager.PlayerManager;
 import org.slf4j.Logger;

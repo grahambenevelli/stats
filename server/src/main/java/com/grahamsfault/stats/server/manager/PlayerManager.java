@@ -1,7 +1,7 @@
 package com.grahamsfault.stats.server.manager;
 
 import com.google.common.base.Throwables;
-import com.grahamsfault.stats.server.api.model.Player;
+import com.grahamsfault.nfl.api.model.Player;
 import com.grahamsfault.stats.server.dao.PlayerDAO;
 
 import java.sql.SQLException;

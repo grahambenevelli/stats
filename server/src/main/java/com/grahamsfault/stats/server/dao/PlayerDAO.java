@@ -1,6 +1,6 @@
 package com.grahamsfault.stats.server.dao;
 
-import com.grahamsfault.stats.server.api.model.Player;
+import com.grahamsfault.nfl.api.model.Player;
 
 import java.sql.SQLException;
 import java.util.Optional;

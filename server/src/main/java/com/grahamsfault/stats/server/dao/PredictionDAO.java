@@ -1,6 +1,6 @@
 package com.grahamsfault.stats.server.dao;
 
-import com.grahamsfault.stats.server.api.model.player.Position;
+import com.grahamsfault.nfl.api.model.player.Position;
 import com.grahamsfault.stats.server.command.prediction.model.AccuracyStats;
 
 import java.sql.SQLException;

@@ -4,9 +4,9 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import com.grahamsfault.stats.server.api.model.Player;
-import com.grahamsfault.stats.server.api.model.Team;
-import com.grahamsfault.stats.server.api.model.player.Position;
+import com.grahamsfault.nfl.api.model.Player;
+import com.grahamsfault.nfl.api.model.Team;
+import com.grahamsfault.nfl.api.model.player.Position;
 import com.grahamsfault.stats.server.dao.PlayerDAO;
 import com.grahamsfault.stats.server.manager.helper.QualifyingNumbersHelper;
 

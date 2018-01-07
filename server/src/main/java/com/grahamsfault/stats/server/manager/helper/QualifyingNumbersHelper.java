@@ -2,7 +2,7 @@ package com.grahamsfault.stats.server.manager.helper;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
-import com.grahamsfault.stats.server.api.model.player.Position;
+import com.grahamsfault.nfl.api.model.player.Position;
 import com.grahamsfault.stats.server.model.PlayerStats;
 
 import java.util.Map;

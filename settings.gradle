@@ -1,3 +1,5 @@
-rootProject.name = 'live-stats'
-include 'server'
-include 'prediction-util'
+rootProject.name = 'gb-stats'
+
+include ':server'
+include ':nfl-client'
+include ':prediction-util'

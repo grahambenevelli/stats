@@ -1,8 +1,8 @@
 package com.grahamsfault.stats.server.model;
 
 import com.google.common.base.MoreObjects;
-import com.grahamsfault.stats.server.api.model.game.GameNotes;
-import com.grahamsfault.stats.server.api.model.player.RawStats;
+import com.grahamsfault.nfl.api.model.game.GameNotes;
+import com.grahamsfault.nfl.api.model.player.RawStats;
 import com.grahamsfault.stats.server.manager.builder.GameStatsBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

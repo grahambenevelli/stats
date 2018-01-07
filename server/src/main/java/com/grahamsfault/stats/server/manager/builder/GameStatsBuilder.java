@@ -2,7 +2,7 @@ package com.grahamsfault.stats.server.manager.builder;
 
 
 import com.google.common.collect.Maps;
-import com.grahamsfault.stats.server.api.model.player.RawStats;
+import com.grahamsfault.nfl.api.model.player.RawStats;
 import com.grahamsfault.stats.server.model.GameStats;
 import com.grahamsfault.stats.server.model.PlayerStats;
 

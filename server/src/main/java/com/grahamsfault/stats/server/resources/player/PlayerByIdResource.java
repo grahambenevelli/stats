@@ -1,7 +1,7 @@
 package com.grahamsfault.stats.server.resources.player;
 
 import com.codahale.metrics.annotation.Timed;
-import com.grahamsfault.stats.server.api.model.Player;
+import com.grahamsfault.nfl.api.model.Player;
 import com.grahamsfault.stats.server.manager.PlayerManager;
 
 import javax.ws.rs.GET;

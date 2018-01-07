@@ -2,7 +2,7 @@ package com.grahamsfault.stats.server.command.prediction;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
-import com.grahamsfault.stats.server.api.model.player.Position;
+import com.grahamsfault.nfl.api.model.player.Position;
 import com.grahamsfault.stats.server.command.prediction.model.AccuracyStats;
 import com.grahamsfault.stats.server.model.ActualStats;
 import com.grahamsfault.stats.server.model.GuessStats;

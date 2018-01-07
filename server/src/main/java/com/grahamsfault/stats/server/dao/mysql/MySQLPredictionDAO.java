@@ -1,6 +1,6 @@
 package com.grahamsfault.stats.server.dao.mysql;
 
-import com.grahamsfault.stats.server.api.model.player.Position;
+import com.grahamsfault.nfl.api.model.player.Position;
 import com.grahamsfault.stats.server.command.prediction.model.AccuracyStats;
 import com.grahamsfault.stats.server.dao.PredictionDAO;
 import com.grahamsfault.stats.server.dao.mysql.helper.MySQLUtil;

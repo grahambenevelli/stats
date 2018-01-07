@@ -1,6 +1,6 @@
 package com.grahamsfault.stats.server.command.prediction.impl;
 
-import com.grahamsfault.stats.server.api.model.Player;
+import com.grahamsfault.nfl.api.model.Player;
 import com.grahamsfault.stats.server.command.prediction.PredictionExecution;
 import com.grahamsfault.stats.server.command.prediction.PredictionResults;
 import com.grahamsfault.stats.server.command.prediction.model.AverageStats;

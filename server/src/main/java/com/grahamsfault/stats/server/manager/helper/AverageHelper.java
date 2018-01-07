@@ -1,6 +1,6 @@
 package com.grahamsfault.stats.server.manager.helper;
 
-import com.grahamsfault.stats.server.api.model.player.Position;
+import com.grahamsfault.nfl.api.model.player.Position;
 import com.grahamsfault.stats.server.command.prediction.model.AverageStats;
 import com.grahamsfault.stats.server.model.PlayerStats;
 
