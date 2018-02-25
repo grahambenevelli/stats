@@ -1,8 +1,14 @@
 package com.grahamsfault.stats.server.dao.mysql;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.grahamsfault.nfl.api.model.Game;
 import com.grahamsfault.nfl.api.model.Player;
+import com.grahamsfault.nfl.api.model.Team;
+import com.grahamsfault.nfl.api.model.Year;
+import com.grahamsfault.nfl.api.model.player.Position;
+import com.grahamsfault.stats.server.command.prediction.impl.Tuple;
+import com.grahamsfault.stats.server.command.prediction.model.StdDevStats;
 import com.grahamsfault.stats.server.dao.StatsDAO;
 import com.grahamsfault.stats.server.model.PlayerStats;
 
@@ -12,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class MySQLStatsDAO implements StatsDAO {
@@ -118,6 +125,110 @@ public class MySQLStatsDAO implements StatsDAO {
 		}
 	}
 
+	@Override
+	public Map<Position, StdDevStats> getStdDevByPosition() throws SQLException {
+		String select = "select p.position,\n" +
+				"\tstddev(passing_attempts) as passing_attempts,\n" +
+				"\tstddev(passing_completions) as passing_completions,\n" +
+				"\tstddev(passing_yards) as passing_yards,\n" +
+				"\tstddev(passing_touchdowns) as passing_touchdowns,\n" +
+				"\tstddev(interceptions) as interceptions,\n" +
+				"\tstddev(rushing_attempts) as rushing_attempts,\n" +
+				"\tstddev(rushing_yards) as rushing_yards,\n" +
+				"\tstddev(rushing_touchdowns) as rushing_touchdowns,\n" +
+				"\tstddev(rushing_long) as rushing_long,\n" +
+				"\tstddev(rushing_long_touchdown) as rushing_long_touchdown,\n" +
+				"\tstddev(receptions) as receptions,\n" +
+				"\tstddev(receiving_yards) as receiving_yards,\n" +
+				"\tstddev(receiving_touchdowns) as receiving_touchdowns,\n" +
+				"\tstddev(receiving_long) as receiving_long,\n" +
+				"\tstddev(receiving_long_touchdown) as receiving_long_touchdown,\n" +
+				"\tstddev(fumbles) as fumbles,\n" +
+				"\tstddev(fumbles_lost) as fumbles_lost,\n" +
+				"\tstddev(fumbles_recovered) as fumbles_recovered,\n" +
+				"\tstddev(fumble_yards) as fumble_yards\n" +
+				"from yearly_stats ys\n" +
+				"join players p on ys.player_id = p.gsis_id\n" +
+				"where position is not null\n" +
+				"group by position";
+
+		try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(select)) {
+			try (ResultSet result = statement.executeQuery()) {
+				return consumeStdDevByPosition(result);
+			}
+		}
+
+	}
+
+	@Override
+	public Map<Tuple<Player, Year>, PlayerStats> getYearlyPositionStats(Position position, Integer year) throws SQLException {
+		String sql = "select p.*, ys.*\n" +
+				"from yearly_stats ys\n" +
+				"\tjoin players p on ys.player_id = p.gsis_id\n" +
+				"where year = ?\n" +
+				"\tand position = ?;";
+
+		try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+			int i = 0;
+			statement.setInt(++i, year);
+			statement.setString(++i, position.abbreviation);
+
+			try (ResultSet result = statement.executeQuery()) {
+				return consumeYearlyPositionStats(result);
+			}
+		}
+	}
+
+	private Map<Tuple<Player, Year>, PlayerStats> consumeYearlyPositionStats(ResultSet result) throws SQLException {
+		ImmutableMap.Builder<Tuple<Player, Year>, PlayerStats> builder = ImmutableMap.builder();
+		while(result.next()) {
+			PlayerStats playerStats = consumePlayerStats(result);
+			Player player = consumeSinglePlayer(result);
+			Year year = Year.fromIntValue(result.getInt("year"));
+
+			builder.put(Tuple.of(player, year), playerStats);
+		}
+
+		return builder.build();
+	}
+
+	private Map<Position, StdDevStats> consumeStdDevByPosition(ResultSet result) throws SQLException {
+		ImmutableMap.Builder<Position, StdDevStats> mapBuilder = ImmutableMap.builder();
+
+		while(result.next()) {
+			Position position = Position.forValue(result.getString("position"));
+			if (position == null) {
+				throw new IllegalArgumentException("Position cannot be null");
+			}
+
+			StdDevStats stdDevStats = StdDevStats.builder()
+					.passingAttempts(result.getDouble("passing_attempts"))
+					.passingAttempts(result.getDouble("passing_completions"))
+					.passingAttempts(result.getDouble("passing_yards"))
+					.passingAttempts(result.getDouble("passing_touchdowns"))
+					.passingAttempts(result.getDouble("interceptions"))
+					.passingAttempts(result.getDouble("rushing_attempts"))
+					.passingAttempts(result.getDouble("rushing_yards"))
+					.passingAttempts(result.getDouble("rushing_touchdowns"))
+					.passingAttempts(result.getDouble("rushing_long"))
+					.passingAttempts(result.getDouble("rushing_long_touchdown"))
+					.passingAttempts(result.getDouble("receptions"))
+					.passingAttempts(result.getDouble("receiving_yards"))
+					.passingAttempts(result.getDouble("receiving_touchdowns"))
+					.passingAttempts(result.getDouble("receiving_long"))
+					.passingAttempts(result.getDouble("receiving_long_touchdown"))
+					.passingAttempts(result.getDouble("fumbles"))
+					.passingAttempts(result.getDouble("fumbles_lost"))
+					.passingAttempts(result.getDouble("fumbles_recovered"))
+					.passingAttempts(result.getDouble("fumble_yards"))
+					.build();
+
+			mapBuilder.put(position, stdDevStats);
+		}
+
+		return mapBuilder.build();
+	}
+
 	/**
 	 * Consume the stats results from the given result set
 	 *
@@ -130,32 +241,35 @@ public class MySQLStatsDAO implements StatsDAO {
 	private List<PlayerStats> consumePlayerStatsResults(ResultSet result, Player player) throws SQLException {
 		ImmutableList.Builder<PlayerStats> listBuilder = ImmutableList.<PlayerStats>builder();
 		while (result.next()) {
-			PlayerStats.Builder builder = PlayerStats.builder(player.getFullName(), player.getGsisId());
-
-			builder.passingAttempts(zeroOrNull(result.getLong("passing_attempts")));
-			builder.passingCompletions(zeroOrNull(result.getLong("passing_completions")));
-			builder.passingYards(zeroOrNull(result.getLong("passing_yards")));
-			builder.passingTouchdowns(zeroOrNull(result.getLong("passing_touchdowns")));
-			builder.interceptions(zeroOrNull(result.getLong("interceptions")));
-			builder.rushingAttempts(zeroOrNull(result.getLong("rushing_attempts")));
-			builder.rushingYards(zeroOrNull(result.getLong("rushing_yards")));
-			builder.rushingTouchdowns(zeroOrNull(result.getLong("rushing_touchdowns")));
-			builder.rushingLong(zeroOrNull(result.getLong("rushing_long")));
-			builder.rushingLongTouchdown(zeroOrNull(result.getLong("rushing_long_touchdown")));
-			builder.receptions(zeroOrNull(result.getLong("receptions")));
-			builder.receivingYards(zeroOrNull(result.getLong("receiving_yards")));
-			builder.receivingTouchdowns(zeroOrNull(result.getLong("receiving_touchdowns")));
-			builder.receivingLong(zeroOrNull(result.getLong("receiving_long")));
-			builder.receivingLongTouchdown(zeroOrNull(result.getLong("receiving_long_touchdown")));
-			builder.fumbles(zeroOrNull(result.getLong("fumbles")));
-			builder.fumblesLost(zeroOrNull(result.getLong("fumbles_lost")));
-			builder.fumblesRecovered(zeroOrNull(result.getLong("fumbles_recovered")));
-			builder.fumbleYards(zeroOrNull(result.getLong("fumble_yards")));
-
-			listBuilder.add(builder.build());
+			PlayerStats playerStats = consumePlayerStats(result);
+			listBuilder.add(playerStats);
 		}
 
 		return listBuilder.build();
+	}
+
+	private PlayerStats consumePlayerStats(ResultSet result) throws SQLException {
+		return PlayerStats.builder(result.getString("full_name"),result.getString("gsis_id"))
+				.passingAttempts(zeroOrNull(result.getLong("passing_attempts")))
+				.passingCompletions(zeroOrNull(result.getLong("passing_completions")))
+				.passingYards(zeroOrNull(result.getLong("passing_yards")))
+				.passingTouchdowns(zeroOrNull(result.getLong("passing_touchdowns")))
+				.interceptions(zeroOrNull(result.getLong("interceptions")))
+				.rushingAttempts(zeroOrNull(result.getLong("rushing_attempts")))
+				.rushingYards(zeroOrNull(result.getLong("rushing_yards")))
+				.rushingTouchdowns(zeroOrNull(result.getLong("rushing_touchdowns")))
+				.rushingLong(zeroOrNull(result.getLong("rushing_long")))
+				.rushingLongTouchdown(zeroOrNull(result.getLong("rushing_long_touchdown")))
+				.receptions(zeroOrNull(result.getLong("receptions")))
+				.receivingYards(zeroOrNull(result.getLong("receiving_yards")))
+				.receivingTouchdowns(zeroOrNull(result.getLong("receiving_touchdowns")))
+				.receivingLong(zeroOrNull(result.getLong("receiving_long")))
+				.receivingLongTouchdown(zeroOrNull(result.getLong("receiving_long_touchdown")))
+				.fumbles(zeroOrNull(result.getLong("fumbles")))
+				.fumblesLost(zeroOrNull(result.getLong("fumbles_lost")))
+				.fumblesRecovered(zeroOrNull(result.getLong("fumbles_recovered")))
+				.fumbleYards(zeroOrNull(result.getLong("fumble_yards")))
+				.build();
 	}
 
 	private long zeroOrNull(Long value) {
@@ -163,5 +277,28 @@ public class MySQLStatsDAO implements StatsDAO {
 			return 0;
 		}
 		return value;
+	}
+
+	private Player consumeSinglePlayer(ResultSet result) throws SQLException {
+		return new Player(
+				result.getString("birthdate"),
+				result.getString("college"),
+				result.getString("first_name"),
+				result.getString("last_name"),
+				result.getString("full_name"),
+				result.getString("gsis_id"),
+				result.getString("gsis_name"),
+				result.getLong("profile_id"),
+				result.getURL("profile_url"),
+				result.getInt("height"),
+				result.getInt("weight"),
+				result.getInt("number"),
+				result.getString("status"),
+				Team.forValue(result.getString("team")),
+				Position.forValue(result.getString("position")),
+				null,
+				result.getInt("years_pro"),
+				null
+		);
 	}
 }

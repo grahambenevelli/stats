@@ -56,36 +56,39 @@ public class MySQLPlayerDAO implements PlayerDAO {
 	 *
 	 * @param result The result set from the database
 	 * @return The set of players in the result set
-	 * @throws SQLException
-	 * TODO test
+	 * @throws SQLException TODO test
 	 */
 	@VisibleForTesting
 	protected Set<Player> consumePlayerResults(ResultSet result) throws SQLException {
 		ImmutableSet.Builder<Player> ret = ImmutableSet.builder();
 		while (result.next()) {
-			String team = result.getString("team");
-			ret.add(new Player(
-					result.getString("birthdate"),
-					result.getString("college"),
-					result.getString("first_name"),
-					result.getString("last_name"),
-					result.getString("full_name"),
-					result.getString("gsis_id"),
-					result.getString("gsis_name"),
-					result.getLong("profile_id"),
-					result.getURL("profile_url"),
-					result.getInt("height"),
-					result.getInt("weight"),
-					result.getInt("number"),
-					result.getString("status"),
-					Team.forValue(team),
-					Position.forValue(result.getString("position")),
-					null,
-					result.getInt("years_pro"),
-					null
-			));
+			Player player = consumeSinglePlayer(result);
+			ret.add(player);
 		}
 		return ret.build();
+	}
+
+	private Player consumeSinglePlayer(ResultSet result) throws SQLException {
+		return new Player(
+				result.getString("birthdate"),
+				result.getString("college"),
+				result.getString("first_name"),
+				result.getString("last_name"),
+				result.getString("full_name"),
+				result.getString("gsis_id"),
+				result.getString("gsis_name"),
+				result.getLong("profile_id"),
+				result.getURL("profile_url"),
+				result.getInt("height"),
+				result.getInt("weight"),
+				result.getInt("number"),
+				result.getString("status"),
+				Team.forValue(result.getString("team")),
+				Position.forValue(result.getString("position")),
+				null,
+				result.getInt("years_pro"),
+				null
+		);
 	}
 
 	@Override

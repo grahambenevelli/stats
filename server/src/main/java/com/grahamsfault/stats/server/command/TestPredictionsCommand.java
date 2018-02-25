@@ -1,9 +1,12 @@
 package com.grahamsfault.stats.server.command;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.grahamsfault.prediction.util.similarity.impl.EuclideanCalculator;
 import com.grahamsfault.stats.server.StatsConfiguration;
 import com.grahamsfault.stats.server.command.prediction.PredictionExecution;
 import com.grahamsfault.stats.server.command.prediction.PredictionResults;
+import com.grahamsfault.stats.server.command.prediction.impl.NClosestPredictionExecution;
 import com.grahamsfault.stats.server.command.prediction.impl.NaiveAverageOnlyPredictionExecution;
 import com.grahamsfault.stats.server.command.prediction.impl.NaiveRepeatStatsPredictionExecution;
 import com.grahamsfault.stats.server.command.prediction.impl.QualifyingAveragePredictionExecution;
@@ -50,11 +53,12 @@ public class TestPredictionsCommand extends ConfiguredCommand<StatsConfiguration
 	 * @return The current prediction execution
 	 */
 	private List<PredictionExecution> getCurrentTests(StatsConfiguration configuration) {
-		return Lists.newArrayList(
-				getAverageOnlyPredictionExecution(configuration),
-				getQualifyingAveragePredictionExecution(configuration),
-				getRepeatStatsPredictionExecution(configuration)
-		);
+		return ImmutableList.<PredictionExecution>builder()
+				.add(getAverageOnlyPredictionExecution(configuration))
+				.add(getQualifyingAveragePredictionExecution(configuration))
+				.add(getRepeatStatsPredictionExecution(configuration))
+				//.add(getNClosestPredictionExecution(configuration))
+				.build();
 	}
 
 	/**
@@ -104,6 +108,23 @@ public class TestPredictionsCommand extends ConfiguredCommand<StatsConfiguration
 				factory.getImportManager(configuration),
 				factory.getStatsManager(configuration),
 				factory.getPlayerManager(configuration)
+		);
+	}
+
+	/**
+	 * Get the repeat stats prediction execution
+	 *
+	 * @param configuration The stats server configuration
+	 * @return The average only prediction execution
+	 */
+	private NClosestPredictionExecution getNClosestPredictionExecution(StatsConfiguration configuration) {
+		StatsApplicationFactory factory = StatsApplicationFactory.instance();
+		return new NClosestPredictionExecution(
+				10,
+				new EuclideanCalculator(),
+				factory.getPlayerManager(configuration),
+				factory.getImportManager(configuration),
+				factory.getStatsManager(configuration)
 		);
 	}
 }
