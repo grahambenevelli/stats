@@ -7,6 +7,8 @@ import com.grahamsfault.nfl.api.model.Game;
 import com.grahamsfault.nfl.api.model.Team;
 import com.grahamsfault.nfl.api.model.game.GameType;
 import com.grahamsfault.stats.server.dao.GameDAO;
+import com.grahamsfault.stats.server.dao.mysql.consumer.GameConsumer;
+import com.grahamsfault.stats.server.dao.mysql.consumer.ReadOnlyResultSet;
 import org.apache.commons.lang3.NotImplementedException;
 
 import javax.sql.DataSource;
@@ -131,30 +133,15 @@ public class MySQLGameDAO implements GameDAO {
 	 * @param result The result from the database
 	 * @return The set of games from the result set
 	 * @throws SQLException
-	 * TODO test
 	 */
 	@VisibleForTesting
 	protected Set<Game> consumeGameResult(ResultSet result) throws SQLException {
 		ImmutableSet.Builder<Game> ret = ImmutableSet.builder();
 		while (result.next()) {
-			String away = result.getString("away");
-			String home = result.getString("home");
-			String seasonType = result.getString("season_type");
+			Game game = GameConsumer.consumer()
+					.consume(ReadOnlyResultSet.of(result));
 
-			ret.add(new Game(
-					Team.forValue(away),
-					Team.forValue(home),
-					result.getInt("day"),
-					result.getString("eid"),
-					result.getString("gamekey"),
-					result.getString("meridiem"),
-					result.getInt("month"),
-					GameType.forValue(seasonType),
-					result.getString("time"),
-					result.getString("wday"),
-					result.getInt("week"),
-					result.getInt("year")
-			));
+			ret.add(game);
 		}
 		return ret.build();
 	}
