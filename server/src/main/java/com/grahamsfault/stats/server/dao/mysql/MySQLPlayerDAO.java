@@ -5,9 +5,9 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.grahamsfault.nfl.api.model.Player;
-import com.grahamsfault.nfl.api.model.Team;
-import com.grahamsfault.nfl.api.model.player.Position;
 import com.grahamsfault.stats.server.dao.PlayerDAO;
+import com.grahamsfault.stats.server.dao.mysql.consumer.PlayerConsumer;
+import com.grahamsfault.stats.server.dao.mysql.consumer.ReadOnlyResultSet;
 import com.grahamsfault.stats.server.manager.helper.QualifyingNumbersHelper;
 
 import javax.sql.DataSource;
@@ -62,33 +62,12 @@ public class MySQLPlayerDAO implements PlayerDAO {
 	protected Set<Player> consumePlayerResults(ResultSet result) throws SQLException {
 		ImmutableSet.Builder<Player> ret = ImmutableSet.builder();
 		while (result.next()) {
-			Player player = consumeSinglePlayer(result);
-			ret.add(player);
+			ret.add(
+					PlayerConsumer.consumer()
+							.consume(ReadOnlyResultSet.of(result))
+			);
 		}
 		return ret.build();
-	}
-
-	private Player consumeSinglePlayer(ResultSet result) throws SQLException {
-		return new Player(
-				result.getString("birthdate"),
-				result.getString("college"),
-				result.getString("first_name"),
-				result.getString("last_name"),
-				result.getString("full_name"),
-				result.getString("gsis_id"),
-				result.getString("gsis_name"),
-				result.getLong("profile_id"),
-				result.getURL("profile_url"),
-				result.getInt("height"),
-				result.getInt("weight"),
-				result.getInt("number"),
-				result.getString("status"),
-				Team.forValue(result.getString("team")),
-				Position.forValue(result.getString("position")),
-				null,
-				result.getInt("years_pro"),
-				null
-		);
 	}
 
 	@Override

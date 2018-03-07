@@ -1,5 +1,6 @@
 package com.grahamsfault.stats.server.dao.mysql.consumer;
 
+import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -21,5 +22,13 @@ public class ReadOnlyResultSet {
 
 	public int getInt(String columnLabel) throws SQLException {
 		return resultSet.getInt(columnLabel);
+	}
+
+	public long getLong(String columnLabel) throws SQLException {
+		return resultSet.getLong(columnLabel);
+	}
+
+	public URL getURL(String columnLabel) throws SQLException {
+		return resultSet.getURL(columnLabel);
 	}
 }
