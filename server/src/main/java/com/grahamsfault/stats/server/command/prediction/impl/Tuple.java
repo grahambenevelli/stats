@@ -13,4 +13,12 @@ public class Tuple<FIRST, SECOND> {
 	public static <FIRST, SECOND> Tuple<FIRST, SECOND> of(FIRST first, SECOND second) {
 		return new Tuple<>(first, second);
 	}
+
+	public FIRST getFirst() {
+		return first;
+	}
+
+	public SECOND getSecond() {
+		return second;
+	}
 }

@@ -1,7 +1,6 @@
 package com.grahamsfault.stats.server.command.prediction.impl;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
 import com.grahamsfault.nfl.api.model.Player;
 import com.grahamsfault.nfl.api.model.Year;
 import com.grahamsfault.prediction.util.Node;
@@ -30,8 +29,6 @@ public class NClosestPredictionExecution extends PredictionExecution {
 
 	private final int n;
 	private final CorrelationCalculator correlationCalculator;
-	private final PlayerManager playerManager;
-	private final ImportManager importManager;
 	private final StatsManager statsManager;
 
 	public NClosestPredictionExecution(
@@ -40,50 +37,55 @@ public class NClosestPredictionExecution extends PredictionExecution {
 			PlayerManager playerManager,
 			ImportManager importManager,
 			StatsManager statsManager) {
-		super("average-" + n + "-closest-" + correlationCalculator.getClass().getSimpleName());
+		super("average-" + n + "-closest-" + correlationCalculator.getClass().getSimpleName(), importManager, playerManager);
 		this.n = n;
 		this.correlationCalculator = correlationCalculator;
-		this.playerManager = playerManager;
-		this.importManager = importManager;
 		this.statsManager = statsManager;
 	}
 
 	@Override
-	public PredictionResults run() {
-		// Still needs to work this out, only an initial cut
-		PredictionResults.Builder predictionBuilder = PredictionResults.builder();
+	protected Optional<PredictionResults.Unit> entry(Player player, Integer year) {
+		Optional<List<PlayerStats>> closestStats = getNClosest(player, year - 1);
 
-		for (Integer year : getPredictionYears()) {
-			for (Player player : playerManager.getPlayersPerYear(year - 1)) {
-				List<PlayerStats> closestStats = getNClosest(player, year - 1);
-
-				Optional<PlayerStats> playerStats = statsManager.getPlayerYearlyStats(player, year);
-				if (playerStats.isPresent()) {
-					predictionBuilder.increment(player.getPosition(), playerStats.get(), getGuess(closestStats));
-				}
+		if (closestStats.isPresent()) {
+			Optional<PlayerStats> playerStats = statsManager.getPlayerYearlyStats(player, year);
+			if (playerStats.isPresent()) {
+				return Optional.of(
+						PredictionResults.unit(
+								player.getPosition(),
+								playerStats.get(),
+								average(closestStats.get())
+						)
+				);
 			}
 		}
 
-		return predictionBuilder.build();
+		return Optional.empty();
 	}
 
-	@Override
-	protected Optional<PredictionResults.Unit> entry(Player player, Integer year) {
-		throw new RuntimeException();
-	}
-
-	private AverageStats getGuess(List<PlayerStats> closestStats) {
+	/**
+	 * Average stats
+	 *
+	 * @param closestStats The n closest stats
+	 * @return The average of those stats
+	 */
+	private AverageStats average(List<PlayerStats> closestStats) {
 		AverageStats.Builder builder = AverageStats.builder();
-		closestStats.forEach(builder::incrementStats);
+		closestStats.forEach(playerStats -> {
+			builder.incrementPlayersRecieved();
+			builder.incrementStats(playerStats);
+		});
+
 		return builder.build();
 	}
 
-	private List<PlayerStats> getNClosest(Player player, int year) {
+	private Optional<List<PlayerStats>> getNClosest(Player player, int year) {
 		Optional<PlayerStats> playerYearlyStats = statsManager.getPlayerYearlyStats(player, year);
 		if (!playerYearlyStats.isPresent()) {
-			throw new IllegalArgumentException();
+			return Optional.empty();
 		}
 
+		NormalizedStats normalizedPlayerStats = normalizeStats(playerYearlyStats.get(), StdDevStatsHelper.instance(statsManager).getStdDevStats(player.getPosition()));
 		PriorityListGenerator<PlayerStats> priorityListGenerator = new PriorityListGenerator<>(n);
 
 		List<Integer> years = importManager.getYears()
@@ -92,51 +94,66 @@ public class NClosestPredictionExecution extends PredictionExecution {
 				.collect(Collectors.toList());
 
 		for (Integer yearBak : years) {
-			Map<Tuple<Player, Year>, PlayerStats> playerStats = statsManager.getYearlyPositionStats(player.getPosition(), yearBak);
-
-			// convert player stats to std dev stats
-			Map<Tuple<Player, Year>, NormalizedStats> correlationCalculator = playerStats.entrySet()
-					.stream()
-					.map(tuplePlayerStatsEntry -> {
-						NormalizedStats normalizedStats1 = normalizeStats(tuplePlayerStatsEntry.getValue(), StdDevStatsHelper.instance(statsManager).getStdDevStats(player.getPosition()));
-						return Maps.immutableEntry(tuplePlayerStatsEntry.getKey(), normalizedStats1);
-					})
-					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-			correlationCalculator.entrySet()
-					.stream()
-					.forEach(normalizedStats -> playerStats.entrySet()
-							.stream()
-							.forEach(playerStats1 -> priorityListGenerator.add(
-									calculateCorrelation(normalizedStats.getValue(), playerStats1.getValue()),
-									playerStats1.getValue()
-							)));
+			Map<Tuple<Player, Year>, Tuple<NormalizedStats, PlayerStats>> correlationCalculator = getNormalizedStatsForComparison(player, yearBak);
+			processPlayerStats(priorityListGenerator, correlationCalculator, normalizedPlayerStats);
 		}
 
-		return priorityListGenerator.build();
+		return Optional.of(priorityListGenerator.build());
 	}
 
-	private double calculateCorrelation(NormalizedStats normalizedStats, PlayerStats playerStats) {
+	private Map<Tuple<Player, Year>, Tuple<NormalizedStats, PlayerStats>> getNormalizedStatsForComparison(Player player, Integer yearBak) {
+		Map<Tuple<Player, Year>, PlayerStats> playerStats = statsManager.getYearlyPositionStats(player.getPosition(), yearBak);
+
+		// convert player stats to normalized std dev stats
+		return playerStats.entrySet()
+				.stream()
+				.map(tuplePlayerStatsEntry -> {
+					NormalizedStats normalizedStats1 = normalizeStats(tuplePlayerStatsEntry.getValue(), StdDevStatsHelper.instance(statsManager).getStdDevStats(player.getPosition()));
+					return new Tuple<>(
+							tuplePlayerStatsEntry.getKey(),
+							new Tuple<>(
+									normalizedStats1,
+									tuplePlayerStatsEntry.getValue()
+							)
+					);
+				})
+				.collect(Collectors.toMap(Tuple::getFirst, Tuple::getSecond));
+	}
+
+	private void processPlayerStats(PriorityListGenerator<PlayerStats> priorityListGenerator, Map<Tuple<Player, Year>, Tuple<NormalizedStats, PlayerStats>> correlationCalculator, NormalizedStats normalizedPlayerStats) {
+		correlationCalculator.entrySet()
+				.stream()
+				.forEach(tupleTupleEntry -> {
+					Tuple<NormalizedStats, PlayerStats> value = tupleTupleEntry.getValue();
+
+					priorityListGenerator.add(
+							calculateCorrelation(value.getFirst(), normalizedPlayerStats),
+							value.getSecond()
+					);
+				});
+	}
+
+	private double calculateCorrelation(NormalizedStats otherStats, NormalizedStats playerStats) {
 		List<Node<Double>> normalizedNodes = ImmutableList.<Node<Double>>builder()
-				.add(Node.of(normalizedStats.getPassingAttempts()))
-				.add(Node.of(normalizedStats.getPassingCompletions()))
-				.add(Node.of(normalizedStats.getPassingYards()))
-				.add(Node.of(normalizedStats.getPassingTouchdowns()))
-				.add(Node.of(normalizedStats.getInterceptions()))
-				.add(Node.of(normalizedStats.getRushingAttempts()))
-				.add(Node.of(normalizedStats.getRushingYards()))
-				.add(Node.of(normalizedStats.getRushingTouchdowns()))
-				.add(Node.of(normalizedStats.getRushingLong()))
-				.add(Node.of(normalizedStats.getRushingLongTouchdown()))
-				.add(Node.of(normalizedStats.getReceptions()))
-				.add(Node.of(normalizedStats.getReceivingYards()))
-				.add(Node.of(normalizedStats.getReceivingTouchdowns()))
-				.add(Node.of(normalizedStats.getReceivingLong()))
-				.add(Node.of(normalizedStats.getReceivingLongTouchdown()))
-				.add(Node.of(normalizedStats.getFumbles()))
-				.add(Node.of(normalizedStats.getFumblesLost()))
-				.add(Node.of(normalizedStats.getFumblesRecovered()))
-				.add(Node.of(normalizedStats.getFumbleYards()))
+				.add(Node.of(otherStats.getPassingAttempts()))
+				.add(Node.of(otherStats.getPassingCompletions()))
+				.add(Node.of(otherStats.getPassingYards()))
+				.add(Node.of(otherStats.getPassingTouchdowns()))
+				.add(Node.of(otherStats.getInterceptions()))
+				.add(Node.of(otherStats.getRushingAttempts()))
+				.add(Node.of(otherStats.getRushingYards()))
+				.add(Node.of(otherStats.getRushingTouchdowns()))
+				.add(Node.of(otherStats.getRushingLong()))
+				.add(Node.of(otherStats.getRushingLongTouchdown()))
+				.add(Node.of(otherStats.getReceptions()))
+				.add(Node.of(otherStats.getReceivingYards()))
+				.add(Node.of(otherStats.getReceivingTouchdowns()))
+				.add(Node.of(otherStats.getReceivingLong()))
+				.add(Node.of(otherStats.getReceivingLongTouchdown()))
+				.add(Node.of(otherStats.getFumbles()))
+				.add(Node.of(otherStats.getFumblesLost()))
+				.add(Node.of(otherStats.getFumblesRecovered()))
+				.add(Node.of(otherStats.getFumbleYards()))
 				.build();
 
 		List<Node<Double>> playerNodes = ImmutableList.<Node<Double>>builder()
@@ -167,6 +184,25 @@ public class NClosestPredictionExecution extends PredictionExecution {
 	private NormalizedStats normalizeStats(PlayerStats playerStats, StdDevStats stdDevStats) {
 		return NormalizedStats.builder()
 				.passingAttempts(playerStats.getPassingAttempts() * stdDevStats.getPassingAttempts())
+				.passingCompletions(playerStats.getPassingCompletions() * stdDevStats.getPassingCompletions())
+				.passingYards(playerStats.getPassingYards() * stdDevStats.getPassingYards())
+				.passingYards(playerStats.getPassingCompletions() * stdDevStats.getPassingCompletions())
+				.passingTouchdowns(playerStats.getPassingTouchdowns() * stdDevStats.getPassingTouchdowns())
+				.interceptions(playerStats.getInterceptions() * stdDevStats.getInterceptions())
+				.rushingAttempts(playerStats.getRushingAttempts() * stdDevStats.getRushingAttempts())
+				.rushingYards(playerStats.getRushingYards() * stdDevStats.getRushingYards())
+				.rushingTouchdowns(playerStats.getRushingTouchdowns() * stdDevStats.getRushingTouchdowns())
+				.rushingLong(playerStats.getRushingLong() * stdDevStats.getRushingLong())
+				.rushingLongTouchdown(playerStats.getRushingLongTouchdown() * stdDevStats.getRushingLongTouchdown())
+				.receptions(playerStats.getReceptions() * stdDevStats.getReceptions())
+				.receivingYards(playerStats.getReceivingYards() * stdDevStats.getReceivingYards())
+				.receivingTouchdowns(playerStats.getReceivingTouchdowns() * stdDevStats.getReceivingTouchdowns())
+				.receivingLong(playerStats.getReceivingLong() * stdDevStats.getReceivingLong())
+				.receivingLongTouchdown(playerStats.getReceivingLongTouchdown() * stdDevStats.getReceivingLongTouchdown())
+				.fumbles(playerStats.getFumbles() * stdDevStats.getFumbles())
+				.fumblesLost(playerStats.getFumblesLost() * stdDevStats.getFumblesLost())
+				.fumblesRecovered(playerStats.getFumblesRecovered() * stdDevStats.getFumblesRecovered())
+				.fumbleYards(playerStats.getFumbleYards() * stdDevStats.getFumbleYards())
 				.build();
 	}
 
