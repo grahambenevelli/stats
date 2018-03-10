@@ -55,8 +55,8 @@ public class TestPredictionsCommand extends ConfiguredCommand<StatsConfiguration
 	private List<PredictionExecution> getCurrentTests(StatsConfiguration configuration) {
 		return ImmutableList.<PredictionExecution>builder()
 				.add(getAverageOnlyPredictionExecution(configuration))
-				.add(getQualifyingAveragePredictionExecution(configuration))
-				.add(getRepeatStatsPredictionExecution(configuration))
+				//.add(getQualifyingAveragePredictionExecution(configuration))
+				//.add(getRepeatStatsPredictionExecution(configuration))
 				//.add(getNClosestPredictionExecution(configuration))
 				.build();
 	}

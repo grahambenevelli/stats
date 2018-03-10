@@ -1,16 +1,15 @@
 package com.grahamsfault.stats.server.command.prediction.impl;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.grahamsfault.nfl.api.model.Player;
 import com.grahamsfault.nfl.api.model.Year;
-import com.grahamsfault.nfl.api.model.player.Position;
 import com.grahamsfault.prediction.util.Node;
 import com.grahamsfault.prediction.util.similarity.CorrelationCalculator;
 import com.grahamsfault.stats.server.command.prediction.PredictionExecution;
 import com.grahamsfault.stats.server.command.prediction.PredictionResults;
 import com.grahamsfault.stats.server.command.prediction.impl.helper.PriorityListGenerator;
+import com.grahamsfault.stats.server.command.prediction.impl.helper.StdDevStatsHelper;
 import com.grahamsfault.stats.server.command.prediction.model.AverageStats;
 import com.grahamsfault.stats.server.command.prediction.model.NormalizedStats;
 import com.grahamsfault.stats.server.command.prediction.model.StdDevStats;
@@ -19,7 +18,6 @@ import com.grahamsfault.stats.server.manager.PlayerManager;
 import com.grahamsfault.stats.server.manager.StatsManager;
 import com.grahamsfault.stats.server.model.PlayerStats;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -54,11 +52,10 @@ public class NClosestPredictionExecution extends PredictionExecution {
 	public PredictionResults run() {
 		// Still needs to work this out, only an initial cut
 		PredictionResults.Builder predictionBuilder = PredictionResults.builder();
-		Map<Position, StdDevStats> stdDevStatsMap = getStdDevStatsMap();
 
 		for (Integer year : getPredictionYears()) {
 			for (Player player : playerManager.getPlayersPerYear(year - 1)) {
-				List<PlayerStats> closestStats = getNClosest(player, year - 1, stdDevStatsMap.get(player.getPosition()));
+				List<PlayerStats> closestStats = getNClosest(player, year - 1);
 
 				Optional<PlayerStats> playerStats = statsManager.getPlayerYearlyStats(player, year);
 				if (playerStats.isPresent()) {
@@ -70,25 +67,13 @@ public class NClosestPredictionExecution extends PredictionExecution {
 		return predictionBuilder.build();
 	}
 
-	private Map<Position, StdDevStats> getStdDevStatsMap() {
-		ImmutableMap.Builder<Position, StdDevStats> builder = ImmutableMap.builder();
-		Arrays.asList(Position.values()).stream()
-				.forEach(position -> builder.put(position, getStdDevStatsForPostion(position)));
-
-		return builder.build();
-	}
-
-	private StdDevStats getStdDevStatsForPostion(Position position) {
-		return statsManager.getStdDevForPosition(position);
-	}
-
 	private AverageStats getGuess(List<PlayerStats> closestStats) {
 		AverageStats.Builder builder = AverageStats.builder();
 		closestStats.forEach(builder::incrementStats);
 		return builder.build();
 	}
 
-	private List<PlayerStats> getNClosest(Player player, int year, StdDevStats stdDevStats) {
+	private List<PlayerStats> getNClosest(Player player, int year) {
 		Optional<PlayerStats> playerYearlyStats = statsManager.getPlayerYearlyStats(player, year);
 		if (!playerYearlyStats.isPresent()) {
 			throw new IllegalArgumentException();
@@ -108,7 +93,7 @@ public class NClosestPredictionExecution extends PredictionExecution {
 			Map<Tuple<Player, Year>, NormalizedStats> correlationCalculator = playerStats.entrySet()
 					.stream()
 					.map(tuplePlayerStatsEntry -> {
-						NormalizedStats normalizedStats1 = normalizeStats(tuplePlayerStatsEntry.getValue(), stdDevStats);
+						NormalizedStats normalizedStats1 = normalizeStats(tuplePlayerStatsEntry.getValue(), StdDevStatsHelper.instance(statsManager).getStdDevStats(player.getPosition()));
 						return Maps.immutableEntry(tuplePlayerStatsEntry.getKey(), normalizedStats1);
 					})
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -180,13 +165,12 @@ public class NClosestPredictionExecution extends PredictionExecution {
 				.build();
 	}
 
-
 	/**
 	 * Get the prediction years for this execution
 	 *
 	 * @return The prediction years
 	 */
-	private List<Integer> getPredictionYears() {
+	protected List<Integer> getPredictionYears() {
 		return importManager.getYears()
 				.stream()
 				.skip(1)
