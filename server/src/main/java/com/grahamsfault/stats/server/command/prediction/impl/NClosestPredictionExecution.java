@@ -67,6 +67,11 @@ public class NClosestPredictionExecution extends PredictionExecution {
 		return predictionBuilder.build();
 	}
 
+	@Override
+	protected Optional<PredictionResults.Unit> entry(Player player, Integer year) {
+		throw new RuntimeException();
+	}
+
 	private AverageStats getGuess(List<PlayerStats> closestStats) {
 		AverageStats.Builder builder = AverageStats.builder();
 		closestStats.forEach(builder::incrementStats);

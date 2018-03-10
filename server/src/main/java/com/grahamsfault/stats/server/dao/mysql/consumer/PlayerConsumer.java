@@ -44,7 +44,7 @@ public class PlayerConsumer extends AbstractConsumer<Player> {
 		this.status = "status";
 		this.team = "team";
 		this.position = "position";
-		this.experience = "experience";
+		this.experience = "years_pro";
 	}
 
 	public static PlayerConsumer consumer() {

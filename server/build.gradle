@@ -79,7 +79,7 @@ task importGameStats(type: JavaExec) {
 }
 
 task testPredictions(type: JavaExec) {
-	group = "test"
+	group = "prediction"
 	description = "Test a prediction algorithm."
 	classpath = sourceSets.main.runtimeClasspath
 	main = mainClassName

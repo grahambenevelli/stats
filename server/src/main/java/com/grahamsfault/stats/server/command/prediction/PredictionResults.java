@@ -63,6 +63,10 @@ public class PredictionResults {
 		return new Builder();
 	}
 
+	public static Unit unit(Position position, ActualStats actualStats, GuessStats guessStats) {
+		return new Unit(position, actualStats, guessStats);
+	}
+
 	public static class Builder {
 
 		private final Map<Position, AccuracyStats.Builder> builders;
@@ -104,6 +108,14 @@ public class PredictionResults {
 			incrementIncrementalStats(builders.get(position), playerStats, predictionStats);
 		}
 
+		public void increment(Unit unit) {
+			incrementIncrementalStats(
+					builders.get(unit.getPosition()),
+					unit.getActualStats(),
+					unit.getGuessStats()
+			);
+		}
+
 		public PredictionResults build() {
 			return new PredictionResults(
 					this.builders.get(Position.QB).build(),
@@ -111,6 +123,30 @@ public class PredictionResults {
 					this.builders.get(Position.WR).build(),
 					this.builders.get(Position.TE).build()
 			);
+		}
+	}
+
+	public static class Unit {
+		private final Position position;
+		private final ActualStats actualStats;
+		private final GuessStats guessStats;
+
+		public Unit(Position position, ActualStats actualStats, GuessStats guessStats) {
+			this.position = position;
+			this.actualStats = actualStats;
+			this.guessStats = guessStats;
+		}
+
+		public Position getPosition() {
+			return position;
+		}
+
+		public ActualStats getActualStats() {
+			return actualStats;
+		}
+
+		public GuessStats getGuessStats() {
+			return guessStats;
 		}
 	}
 }

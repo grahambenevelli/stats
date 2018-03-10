@@ -48,6 +48,11 @@ public class NaiveRepeatStatsPredictionExecution extends PredictionExecution {
 		return predictionBuilder.build();
 	}
 
+	@Override
+	protected Optional<PredictionResults.Unit> entry(Player player, Integer year) {
+		throw new RuntimeException();
+	}
+
 	private GuessStats zeroedStats() {
 		return AverageStats.builder().build();
 	}
@@ -63,18 +68,6 @@ public class NaiveRepeatStatsPredictionExecution extends PredictionExecution {
 				.build();
 
 		return Optional.of(guessStats);
-	}
-
-	/**
-	 * Get the prediction years for this execution
-	 *
-	 * @return The prediction years
-	 */
-	private List<Integer> getPredictionYears() {
-		return importManager.getYears()
-				.stream()
-				.skip(1)
-				.collect(Collectors.toList());
 	}
 
 }

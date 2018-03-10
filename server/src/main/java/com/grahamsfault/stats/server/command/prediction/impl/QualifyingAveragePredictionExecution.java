@@ -69,16 +69,9 @@ public class QualifyingAveragePredictionExecution extends PredictionExecution {
 		return predictionBuilder.build();
 	}
 
-	/**
-	 * Get the prediction years for this execution
-	 *
-	 * @return The prediction years
-	 */
-	private List<Integer> getPredictionYears() {
-		return importManager.getYears()
-				.stream()
-				.skip(1)
-				.collect(Collectors.toList());
+	@Override
+	protected Optional<PredictionResults.Unit> entry(Player player, Integer year) {
+		throw new RuntimeException();
 	}
 
 }
