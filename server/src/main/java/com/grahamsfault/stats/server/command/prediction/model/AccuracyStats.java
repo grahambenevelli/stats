@@ -83,6 +83,30 @@ public class AccuracyStats extends GuessStats {
 		}
 
 		public AccuracyStats build() {
+			if (playersReviewed == 0) {
+				return new AccuracyStats(
+						0.0,
+						0.0,
+						0.0,
+						0.0,
+						0.0,
+						0.0,
+						0.0,
+						0.0,
+						0.0,
+						0.0,
+						0.0,
+						0.0,
+						0.0,
+						0.0,
+						0.0,
+						0.0,
+						0.0,
+						0.0,
+						0.0
+				);
+			}
+
 			return new AccuracyStats(
 					1.0 * passingAttempts / playersReviewed,
 					1.0 * passingCompletions / playersReviewed,
@@ -102,171 +126,212 @@ public class AccuracyStats extends GuessStats {
 					1.0 * fumbles / playersReviewed,
 					1.0 * fumblesLost / playersReviewed,
 					1.0 * fumblesRecovered / playersReviewed,
-					1.0 * fumbleYards / playersReviewed);
+					1.0 * fumbleYards / playersReviewed
+			);
 		}
 
-		public void incrementPassingAttempts(long passingAttempts) {
+		public Builder incrementPassingAttempts(long passingAttempts) {
 			this.passingAttempts += passingAttempts;
+			return this;
 		}
 
-		public void incrementPassingCompletions(long passingCompletions) {
+		public Builder incrementPassingCompletions(long passingCompletions) {
 			this.passingCompletions += passingCompletions;
+			return this;
 		}
 
-		public void incrementPassingYards(long passingYards) {
+		public Builder incrementPassingYards(long passingYards) {
 			this.passingYards += passingYards;
+			return this;
 		}
 
-		public void incrementPassingTouchdowns(long passingTouchdowns) {
+		public Builder incrementPassingTouchdowns(long passingTouchdowns) {
 			this.passingTouchdowns += passingTouchdowns;
+			return this;
 		}
 
-		public void incrementInterceptions(long interceptions) {
+		public Builder incrementInterceptions(long interceptions) {
 			this.interceptions += interceptions;
+			return this;
 		}
 
-		public void incrementRushingAttempts(long rushingAttempts) {
+		public Builder incrementRushingAttempts(long rushingAttempts) {
 			this.rushingAttempts += rushingAttempts;
+			return this;
 		}
 
-		public void incrementRushingYards(long rushingYards) {
+		public Builder incrementRushingYards(long rushingYards) {
 			this.rushingYards += rushingYards;
+			return this;
 		}
 
-		public void incrementRushingTouchdowns(long rushingTouchdowns) {
+		public Builder incrementRushingTouchdowns(long rushingTouchdowns) {
 			this.rushingTouchdowns += rushingTouchdowns;
+			return this;
 		}
 
-		public void incrementRushingLong(long rushingLong) {
+		public Builder incrementRushingLong(long rushingLong) {
 			this.rushingLong += rushingLong;
+			return this;
 		}
 
-		public void incrementRushingLongTouchdown(long rushingLongTouchdown) {
+		public Builder incrementRushingLongTouchdown(long rushingLongTouchdown) {
 			this.rushingLongTouchdown += rushingLongTouchdown;
+			return this;
 		}
 
-		public void incrementReceptions(long receptions) {
+		public Builder incrementReceptions(long receptions) {
 			this.receptions += receptions;
+			return this;
 		}
 
-		public void incrementReceivingYards(long receivingYards) {
+		public Builder incrementReceivingYards(long receivingYards) {
 			this.receivingYards += receivingYards;
+			return this;
 		}
 
-		public void incrementReceivingTouchdowns(long receivingTouchdowns) {
+		public Builder incrementReceivingTouchdowns(long receivingTouchdowns) {
 			this.receivingTouchdowns += receivingTouchdowns;
+			return this;
 		}
 
-		public void incrementReceivingLong(long receivingLong) {
+		public Builder incrementReceivingLong(long receivingLong) {
 			this.receivingLong += receivingLong;
+			return this;
 		}
 
-		public void incrementReceivingLongTouchdown(long receivingLongTouchdown) {
+		public Builder incrementReceivingLongTouchdown(long receivingLongTouchdown) {
 			this.receivingLongTouchdown += receivingLongTouchdown;
+			return this;
 		}
 
-		public void incrementFumbles(long fumbles) {
+		public Builder incrementFumbles(long fumbles) {
 			this.fumbles += fumbles;
+			return this;
 		}
 
-		public void incrementFumblesLost(long fumblesLost) {
+		public Builder incrementFumblesLost(long fumblesLost) {
 			this.fumblesLost += fumblesLost;
+			return this;
 		}
 
-		public void incrementFumblesRecovered(long fumblesRecovered) {
+		public Builder incrementFumblesRecovered(long fumblesRecovered) {
 			this.fumblesRecovered += fumblesRecovered;
+			return this;
 		}
 
-		public void incrementFumbleYards(long fumbleYards) {
+		public Builder incrementFumbleYards(long fumbleYards) {
 			this.fumbleYards += fumbleYards;
+			return this;
 		}
 
-		public void incrementPlayersReviewed(long playersReviewed) {
+		public Builder incrementPlayersReviewed(long playersReviewed) {
 			this.playersReviewed += playersReviewed;
+			return this;
 		}
 
-		public void incrementPlayersRecieved() {
+		public Builder incrementPlayersRecieved() {
 			this.playersReviewed++;
+			return this;
 		}
 
 		private double value(long playerStat, double predictionStat) {
 			return Math.abs(playerStat - predictionStat);
 		}
 
-		public void incrementPassingAttempts(ActualStats playerStats, GuessStats predictionStats) {
+		public Builder incrementPassingAttempts(ActualStats playerStats, GuessStats predictionStats) {
 			this.passingAttempts += value(playerStats.getPassingAttempts(), predictionStats.getPassingAttempts());
+			return this;
 		}
 
-		public void incrementPassingCompletions(ActualStats playerStats, GuessStats predictionStats) {
+		public Builder incrementPassingCompletions(ActualStats playerStats, GuessStats predictionStats) {
 			this.passingCompletions += value(playerStats.getPassingCompletions(), predictionStats.getPassingCompletions());
+			return this;
 		}
 
-		public void incrementPassingYards(ActualStats playerStats, GuessStats predictionStats) {
+		public Builder incrementPassingYards(ActualStats playerStats, GuessStats predictionStats) {
 			this.passingYards += value(playerStats.getPassingYards(), predictionStats.getPassingYards());
+			return this;
 		}
 
-		public void incrementPassingTouchdowns(ActualStats playerStats, GuessStats predictionStats) {
+		public Builder incrementPassingTouchdowns(ActualStats playerStats, GuessStats predictionStats) {
 			this.passingTouchdowns += value(playerStats.getPassingTouchdowns(), predictionStats.getPassingTouchdowns());
+			return this;
 		}
 
-		public void incrementInterceptions(ActualStats playerStats, GuessStats predictionStats) {
+		public Builder incrementInterceptions(ActualStats playerStats, GuessStats predictionStats) {
 			this.interceptions += value(playerStats.getInterceptions(), predictionStats.getInterceptions());
+			return this;
 		}
 
-		public void incrementRushingAttempts(ActualStats playerStats, GuessStats predictionStats) {
+		public Builder incrementRushingAttempts(ActualStats playerStats, GuessStats predictionStats) {
 			this.rushingAttempts += value(playerStats.getRushingAttempts(), predictionStats.getRushingAttempts());
+			return this;
 		}
 
-		public void incrementRushingYards(ActualStats playerStats, GuessStats predictionStats) {
+		public Builder incrementRushingYards(ActualStats playerStats, GuessStats predictionStats) {
 			this.rushingYards += value(playerStats.getRushingYards(), predictionStats.getRushingYards());
+			return this;
 		}
 
-		public void incrementRushingTouchdowns(ActualStats playerStats, GuessStats predictionStats) {
+		public Builder incrementRushingTouchdowns(ActualStats playerStats, GuessStats predictionStats) {
 			this.rushingTouchdowns += value(playerStats.getRushingTouchdowns(), predictionStats.getRushingTouchdowns());
+			return this;
 		}
 
-		public void incrementRushingLong(ActualStats playerStats, GuessStats predictionStats) {
+		public Builder incrementRushingLong(ActualStats playerStats, GuessStats predictionStats) {
 			this.rushingLong += value(playerStats.getRushingLong(), predictionStats.getRushingLong());
+			return this;
 		}
 
-		public void incrementRushingLongTouchdown(ActualStats playerStats, GuessStats predictionStats) {
+		public Builder incrementRushingLongTouchdown(ActualStats playerStats, GuessStats predictionStats) {
 			this.rushingLongTouchdown += value(playerStats.getRushingLongTouchdown(), predictionStats.getRushingLongTouchdown());
+			return this;
 		}
 
-		public void incrementReceptions(ActualStats playerStats, GuessStats predictionStats) {
+		public Builder incrementReceptions(ActualStats playerStats, GuessStats predictionStats) {
 			this.receptions += value(playerStats.getReceptions(), predictionStats.getReceptions());
+			return this;
 		}
 
-		public void incrementReceivingYards(ActualStats playerStats, GuessStats predictionStats) {
+		public Builder incrementReceivingYards(ActualStats playerStats, GuessStats predictionStats) {
 			this.receivingYards += value(playerStats.getReceivingYards(), predictionStats.getReceivingYards());
+			return this;
 		}
 
-		public void incrementReceivingTouchdowns(ActualStats playerStats, GuessStats predictionStats) {
+		public Builder incrementReceivingTouchdowns(ActualStats playerStats, GuessStats predictionStats) {
 			this.receivingTouchdowns += value(playerStats.getReceivingTouchdowns(), predictionStats.getReceivingTouchdowns());
+			return this;
 		}
 
-		public void incrementReceivingLong(ActualStats playerStats, GuessStats predictionStats) {
+		public Builder incrementReceivingLong(ActualStats playerStats, GuessStats predictionStats) {
 			this.receivingLong += value(playerStats.getReceivingLong(), predictionStats.getReceivingLong());
+			return this;
 		}
 
-		public void incrementReceivingLongTouchdown(ActualStats playerStats, GuessStats predictionStats) {
+		public Builder incrementReceivingLongTouchdown(ActualStats playerStats, GuessStats predictionStats) {
 			this.receivingLongTouchdown += value(playerStats.getReceivingLongTouchdown(), predictionStats.getReceivingLongTouchdown());
+			return this;
 		}
 
-		public void incrementFumbles(ActualStats playerStats, GuessStats predictionStats) {
+		public Builder incrementFumbles(ActualStats playerStats, GuessStats predictionStats) {
 			this.fumbles += value(playerStats.getFumbles(), predictionStats.getFumbles());
+			return this;
 		}
 
-		public void incrementFumblesLost(ActualStats playerStats, GuessStats predictionStats) {
+		public Builder incrementFumblesLost(ActualStats playerStats, GuessStats predictionStats) {
 			this.fumblesLost += value(playerStats.getFumblesLost(), predictionStats.getFumblesLost());
+			return this;
 		}
 
-		public void incrementFumblesRecovered(ActualStats playerStats, GuessStats predictionStats) {
+		public Builder incrementFumblesRecovered(ActualStats playerStats, GuessStats predictionStats) {
 			this.fumblesRecovered += value(playerStats.getFumblesRecovered(), predictionStats.getFumblesRecovered());
+			return this;
 		}
 
-		public void incrementFumbleYards(ActualStats playerStats, GuessStats predictionStats) {
+		public Builder incrementFumbleYards(ActualStats playerStats, GuessStats predictionStats) {
 			this.fumbleYards += value(playerStats.getFumbleYards(), predictionStats.getFumbleYards());
+			return this;
 		}
 	}
 }

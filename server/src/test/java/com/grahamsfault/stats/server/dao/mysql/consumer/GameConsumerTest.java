@@ -1,6 +1,5 @@
 package com.grahamsfault.stats.server.dao.mysql.consumer;
 
-import com.google.common.collect.ImmutableList;
 import com.grahamsfault.nfl.api.model.Game;
 import com.grahamsfault.nfl.api.model.Team;
 import com.grahamsfault.nfl.api.model.game.GameType;
