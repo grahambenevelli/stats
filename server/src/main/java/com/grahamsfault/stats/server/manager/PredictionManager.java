@@ -6,8 +6,6 @@ import com.grahamsfault.nfl.api.model.Year;
 import com.grahamsfault.nfl.api.model.player.Position;
 import com.grahamsfault.prediction.util.Node;
 import com.grahamsfault.prediction.util.similarity.CorrelationCalculator;
-import com.grahamsfault.prediction.util.similarity.impl.EuclideanCalculator;
-import com.grahamsfault.prediction.util.similarity.impl.PearsonCalculator;
 import com.grahamsfault.stats.server.command.prediction.PredictionResults;
 import com.grahamsfault.stats.server.command.prediction.impl.Tuple;
 import com.grahamsfault.stats.server.command.prediction.impl.helper.PriorityListGenerator;
@@ -67,7 +65,7 @@ public class PredictionManager {
 		}
 	}
 
-	public Optional<NClosestResults> nClosest(Player player, int year, int n) {
+	public Optional<NClosestResults> nClosest(CorrelationCalculator calculator, Player player, int year, int n) {
 		Optional<PlayerStats> playerYearlyStats = statsManager.getPlayerYearlyStats(player, year);
 		if (!playerYearlyStats.isPresent()) {
 			return Optional.empty();
@@ -81,7 +79,7 @@ public class PredictionManager {
 				.filter(integer -> integer <= year)
 				.forEach(predictionYear -> {
 					Map<Tuple<Player, Year>, Tuple<NormalizedStats, PlayerStats>> statsMap = getNormalizedStatsForComparison(player, predictionYear);
-					calc(new PearsonCalculator(), priorityListGenerator, statsMap, normalizedPlayerStats);
+					calc(calculator, priorityListGenerator, statsMap, normalizedPlayerStats);
 				});
 
 		List<NClosestResults.Unit> build = priorityListGenerator.build().stream()
@@ -112,23 +110,18 @@ public class PredictionManager {
 	}
 
 	public Optional<List<PlayerStats>> nClosestStatsPrediction(CorrelationCalculator correlationCalculator, Player player, int year, int n) {
-		Optional<PlayerStats> playerYearlyStats = statsManager.getPlayerYearlyStats(player, year);
-		if (!playerYearlyStats.isPresent()) {
+		Optional<NClosestResults> nClosestResults = this.nClosest(correlationCalculator, player, year, n);
+		if (!nClosestResults.isPresent()) {
 			return Optional.empty();
 		}
 
-		NormalizedStats normalizedPlayerStats = normalizeStats(playerYearlyStats.get(), StdDevStatsHelper.instance(statsManager).getStdDevStats(player.getPosition()));
-		PriorityListGenerator<PlayerStats> priorityListGenerator = new PriorityListGenerator<>(n);
+		List<PlayerStats> list = nClosestResults.get().getClosest().stream()
+				.map(unit -> statsManager.getPlayerYearlyStats(unit.getPlayer(), unit.getYear() + 1))
+				.filter(Optional::isPresent)
+				.map(Optional::get)
+				.collect(Collectors.toList());
 
-		importManager.getYears()
-				.stream()
-				.filter(integer -> integer <= year)
-				.forEach(predictionYear -> {
-					Map<Tuple<Player, Year>, Tuple<NormalizedStats, PlayerStats>> statsMap = getNormalizedStatsForComparison(player, predictionYear);
-					processPlayerStats(correlationCalculator, priorityListGenerator, statsMap, normalizedPlayerStats);
-				});
-
-		return Optional.of(priorityListGenerator.build());
+		return Optional.of(list);
 	}
 
 	private NormalizedStats normalizeStats(PlayerStats playerStats, StdDevStats stdDevStats) {
@@ -173,19 +166,6 @@ public class PredictionManager {
 					);
 				})
 				.collect(Collectors.toMap(Tuple::getFirst, Tuple::getSecond));
-	}
-
-	private void processPlayerStats(CorrelationCalculator correlationCalculator, PriorityListGenerator<PlayerStats> priorityListGenerator, Map<Tuple<Player, Year>, Tuple<NormalizedStats, PlayerStats>> statsMap, NormalizedStats normalizedPlayerStats) {
-		statsMap.entrySet()
-				.stream()
-				.forEach(tupleTupleEntry -> {
-					Tuple<NormalizedStats, PlayerStats> value = tupleTupleEntry.getValue();
-
-					priorityListGenerator.add(
-							calculateCorrelation(correlationCalculator, value.getFirst(), normalizedPlayerStats),
-							value.getSecond()
-					);
-				});
 	}
 
 	private double calculateCorrelation(CorrelationCalculator correlationCalculator, NormalizedStats otherStats, NormalizedStats playerStats) {

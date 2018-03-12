@@ -3,10 +3,10 @@ package com.grahamsfault.stats.server.resources.player;
 import com.codahale.metrics.annotation.Timed;
 import com.grahamsfault.nfl.api.model.Player;
 import com.grahamsfault.prediction.util.similarity.impl.EuclideanCalculator;
+import com.grahamsfault.prediction.util.similarity.impl.PearsonCalculator;
 import com.grahamsfault.stats.server.manager.PlayerManager;
 import com.grahamsfault.stats.server.manager.PredictionManager;
 import com.grahamsfault.stats.server.model.NClosestResults;
-import com.grahamsfault.stats.server.model.PlayerStats;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -14,7 +14,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 import java.util.Optional;
 
 @Path("/player/{playerId}/closest/{n}/{year}")
@@ -37,7 +36,7 @@ public class NClosestPlayersResource {
             throw new NotFoundException("Player with id " + playerId + " was not found");
         }
 
-        Optional<NClosestResults> nClosest = predictionManager.nClosest(player.get(), year, n);
+        Optional<NClosestResults> nClosest = predictionManager.nClosest(new EuclideanCalculator(), player.get(), year, n);
         if (!nClosest.isPresent()) {
             throw new NotFoundException("Stats for player " + playerId + " was not found for year " + year);
         }
