@@ -6,6 +6,7 @@ import com.grahamsfault.stats.server.command.RunETLCommand;
 import com.grahamsfault.stats.server.command.TestPredictionsCommand;
 import com.grahamsfault.stats.server.factory.StatsApplicationFactory;
 import com.grahamsfault.stats.server.manager.PlayerManager;
+import com.grahamsfault.stats.server.resources.player.NClosestPlayersResource;
 import com.grahamsfault.stats.server.resources.player.PlayerByIdResource;
 import com.grahamsfault.stats.server.resources.player.PlayerSearchResource;
 import io.dropwizard.Application;
@@ -43,5 +44,6 @@ public class NflStatsService extends Application<StatsConfiguration> {
 
 		environment.jersey().register(new PlayerSearchResource(factory.getPlayerManager(configuration)));
 		environment.jersey().register(new PlayerByIdResource(playerManager));
+		environment.jersey().register(new NClosestPlayersResource(playerManager, factory.getPredictionManager(configuration)));
 	}
 }

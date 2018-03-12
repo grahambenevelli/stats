@@ -2,6 +2,7 @@ package com.grahamsfault.stats.server.command;
 
 import com.google.common.collect.ImmutableList;
 import com.grahamsfault.prediction.util.similarity.impl.EuclideanCalculator;
+import com.grahamsfault.prediction.util.similarity.impl.PearsonCalculator;
 import com.grahamsfault.stats.server.StatsConfiguration;
 import com.grahamsfault.stats.server.command.prediction.PredictionExecution;
 import com.grahamsfault.stats.server.command.prediction.PredictionResults;
@@ -119,11 +120,11 @@ public class TestPredictionsCommand extends ConfiguredCommand<StatsConfiguration
 	private NClosestPredictionExecution getNClosestPredictionExecution(StatsConfiguration configuration) {
 		StatsApplicationFactory factory = StatsApplicationFactory.instance();
 		return new NClosestPredictionExecution(
-				5,
+				10,
 				new EuclideanCalculator(),
 				factory.getPlayerManager(configuration),
 				factory.getImportManager(configuration),
-				factory.getStatsManager(configuration)
-		);
+				factory.getStatsManager(configuration),
+				factory.getPredictionManager(configuration));
 	}
 }

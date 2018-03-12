@@ -120,7 +120,9 @@ public class StatsApplicationFactory {
 	public PredictionManager getPredictionManager(StatsConfiguration configuration) {
 		if (predictionManager == null) {
 			PredictionDAO predictionDAO = getPredictionDAO(configuration);
-			predictionManager = new PredictionManager(predictionDAO);
+			StatsManager statsManager = getStatsManager(configuration);
+			ImportManager importManager = getImportManager(configuration);
+			predictionManager = new PredictionManager(predictionDAO, statsManager, importManager);
 		}
 		return predictionManager;
 	}

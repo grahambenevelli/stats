@@ -25,71 +25,88 @@ public class PriorityListGeneratorTest {
 	public static Object[][] credentials() {
 		return new Object[][] {
 				{
-						ImmutableList.<Integer>builder()
+						ImmutableList.<Double>builder()
 								.build(),
-						ImmutableList.<Integer>builder()
-								.build(),
-				},
-				{
-						ImmutableList.<Integer>builder()
-								.add(1)
-								.build(),
-						ImmutableList.<Integer>builder()
-								.add(1)
+						ImmutableList.<Double>builder()
 								.build(),
 				},
 				{
-						ImmutableList.<Integer>builder()
-								.add(2)
-								.add(1)
+						ImmutableList.<Double>builder()
+								.add(1.0)
 								.build(),
-						ImmutableList.<Integer>builder()
-								.add(2)
-								.add(1)
+						ImmutableList.<Double>builder()
+								.add(1.0)
 								.build(),
 				},
 				{
-						ImmutableList.<Integer>builder()
-								.add(1)
-								.add(2)
+						ImmutableList.<Double>builder()
+								.add(2.0)
+								.add(1.0)
 								.build(),
-						ImmutableList.<Integer>builder()
-								.add(2)
-								.add(1)
-								.build(),
-				},
-				{
-						ImmutableList.<Integer>builder()
-								.add(1)
-								.add(2)
-								.add(3)
-								.add(4)
-								.add(5)
-								.add(6)
-								.build(),
-						ImmutableList.<Integer>builder()
-								.add(6)
-								.add(5)
-								.add(4)
-								.add(3)
-								.add(2)
+						ImmutableList.<Double>builder()
+								.add(2.0)
+								.add(1.0)
 								.build(),
 				},
 				{
-						ImmutableList.<Integer>builder()
-								.add(3)
-								.add(6)
-								.add(4)
-								.add(5)
-								.add(2)
-								.add(1)
+						ImmutableList.<Double>builder()
+								.add(1.0)
+								.add(2.0)
 								.build(),
-						ImmutableList.<Integer>builder()
-								.add(6)
-								.add(5)
-								.add(4)
-								.add(3)
-								.add(2)
+						ImmutableList.<Double>builder()
+								.add(2.0)
+								.add(1.0)
+								.build(),
+				},
+				{
+						ImmutableList.<Double>builder()
+								.add(1.0)
+								.add(2.0)
+								.add(3.0)
+								.add(4.0)
+								.add(5.0)
+								.add(6.0)
+								.build(),
+						ImmutableList.<Double>builder()
+								.add(6.0)
+								.add(5.0)
+								.add(4.0)
+								.add(3.0)
+								.add(2.0)
+								.build(),
+				},
+				{
+						ImmutableList.<Double>builder()
+								.add(3.0)
+								.add(6.0)
+								.add(4.0)
+								.add(5.0)
+								.add(2.0)
+								.add(1.0)
+								.build(),
+						ImmutableList.<Double>builder()
+								.add(6.0)
+								.add(5.0)
+								.add(4.0)
+								.add(3.0)
+								.add(2.0)
+								.build(),
+				},
+				{
+						ImmutableList.<Double>builder()
+								.add(0.3)
+								.add(0.6)
+								.add(0.4)
+								.add(0.5)
+								.add(0.2)
+								.add(0.1)
+								.build(),
+						ImmutableList.<Double>builder()
+								.add(0.6)
+								.add(0.5)
+								.add(0.4)
+								.add(0.3)
+								.add(0.2)
 								.build(),
 				}
 		};
@@ -97,8 +114,8 @@ public class PriorityListGeneratorTest {
 	}
 
 	@Test(dataProvider = "items")
-	public void testGetPlayerById(List<Integer> items, List<IntStream> expected) {
-		PriorityListGenerator<Integer> listGenerator = new PriorityListGenerator<>(5);
+	public void testGetPlayerById(List<Double> items, List<IntStream> expected) {
+		PriorityListGenerator<Double> listGenerator = new PriorityListGenerator<>(5);
 		items.forEach((item) -> listGenerator.add(item.doubleValue(), item));
 
 		assertEquals(listGenerator.build(), expected);

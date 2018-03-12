@@ -40,7 +40,16 @@ public class PriorityListGenerator<T> {
 		Collections.sort(list, new Comparator<PriorityNode>() {
 			@Override
 			public int compare(PriorityNode o1, PriorityNode o2) {
-				return (int) ((o2.value - o1.value) * 1000);
+				double diff = o2.value - o1.value;
+				if (diff == 0.0) {
+					return 0;
+				}
+
+				if (diff < 0) {
+					return -1;
+				}
+
+				return 1;
 			}
 		});
 
