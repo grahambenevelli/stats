@@ -18,10 +18,6 @@ public abstract class PredictionExecution {
 	protected final ImportManager importManager;
 	protected final PlayerManager playerManager;
 
-	protected PredictionExecution(String name) {
-		this(name, null, null);
-	}
-
 	protected PredictionExecution(
 			String name,
 			ImportManager importManager,

@@ -16,15 +16,11 @@ import java.util.stream.Collectors;
 
 public class NaiveRepeatStatsPredictionExecution extends PredictionExecution {
 
-	private final ImportManager importManager;
 	private final StatsManager statsManager;
-	private final PlayerManager playerManager;
 
 	public NaiveRepeatStatsPredictionExecution(ImportManager importManager, StatsManager statsManager, PlayerManager playerManager) {
-		super("repeat-stats");
-		this.importManager = importManager;
+		super("repeat-stats", importManager, playerManager);
 		this.statsManager = statsManager;
-		this.playerManager = playerManager;
 	}
 
 	@Override

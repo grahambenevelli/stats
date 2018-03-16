@@ -1,6 +1,7 @@
 package com.grahamsfault.stats.server.command;
 
 import com.google.common.collect.ImmutableList;
+import com.grahamsfault.prediction.util.similarity.CorrelationCalculator;
 import com.grahamsfault.prediction.util.similarity.impl.EuclideanCalculator;
 import com.grahamsfault.prediction.util.similarity.impl.PearsonCalculator;
 import com.grahamsfault.stats.server.StatsConfiguration;
@@ -54,10 +55,17 @@ public class TestPredictionsCommand extends ConfiguredCommand<StatsConfiguration
 	 */
 	private List<PredictionExecution> getCurrentTests(StatsConfiguration configuration) {
 		return ImmutableList.<PredictionExecution>builder()
-				//.add(getAverageOnlyPredictionExecution(configuration))
-				//.add(getQualifyingAveragePredictionExecution(configuration))
-				//.add(getRepeatStatsPredictionExecution(configuration))
-				.add(getNClosestPredictionExecution(configuration))
+				.add(getAverageOnlyPredictionExecution(configuration))
+				.add(getQualifyingAveragePredictionExecution(configuration))
+				.add(getRepeatStatsPredictionExecution(configuration))
+				.add(getNClosestPredictionExecution(configuration, new EuclideanCalculator(), 5))
+				.add(getNClosestPredictionExecution(configuration, new EuclideanCalculator(), 10))
+				.add(getNClosestPredictionExecution(configuration, new EuclideanCalculator(), 20))
+				.add(getNClosestPredictionExecution(configuration, new EuclideanCalculator(), 50))
+				.add(getNClosestPredictionExecution(configuration, new PearsonCalculator(), 5))
+				.add(getNClosestPredictionExecution(configuration, new PearsonCalculator(), 10))
+				.add(getNClosestPredictionExecution(configuration, new PearsonCalculator(), 20))
+				.add(getNClosestPredictionExecution(configuration, new PearsonCalculator(), 50))
 				.build();
 	}
 
@@ -111,17 +119,11 @@ public class TestPredictionsCommand extends ConfiguredCommand<StatsConfiguration
 		);
 	}
 
-	/**
-	 * Get the repeat stats prediction execution
-	 *
-	 * @param configuration The stats server configuration
-	 * @return The average only prediction execution
-	 */
-	private NClosestPredictionExecution getNClosestPredictionExecution(StatsConfiguration configuration) {
+	private NClosestPredictionExecution getNClosestPredictionExecution(StatsConfiguration configuration, CorrelationCalculator correlationCalculator, int n) {
 		StatsApplicationFactory factory = StatsApplicationFactory.instance();
 		return new NClosestPredictionExecution(
-				10,
-				new EuclideanCalculator(),
+				n,
+				correlationCalculator,
 				factory.getPlayerManager(configuration),
 				factory.getImportManager(configuration),
 				factory.getStatsManager(configuration),

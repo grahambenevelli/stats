@@ -23,9 +23,7 @@ import java.util.stream.Collectors;
  */
 public class QualifyingAveragePredictionExecution extends PredictionExecution {
 
-	private final ImportManager importManager;
 	private final StatsManager statsManager;
-	private final PlayerManager playerManager;
 	private final QualifyingNumbersHelper qualifyingNumbersHelper;
 	private final NaiveAverageHelper naiveAverageHelper;
 	private final QualifyingAverageHelper qualifyingAverageHelper;;
@@ -37,10 +35,8 @@ public class QualifyingAveragePredictionExecution extends PredictionExecution {
 			QualifyingNumbersHelper qualifyingNumbersHelper,
 			NaiveAverageHelper naiveAverageHelper,
 			QualifyingAverageHelper qualifyingAverageHelper) {
-		super("qualifying-average");
-		this.importManager = importManager;
+		super("qualifying-average", importManager, playerManager);
 		this.statsManager = statsManager;
-		this.playerManager = playerManager;
 		this.qualifyingNumbersHelper = qualifyingNumbersHelper;
 		this.naiveAverageHelper = naiveAverageHelper;
 		this.qualifyingAverageHelper = qualifyingAverageHelper;
