@@ -13,6 +13,7 @@ import com.grahamsfault.stats.server.command.prediction.impl.NaiveRepeatStatsPre
 import com.grahamsfault.stats.server.command.prediction.impl.QualifyingAveragePredictionExecution;
 import com.grahamsfault.stats.server.factory.StatsApplicationFactory;
 import com.grahamsfault.stats.server.manager.PredictionManager;
+import com.grahamsfault.stats.server.manager.helper.PlayerCorrelationCalculator;
 import com.grahamsfault.stats.server.manager.helper.QualifyingNumbersHelper;
 import io.dropwizard.cli.ConfiguredCommand;
 import io.dropwizard.setup.Bootstrap;
@@ -43,7 +44,7 @@ public class TestPredictionsCommand extends ConfiguredCommand<StatsConfiguration
 			PredictionResults results = execution.run();
 
 			PredictionManager predictionManager = factory.getPredictionManager(configuration);
-			predictionManager.recordResults(execution.getName(), results);
+			predictionManager.recordResults(execution.getName(), execution.getDescription(), results);
 		}
 	}
 
@@ -123,7 +124,7 @@ public class TestPredictionsCommand extends ConfiguredCommand<StatsConfiguration
 		StatsApplicationFactory factory = StatsApplicationFactory.instance();
 		return new NClosestPredictionExecution(
 				n,
-				correlationCalculator,
+				new PlayerCorrelationCalculator(correlationCalculator),
 				factory.getPlayerManager(configuration),
 				factory.getImportManager(configuration),
 				factory.getStatsManager(configuration),

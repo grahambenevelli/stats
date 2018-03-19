@@ -20,12 +20,13 @@ public class MySQLPredictionDAO implements PredictionDAO {
 	}
 
 	@Override
-	public void recordTestRunAccuracy(String name, Position position, AccuracyStats stats) throws SQLException {
+	public void recordTestRunAccuracy(String name, String description, Position position, AccuracyStats stats) throws SQLException {
 		String sql = "INSERT INTO `prediction_accuracy` " +
-				"(`name`, `position`, `passing_attempts`, `passing_completions`, `passing_yards`, `passing_touchdowns`, `interceptions`, `rushing_attempts`, `rushing_yards`, `rushing_touchdowns`, `rushing_long`, `rushing_long_touchdown`, `receptions`, `receiving_yards`, `receiving_touchdowns`, `receiving_long`, `receiving_long_touchdown`, `fumbles`, `fumbles_lost`, `fumbles_recovered`, `fumble_yards`)" +
-				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+				"(`name`, `description`, `position`, `passing_attempts`, `passing_completions`, `passing_yards`, `passing_touchdowns`, `interceptions`, `rushing_attempts`, `rushing_yards`, `rushing_touchdowns`, `rushing_long`, `rushing_long_touchdown`, `receptions`, `receiving_yards`, `receiving_touchdowns`, `receiving_long`, `receiving_long_touchdown`, `fumbles`, `fumbles_lost`, `fumbles_recovered`, `fumble_yards`)" +
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
 				"ON DUPLICATE KEY UPDATE " +
 				"`name`=?, " +
+				"`description`=?, " +
 				"`position`=?, " +
 				"`passing_attempts`=?, " +
 				"`passing_completions`=?, " +
@@ -50,6 +51,7 @@ public class MySQLPredictionDAO implements PredictionDAO {
 		try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 			int i = 0;
 			statement.setString(++i, name);
+			statement.setString(++i, description);
 			statement.setString(++i, position.abbreviation);
 			statement.setDouble(++i, MySQLUtil.zeroOrNull(stats.getPassingAttempts()));
 			statement.setDouble(++i, MySQLUtil.zeroOrNull(stats.getPassingCompletions()));
@@ -72,6 +74,7 @@ public class MySQLPredictionDAO implements PredictionDAO {
 			statement.setDouble(++i, MySQLUtil.zeroOrNull(stats.getFumbleYards()));
 
 			statement.setString(++i, name);
+			statement.setString(++i, description);
 			statement.setString(++i, position.abbreviation);
 			statement.setDouble(++i, MySQLUtil.zeroOrNull(stats.getPassingAttempts()));
 			statement.setDouble(++i, MySQLUtil.zeroOrNull(stats.getPassingCompletions()));

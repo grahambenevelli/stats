@@ -18,5 +18,5 @@ public interface PredictionDAO {
 	 * @param stats The accuracy of the prediction
 	 * @throws SQLException
 	 */
-	void recordTestRunAccuracy(String name, Position position, AccuracyStats stats) throws SQLException;
+	void recordTestRunAccuracy(String name, String description, Position position, AccuracyStats stats) throws SQLException;
 }

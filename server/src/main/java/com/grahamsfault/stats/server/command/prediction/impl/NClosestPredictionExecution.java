@@ -9,6 +9,7 @@ import com.grahamsfault.stats.server.manager.ImportManager;
 import com.grahamsfault.stats.server.manager.PlayerManager;
 import com.grahamsfault.stats.server.manager.PredictionManager;
 import com.grahamsfault.stats.server.manager.StatsManager;
+import com.grahamsfault.stats.server.manager.helper.PlayerCorrelationCalculator;
 import com.grahamsfault.stats.server.model.PlayerStats;
 
 import java.util.List;
@@ -20,18 +21,25 @@ import java.util.Optional;
 public class NClosestPredictionExecution extends PredictionExecution {
 
 	private final int n;
-	private final CorrelationCalculator correlationCalculator;
+	private final PlayerCorrelationCalculator correlationCalculator;
 	private final StatsManager statsManager;
 	private final PredictionManager predictionManager;
 
 	public NClosestPredictionExecution(
 			int n,
-			CorrelationCalculator correlationCalculator,
+			PlayerCorrelationCalculator correlationCalculator,
 			PlayerManager playerManager,
 			ImportManager importManager,
 			StatsManager statsManager,
 			PredictionManager predictionManager) {
-		super("average-" + n + "-closest-" + correlationCalculator.getClass().getSimpleName(), importManager, playerManager);
+
+		super(
+				"average-" + n + "-closest-" + correlationCalculator.getName(),
+				correlationCalculator.getDescription(),
+				importManager,
+				playerManager
+		);
+
 		this.n = n;
 		this.correlationCalculator = correlationCalculator;
 		this.statsManager = statsManager;

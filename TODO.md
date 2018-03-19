@@ -1,6 +1,7 @@
 # TODO list
 
-* Test against the N most similar players (using Pearson and Euclidean)
+* Selected stats for comparing n closest players
+* Move the prediction code to a class that takes player and year
 * Fix player positions that are missing
 * Combine game stats steps so we only have one call
 * Get drive stats

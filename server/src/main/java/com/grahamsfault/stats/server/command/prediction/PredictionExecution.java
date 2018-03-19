@@ -14,16 +14,19 @@ import java.util.stream.Collectors;
 public abstract class PredictionExecution {
 
 	private final String name;
+	private final String description;
 
 	protected final ImportManager importManager;
 	protected final PlayerManager playerManager;
 
 	protected PredictionExecution(
 			String name,
+			String description,
 			ImportManager importManager,
 			PlayerManager playerManager
 	) {
 		this.name = name;
+		this.description = description;
 		this.importManager = importManager;
 		this.playerManager = playerManager;
 	}
@@ -76,5 +79,14 @@ public abstract class PredictionExecution {
 				.stream()
 				.skip(1)
 				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Get the description of the execution
+	 *
+	 * @return The description
+	 */
+	public String getDescription() {
+		return description;
 	}
 }

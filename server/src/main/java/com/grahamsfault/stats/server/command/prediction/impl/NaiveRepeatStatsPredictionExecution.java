@@ -19,7 +19,7 @@ public class NaiveRepeatStatsPredictionExecution extends PredictionExecution {
 	private final StatsManager statsManager;
 
 	public NaiveRepeatStatsPredictionExecution(ImportManager importManager, StatsManager statsManager, PlayerManager playerManager) {
-		super("repeat-stats", importManager, playerManager);
+		super("repeat-stats", null, importManager, playerManager);
 		this.statsManager = statsManager;
 	}
 

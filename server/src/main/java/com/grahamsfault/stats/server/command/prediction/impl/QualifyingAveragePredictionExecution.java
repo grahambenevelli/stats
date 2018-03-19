@@ -35,7 +35,7 @@ public class QualifyingAveragePredictionExecution extends PredictionExecution {
 			QualifyingNumbersHelper qualifyingNumbersHelper,
 			NaiveAverageHelper naiveAverageHelper,
 			QualifyingAverageHelper qualifyingAverageHelper) {
-		super("qualifying-average", importManager, playerManager);
+		super("qualifying-average", null, importManager, playerManager);
 		this.statsManager = statsManager;
 		this.qualifyingNumbersHelper = qualifyingNumbersHelper;
 		this.naiveAverageHelper = naiveAverageHelper;

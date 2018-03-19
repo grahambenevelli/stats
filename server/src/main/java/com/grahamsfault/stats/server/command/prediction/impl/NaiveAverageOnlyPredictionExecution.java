@@ -25,7 +25,7 @@ public class NaiveAverageOnlyPredictionExecution extends PredictionExecution {
 	private final Map<Year, Map<Position, AverageStats>> averageStats;
 
 	public NaiveAverageOnlyPredictionExecution(ImportManager importManager, StatsManager statsManager, PlayerManager playerManager, NaiveAverageHelper averageHelper) {
-		super("average-only", importManager, playerManager);
+		super("average-only", null, importManager, playerManager);
 		this.statsManager = statsManager;
 		this.averageHelper = averageHelper;
 

@@ -6,6 +6,7 @@ import com.grahamsfault.prediction.util.similarity.impl.EuclideanCalculator;
 import com.grahamsfault.prediction.util.similarity.impl.PearsonCalculator;
 import com.grahamsfault.stats.server.manager.PlayerManager;
 import com.grahamsfault.stats.server.manager.PredictionManager;
+import com.grahamsfault.stats.server.manager.helper.PlayerCorrelationCalculator;
 import com.grahamsfault.stats.server.model.NClosestResults;
 
 import javax.ws.rs.GET;
@@ -36,7 +37,7 @@ public class NClosestPlayersResource {
             throw new NotFoundException("Player with id " + playerId + " was not found");
         }
 
-        Optional<NClosestResults> nClosest = predictionManager.nClosest(new EuclideanCalculator(), player.get(), year, n);
+        Optional<NClosestResults> nClosest = predictionManager.nClosest(new PlayerCorrelationCalculator(new EuclideanCalculator()), player.get(), year, n);
         if (!nClosest.isPresent()) {
             throw new NotFoundException("Stats for player " + playerId + " was not found for year " + year);
         }

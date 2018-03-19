@@ -191,4 +191,14 @@
             <dropTable tableName="prediction_accuracy"/>
         </rollback>
     </changeSet>
+    <changeSet author="gbenevelli" id="prediction_accuracy_add_description">
+        <sql>
+            ALTER TABLE prediction_accuracy
+            ADD COLUMN description text after name
+        </sql>
+        <rollback>
+            ALTER TABLE prediction_accuracy
+            DROP COLUMN description
+        </rollback>
+    </changeSet>
 </databaseChangeLog>
